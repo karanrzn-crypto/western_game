@@ -44,6 +44,7 @@ class V3{
   cross(v){return new V3(this.y*v.z-this.z*v.y,this.z*v.x-this.x*v.z,this.x*v.y-this.y*v.x)}
 }
 function mat4Identity(){const m=new Float32Array(16);m[0]=m[5]=m[10]=m[15]=1;return m}
+function mat4Mul(a,b){const o=new Float32Array(16);for(let j=0;j<4;j++)for(let i=0;i<4;i++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+i]*b[j*4+k];o[j*4+i]=s}return o}
 function mat4Perspective(out,fovy,aspect,near,far){const f=1/Math.tan(fovy/2);out.fill(0);out[0]=f/aspect;out[5]=f;out[10]=(far+near)/(near-far);out[11]=-1;out[14]=(2*far*near)/(near-far);return out}
 function mat4LookAt(out,eye,center,up){let z=new V3(eye.x-center.x,eye.y-center.y,eye.z-center.z).norm(),x=up.cross(z).norm(),y=z.cross(x).norm();out[0]=x.x;out[1]=y.x;out[2]=z.x;out[3]=0;out[4]=x.y;out[5]=y.y;out[6]=z.y;out[7]=0;out[8]=x.z;out[9]=y.z;out[10]=z.z;out[11]=0;out[12]=-x.dot(eye);out[13]=-y.dot(eye);out[14]=-z.dot(eye);out[15]=1;return out}
 function mat4YPR(out,p,s,ry=0,rx=0,rz=0){
@@ -989,6 +990,9 @@ class DayCycle{
 class Game{
   constructor(){
     this.debugAxes=false;
+    this._debugOverlay=document.getElementById('debugOverlay');
+    this._debugLabelEls=[];
+    this._lastDebugCount=-1;
     statusLine.textContent='Creating WebGL…';
     this.gl=canvas.getContext('webgl2',{alpha:false,antialias:false,depth:true,powerPreference:'high-performance'});
     if(!this.gl)throw new Error('WebGL2 unavailable');
@@ -1079,7 +1083,7 @@ class Game{
     this.objects.draw(gl,this.meshProgram,this.meshLoc,this);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
-    if(this.debugAxes)this.drawDebugAxes(gl);
+    if(this.debugAxes){this.drawDebugAxes(gl);this._renderDebugLabels();if(this._debugOverlay)this._debugOverlay.style.display='block'}else if(this._debugOverlay){this._debugOverlay.style.display='none'}
   }
   part(gl,pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box'){
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,pos,scale,ry,rx,rz));
@@ -1253,15 +1257,81 @@ class Game{
   drawDebugAxes(gl){
     const p=this.player.pos;
     const L=3;const T=.035;
-    // X axis (red)
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x+L/2,p.y-this.player.height/2+.02,p.z),new V3(L,T,T),0,0,0));
     gl.uniform3f(this.meshLoc.color,1,.2,.2);this.playerBox.draw();
-    // Y axis (green)
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x,p.y-this.player.height/2+2,p.z),new V3(T,4,T),0,0,0));
     gl.uniform3f(this.meshLoc.color,.2,1,.2);this.playerBox.draw();
-    // Z axis (blue)
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x,p.y-this.player.height/2+.02,p.z+L/2),new V3(T,T,L),0,0,0));
     gl.uniform3f(this.meshLoc.color,.2,.2,1);this.playerBox.draw();
+  }
+  _getDebugLabels(){
+    const B=BANK,T=TOWN;
+    const x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
+    const frontZ=z0,VT=.25;
+    const V=B.vault,vdx=B.x+V.doorX,vz0=B.z+V.z0,vz1=z1-WALL_T;
+    const bkOffZ=B.z+2.0,bkX0=B.x+2.0,bkX1=x1-WALL_T,bkDoorX=(bkX0+bkX1)/2;
+    const L=[];
+    const a=(n,x,yOff,z)=>{const gy=this.world.sample(x,z);L.push({name:n,x,y:gy+yOff,z})};
+    a('Bank Main Door',B.x,2.6,frontZ);
+    a('Bank Office Door',bkDoorX,2.6,bkOffZ);
+    a('Bank Vault Door',vdx,2.6,vz0+VT/2);
+    a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
+    a('Bank Manager Desk',B.x+4.35,1.1,B.z+4.0);
+    a('Bank Manager Chair',B.x+4.35,1.4,B.z+4.8);
+    a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
+    a('Bank Gold Table',B.x-1.3,0.9,vz1-1.65);
+    a('Bank Strongbox',B.x+1.3,1.0,vz1-1.3);
+    for(let i=0;i<this.objects.pushables.length;i++){
+      const p=this.objects.pushables[i];
+      const gy=this.world.sample(p.x,p.z);
+      L.push({name:'Bank Teller Chair '+(i+1),x:p.x,y:gy+1.1,z:p.z});
+    }
+    a('Bank Waiting Chair 1',x0+1.85,1.0,z0+2.25);
+    a('Bank Waiting Chair 2',x0+3.15,1.0,z0+2.25);
+    a('Bank Waiting Chair 3',x0+1.85,1.0,z0+3.45);
+    a('Bank Waiting Chair 4',x0+3.15,1.0,z0+3.45);
+    a('Bank Front Window 1',x0+1.3,3.4,frontZ-.15);
+    a('Bank Front Window 2',x0+3.6,3.4,frontZ-.15);
+    a('Bank Front Window 3',x1-3.6,3.4,frontZ-.15);
+    a('Bank Front Window 4',x1-1.3,3.4,frontZ-.15);
+    a('Bank Left Window 1',x0+WALL_T/2,3.4,B.z-3.25);
+    a('Bank Left Window 2',x0+WALL_T/2,3.4,B.z+.25);
+    a('Bank Right Window 1',x1-WALL_T/2,3.4,B.z-3.25);
+    a('Bank Right Window 2',x1-WALL_T/2,3.4,B.z+.25);
+    a('Saloon Door',T.saloon.x,2.6,T.saloon.z+T.saloon.d/2);
+    a('Store Door',T.store.x,2.6,T.store.z+T.store.d/2);
+    a('Sheriff Door',T.sheriff.x,2.6,T.sheriff.z+T.sheriff.d/2);
+    a('Saloon',T.saloon.x,T.saloon.h+1.2,T.saloon.z);
+    a('Store',T.store.x,T.store.h+1.2,T.store.z);
+    a('Sheriff',T.sheriff.x,T.sheriff.h+1.2,T.sheriff.z);
+    a('Church',T.church.x,6.5,T.church.z);
+    a('Stable',T.stable.x,T.stable.h+1.2,T.stable.z);
+    a('Bank',B.x,B.h+1.5,B.z);
+    return L;
+  }
+  _renderDebugLabels(){
+    const ov=this._debugOverlay;if(!ov)return;
+    const labels=this._getDebugLabels();
+    if(labels.length!==this._lastDebugCount){
+      while(this._debugLabelEls.length<labels.length){const el=document.createElement('div');el.className='dbg-label';ov.appendChild(el);this._debugLabelEls.push(el)}
+      while(this._debugLabelEls.length>labels.length){this._debugLabelEls.pop().remove()}
+      this._lastDebugCount=labels.length;
+    }
+    const vp=mat4Mul(this.camera.proj,this.camera.view);
+    const cw=canvas.width,ch=canvas.height;
+    for(let i=0;i<labels.length;i++){
+      const lb=labels[i],el=this._debugLabelEls[i];
+      const wx=lb.x,wy=lb.y,wz=lb.z;
+      const cx=vp[0]*wx+vp[4]*wy+vp[8]*wz+vp[12];
+      const cy=vp[1]*wx+vp[5]*wy+vp[9]*wz+vp[13];
+      const cz=vp[2]*wx+vp[6]*wy+vp[10]*wz+vp[14];
+      const cw2=vp[3]*wx+vp[7]*wy+vp[11]*wz+vp[15];
+      if(cw2<.1||cx/cw2<-1.1||cx/cw2>1.1||cy/cw2<-1.1||cy/cw2>1.1){el.style.display='none';continue}
+      el.style.display='block';
+      el.style.left=((cx/cw2+1)/2*cw)+'px';
+      el.style.top=((1-cy/cw2)/2*ch)+'px';
+      el.textContent=lb.name;
+    }
   }
   hud(){
     const hr=Math.floor(this.day.t),min=Math.floor((this.day.t-hr)*60);

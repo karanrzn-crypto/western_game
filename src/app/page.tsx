@@ -82,6 +82,8 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 #loadingOverlay p{font-size:13px;color:var(--muted);letter-spacing:.1em;margin-bottom:32px}
 #loadingBar{width:220px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
 #loadingBarFill{width:0%;height:100%;background:var(--gold);border-radius:99px;transition:width .3s ease-out}
+#debugOverlay{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;display:none}
+.dbg-label{position:absolute;transform:translate(-50%,-130%);background:rgba(0,0,0,.78);color:#fff;font:11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;padding:2px 7px;border-radius:4px;white-space:nowrap;border:1px solid rgba(255,255,255,.22);text-shadow:0 1px 2px rgba(0,0,0,.5)}
 @media(max-width:700px){#help{font-size:10px}#meters{width:200px}}
           `,
         }}
@@ -94,6 +96,8 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
       </div>
 
       <canvas id="game" />
+
+      <div id="debugOverlay" />
 
       <div id="verBanner">
         شهر وسترن — نسخه ۲۳
