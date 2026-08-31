@@ -4,9 +4,9 @@
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v25.
-Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish) → v25 (back-right cabinet removal, side window fix, office lintel cam).
-MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 DustSystem 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v26.
+Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish) → v25 (back-right cabinet removal, side window fix, office lintel cam) → v26 (removed vignette/compass/dust, rotated teller chairs, vault redesign, manager cabinet).
+MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 Game 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
 
 //[SEC-01] DOM
 const canvas=document.getElementById('game'),statusLine=document.getElementById('statusLine'),notice=document.getElementById('notice'),errorEl=document.getElementById('error'),errorText=document.getElementById('errorText'),healthBar=document.getElementById('healthBar'),staminaBar=document.getElementById('staminaBar'),stateLine=document.getElementById('stateLine'),deathFade=document.getElementById('deathFade'),doorHint=document.getElementById('doorHint'),healthVal=document.getElementById('healthVal'),staminaVal=document.getElementById('staminaVal');
@@ -338,12 +338,12 @@ class WorldObjects{
     this.dot(x0+1.85,z0+2.25,.28);this.dot(x0+3.15,z0+2.25,.28);
     this.dot(x0+1.85,z0+3.45,.28);this.dot(x0+3.15,z0+3.45,.28);   // waiting chairs
     this.dot(x0+2.5,z0+2.85,.42);                            // waiting table
-    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
-    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
-    // back-right cabinet removed (was unwanted object)
-    this.boxCol(vx0+VT,vz1-2.1,vx0+VT+.4,vz1-.35);           // vault shelves
-    this.dot(B.x+1.3,vz1-1.3,.55);                           // strongbox
-    this.dot(B.x-1.3,vz1-1.65,.45);                          // gold table
+    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
+    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
+    // vault interior colliders (redesigned v26 — simple, open for heist)
+    this.dot(B.x+1.5,vz1-1.0,.5);                            // strongbox (heist target)
+    // manager office cabinet (left side, for future Key placement)
+    this.boxCol(bkX0+.3,bkOffZ+1.5,bkX0+1.1,bkOffZ+2.3);
   }
 
   g(x,z){return this.terrain.sample(x,z)}
@@ -629,17 +629,21 @@ class WorldObjects{
     this.pb(vdx,gy+(DOOR_H+B.h)/2,vz0+VT/2,vdw+.06,B.h-DOOR_H,VT,C.dark);
     this.pb(vx0+VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
     this.pb(vx1-VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
-    // vault interior: shelves, gold bags, strongbox, gold table
-    this.pb(vx0+VT+.2,gy+1.05,(vz1-2.1+vz1-.35)/2,.4,2.1,1.75,C.wood2);
-    this.pb(vx0+VT+.42,gy+.9,vz1-1.0,.3,.34,.4,C.gold);
-    this.pb(vx0+VT+.42,gy+.9,vz1-1.6,.3,.34,.4,C.gold);
-    this.pb(B.x+1.3,gy+.34,vz1-1.3,.95,.68,.65,BANK_STEEL);
-    this.pb(B.x+1.3,gy+.73,vz1-1.3,1.0,.1,.7,BANK_STEEL);
-    this.pc(B.x-1.3,gy+.57,vz1-1.65,.42,.06,C.wood2);
-    this.pc(B.x-1.3,gy+.29,vz1-1.65,.07,.58,C.dark);
-    this.pb(B.x-1.3,gy+.84,vz1-1.72,.34,.08,.17,C.gold);
-    this.pb(B.x-1.3,gy+.84,vz1-1.55,.34,.08,.17,C.gold);
-    this.pb(B.x-1.3,gy+.93,vz1-1.63,.34,.08,.17,C.gold);
+    // vault interior (v26 — simple, clean, open for heist mechanics)
+    // strongbox — main heist target, positioned at back-right
+    const sbx=B.x+1.5,sbz=vz1-1.0;
+    this.pb(sbx,gy+.34,sbz,.95,.68,.65,BANK_STEEL);
+    this.pb(sbx,gy+.73,sbz,1.0,.1,.7,BANK_STEEL);
+    // simple wall shelf along back wall (right half only)
+    const shX=(vx1-VT-.1+B.x+V.x1/2)/2,shZ=vz1-.15,shW=vx1-VT-.1-(B.x+V.x1/2);
+    this.pb(shX,gy+1.4,shZ,shW,.08,.35,C.dark);
+    this.pb(shX,gy+1.75,shZ,shW,.5,.04,C.dark);
+    // manager office — cabinet on left side (for future Key placement)
+    const cabX=(bkX0+.3+bkX0+1.1)/2,cabZ=(bkOffZ+1.5+bkOffZ+2.3)/2;
+    this.pb(cabX,gy+.9,cabZ,.8,1.8,.45,C.wood2);       // cabinet body
+    this.pb(cabX,gy+1.82,cabZ,.84,.06,.49,C.dark);       // cabinet top
+    this.pb(cabX,gy+.85,cabZ,.04,1.7,.41,C.dark);        // cabinet door (left face)
+    this.pb(cabX,gy+1.15,cabZ-.01,.06,.18,.06,C.gold);    // small gold handle
     // brass vault wheel, wall-mounted right of the vault door
     const wx=vdx+1.75,wy=gy+1.35,wz=vz0-.08;
     mat4YPR(this.tmpModel,new V3(wx,wy,wz),new V3(.27,.035,.27),0,Math.PI/2,0);
@@ -1012,40 +1016,7 @@ class DayCycle{
   colors(){const dl=clamp(Math.sin((this.t-6)/24*TAU)*.5+.5,.03,1),dn=smooth(.05,.28,dl);const t=this._top,h=this._h,b=this._bot,f=this._fog;t.set(lerp(.025,.36,dn),lerp(.04,.56,dn),lerp(.08,.78,dn));h.set(lerp(.04,.95,dn),lerp(.06,.74,dn),lerp(.09,.52,dn));b.set(lerp(.015,.38,dl),lerp(.02,.29,dl),lerp(.03,.21,dl));f.set(lerp(.025,.52,dn),lerp(.03,.45,dn),lerp(.05,.34,dn));return{top:t,h:h,bot:b,fog:f}}
 }
 
-//[SEC-12] Dust Particle System
-const MAX_DUST=60;
-class DustSystem{
-  constructor(){this.particles=[];this.timer=0}
-  emit(x,y,z,speed){
-    if(this.particles.length>=MAX_DUST)return;
-    const a=Math.random()*TAU,sp=.3+Math.random()*.6;
-    this.particles.push({x:x+(Math.random()-.5)*.3,y,z:z+(Math.random()-.5)*.3,vx:Math.cos(a)*sp*.4,vy:.4+Math.random()*.5,vz:Math.sin(a)*sp*.4,life:1,decay:1.2+Math.random()*.8,size:.02+Math.random()*.03})
-  }
-  update(dt){
-    this.timer-=dt;
-    for(let i=this.particles.length-1;i>=0;i--){
-      const p=this.particles[i];
-      p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;
-      p.vy-=.8*dt;
-      p.life-=p.decay*dt;
-      if(p.life<=0){this.particles.splice(i,1);continue}
-    }
-  }
-  draw(gl,loc,boxMesh){
-    if(!this.particles.length)return;
-    const m=mat4Identity();
-    for(const p of this.particles){
-      const s=p.size*p.life;
-      m[0]=s;m[5]=s;m[10]=s;m[12]=p.x;m[13]=p.y;m[14]=p.z;m[15]=1;
-      gl.uniformMatrix4fv(loc.model,false,m);
-      const a=clamp(p.life,.0,1);
-      gl.uniform3f(loc.color,.55*a,.45*a,.35*a);
-      boxMesh.draw();
-    }
-  }
-}
-
-//[SEC-13] Game
+//[SEC-12] Game
 class Game{
   constructor(){
     this.debugAxes=false;
@@ -1074,7 +1045,7 @@ class Game{
     this.skyLoc={top:gl.getUniformLocation(this.skyProgram,'top'),horizon:gl.getUniformLocation(this.skyProgram,'horizon'),bottom:gl.getUniformLocation(this.skyProgram,'bottom'),time:gl.getUniformLocation(this.skyProgram,'time')};
     this.tmpModel=mat4Identity();
     this._I=mat4Identity();
-    this.day=new DayCycle();this.input=new Input(canvas);this.dust=new DustSystem();
+    this.day=new DayCycle();this.input=new Input(canvas);
     this.running=true;this.last=performance.now();
     this.camera.target.copy(this.player.pos);this.camera.target.y+=1;
     this.camera.desiredPosition.set(this.player.pos.x+3,this.player.pos.y+2,this.player.pos.z+5);
@@ -1086,7 +1057,7 @@ class Game{
   }
   setCamMode(mode){
     this.camera.mode=mode;
-    document.getElementById('mode').textContent='v25 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+    document.getElementById('mode').textContent='v26 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
   bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
   resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
@@ -1121,18 +1092,6 @@ class Game{
     this.camera.update(this.player,dt);
     this.clipCamera(dt);
     this.camera.buildView();
-    // Dust emission: only when grounded, moving, and outside
-    const hs=Math.hypot(this.player.vel.x,this.player.vel.z);
-    if(this.player.grounded&&hs>.8&&!inside){
-      this.dust.timer-=dt;
-      const rate=hs>4?.03:(hs>2.5?.06:.1);
-      if(this.dust.timer<=0){
-        const gy=this.world.sample(this.player.pos.x,this.player.pos.z);
-        this.dust.emit(this.player.pos.x,gy,this.player.pos.z,hs);
-        this.dust.timer=rate;
-      }
-    }
-    this.dust.update(dt);
   }
 
   render(){
@@ -1153,7 +1112,6 @@ class Game{
     gl.uniformMatrix4fv(this.meshLoc.model,false,this._I);gl.uniform3f(this.meshLoc.color,1,1,1);
     this.world.mesh.draw();
     this.objects.draw(gl,this.meshLoc);
-    this.dust.draw(gl,this.meshLoc,this.playerBox);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
     if(this.debugAxes){this.drawDebugAxes(gl);this._renderDebugLabels();if(this._debugOverlay)this._debugOverlay.style.display='block'}else if(this._debugOverlay){this._debugOverlay.style.display='none'}
@@ -1351,8 +1309,9 @@ class Game{
     a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
     a('Bank Manager Chair',B.x+4.35,1.4,B.z+4.8);
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
-    a('Bank Gold Table',B.x-1.3,0.9,vz1-1.65);
-    a('Bank Strongbox',B.x+1.3,1.0,vz1-1.3);
+    a('Bank Strongbox',B.x+1.5,1.0,vz1-1.0);
+    a('Bank Vault Shelf',(B.x+V.x1/2+vx1-VT)/2,1.8,vz1-.15);
+    a('Bank Manager Cabinet',(bkX0+.3+bkX0+1.1)/2,1.6,(bkOffZ+1.5+bkOffZ+2.3)/2);
     for(let i=0;i<this.objects.pushables.length;i++){
       const p=this.objects.pushables[i];
       const gy=this.world.sample(p.x,p.z);
@@ -1440,7 +1399,7 @@ try{
   const vb=document.getElementById('verBanner');
   vb.classList.add('show');
   setTimeout(()=>vb.classList.remove('show'),6000);
-  flashNotice('نسخه ۲۴ — قطب‌نما + ذرات گرد و غبار + بهبود رابط کاربری');
+  flashNotice('نسخه ۲۶ — چرخش صندلی‌ها + طراحی مجدد گاوصندوق + کمد مدیر');
 }catch(err){
   fail((err&&err.stack)||String(err));
 }

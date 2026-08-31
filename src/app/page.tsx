@@ -6,7 +6,6 @@ export default function WesternFrontierPage() {
   const initialized = useRef(false);
   const fpsRef = useRef({ frames: 0, last: 0, value: 0 });
   const fpsDisplayRef = useRef<HTMLSpanElement>(null);
-  const compassRef = useRef<HTMLDivElement>(null);
 
   const updateFps = useCallback(() => {
     const f = fpsRef.current;
@@ -24,14 +23,6 @@ export default function WesternFrontierPage() {
     }
   }, []);
 
-  const updateCompass = useCallback(() => {
-    const g = (window as any).__WESTERN_FRONTIER__?.game;
-    const el = compassRef.current;
-    if (!g || !el) return;
-    const yaw = g.camera.yaw;
-    el.style.transform = `translate(-50%, -50%) rotate(${(-yaw * 180) / Math.PI}deg)`;
-  }, []);
-
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
@@ -43,12 +34,11 @@ export default function WesternFrontierPage() {
     let raf: number;
     const hudLoop = () => {
       updateFps();
-      updateCompass();
       raf = requestAnimationFrame(hudLoop);
     };
     raf = requestAnimationFrame(hudLoop);
     return () => cancelAnimationFrame(raf);
-  }, [updateFps, updateCompass]);
+  }, [updateFps]);
 
   return (
     <>
@@ -73,10 +63,6 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 #game{position:fixed;inset:0;width:100%;height:100%;display:block;background:#0b1015;cursor:crosshair}
 #hud{position:fixed;inset:0;pointer-events:none;z-index:3}
 
-/* ---------- VIGNETTE ---------- */
-#vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
-  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.35) 78%,rgba(0,0,0,.7) 100%)}
-
 /* ---------- CARD SYSTEM ---------- */
 .card{background:var(--glass);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 
@@ -91,19 +77,6 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 #fpsVal{color:var(--green);font-weight:700;min-width:22px;text-align:right}
 #fpsVal.warn{color:var(--amber)}
 #fpsVal.bad{color:var(--red)}
-
-/* ---------- COMPASS (top center) ---------- */
-#compassWrap{position:absolute;top:14px;left:50%;pointer-events:none}
-#compassRing{position:relative;width:64px;height:64px}
-#compassRing::before{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--line);background:rgba(0,0,0,.35);box-shadow:0 2px 12px rgba(0,0,0,.3)}
-#compassNeedle{position:absolute;left:50%;top:50%;width:56px;height:56px;transform:translate(-50%,-50%);transition:transform .12s ease-out}
-#compassNeedle .dir{position:absolute;left:50%;font-size:10px;font-weight:800;letter-spacing:.04em;transform:translateX(-50%);white-space:nowrap}
-#compassNeedle .dir.n{top:3px;color:var(--red);text-shadow:0 0 6px rgba(192,57,43,.4)}
-#compassNeedle .dir.s{bottom:3px;color:var(--muted)}
-#compassNeedle .dir.e{right:1px;top:50%;transform:translate(-50%,-50%);color:var(--muted)}
-#compassNeedle .dir.w{left:1px;top:50%;transform:translate(-50%,-50%);color:var(--muted)}
-#compassCenter{position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(228,182,109,.4);z-index:1}
-#compassArrow{position:absolute;left:50%;top:6px;width:0;height:0;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:8px solid var(--red);opacity:.7;z-index:1}
 
 /* ---------- BOTTOM LEFT: HELP ---------- */
 #help{position:absolute;left:15px;bottom:15px;padding:9px 12px;font-size:11px;line-height:1.65;color:var(--muted)}
@@ -173,8 +146,6 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 @media(max-width:700px){
   #help{font-size:9.5px}
   #meters{width:195px}
-  #compassRing{width:50px;height:50px}
-  #compassNeedle{width:44px;height:44px}
   #status{min-width:auto;max-width:55vw}
 }
           `,
@@ -196,15 +167,12 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
       {/* ---- GAME CANVAS ---- */}
       <canvas id="game" />
 
-      {/* ---- VIGNETTE OVERLAY ---- */}
-      <div id="vignette" />
-
       {/* ---- DEBUG OVERLAY ---- */}
       <div id="debugOverlay" />
 
       {/* ---- VERSION BANNER ---- */}
       <div id="verBanner">
-        Western Frontier — v24
+        Western Frontier — v26
       </div>
 
       {/* ---- DOOR HINT ---- */}
@@ -217,23 +185,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
         {/* Status (top-left) */}
         <div id="status" className="card">
           <div id="title">
-            WESTERN FRONTIER // TOWN v24
+            WESTERN FRONTIER // TOWN v26
           </div>
           <div id="statusLine">Starting world...</div>
-        </div>
-
-        {/* Compass (top-center) */}
-        <div id="compassWrap">
-          <div id="compassRing">
-            <div id="compassNeedle" ref={compassRef}>
-              <span className="dir n">N</span>
-              <span className="dir s">S</span>
-              <span className="dir e">E</span>
-              <span className="dir w">W</span>
-              <div id="compassArrow" />
-            </div>
-            <div id="compassCenter" />
-          </div>
         </div>
 
         {/* FPS (top-right) */}
@@ -265,7 +219,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 
         {/* Mode (bottom-right) */}
         <div id="mode" className="card">
-          v24 &bull; THIRD PERSON &bull; LMB/RMB + DRAG &bull; V =
+          v26 &bull; THIRD PERSON &bull; LMB/RMB + DRAG &bull; V =
           FIRST PERSON
         </div>
 
