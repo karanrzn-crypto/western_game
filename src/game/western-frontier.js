@@ -1,25 +1,12 @@
 // Western Frontier - Game Engine
-// Extracted from index3 copy.html v21.1
+// Part 3: TOWN v23
 
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v21.1 = v21 + BOOT FIX.
-v21 shipped with an undefined placeholder (DOOR_GAP_UNUSED_PLACEHOLDER) inside
-the BANK const — a top-level ReferenceError that killed the whole script BEFORE
-the try/catch and BEFORE the error listener was registered, so the page silently
-hung on "Starting world…" forever. FIXES:
-(1) BANK const moved AFTER the DOOR_GAP/C declarations, doorW now uses
-    DOOR_GAP (1.9) — no undefined identifier.
-(2) window 'error' listener registered at the TOP of the script, so any future
-    top-level runtime error shows the red overlay instead of a silent hang.
-(3) Vault shelf visual width aligned with its collider (.4).
-(4) Teller window glass pane added (visual only, no collider).
-Everything else (player, camera, doors, town, terrain) is v21, UNTOUCHED.
-MAP: 01 DOM(+error listener) 02 math 03 terrain 04 input 05 meshes 06 Terrain
-07 TOWN+BANK+DOORS 09 shaders 10 Player 11 Camera 12 DayCycle 13 ctor
-14 update 16 render+clip 18 drawPlayer 19 arms 20 HUD 21 boot.
-CRITICAL: box tint (r,.82r,.58r) × uColor — whites need boost.*/
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v23.
+Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization).
+MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 ctor 13 update 14 render+clip 15 drawPlayer 16 arms 17 HUD 18 boot.*/
 
 //[SEC-01] DOM
 const canvas=document.getElementById('game'),statusLine=document.getElementById('statusLine'),notice=document.getElementById('notice'),errorEl=document.getElementById('error'),errorText=document.getElementById('errorText'),healthBar=document.getElementById('healthBar'),staminaBar=document.getElementById('staminaBar'),stateLine=document.getElementById('stateLine'),deathFade=document.getElementById('deathFade'),doorHint=document.getElementById('doorHint'),healthVal=document.getElementById('healthVal'),staminaVal=document.getElementById('staminaVal');
@@ -677,8 +664,7 @@ class WorldObjects{
       const lx=-w/2+margin+i*spacing;
       this.pb(cx+bx*lx+fwdX*fwdOff,cy,cz+bz*lx+fwdZ*fwdOff,.055,h-.12,.085,C.pale,ry);
     }
-    const hlx=0,hlz=0;
-    this.pb(cx+bx*hlx+fwdX*fwdOff,cy,cz+bz*hlz+fwdZ*fwdOff,w-.14,.055,.085,C.pale,ry);
+    this.pb(cx+bx*0+fwdX*fwdOff,cy,cz+bz*0+fwdZ*fwdOff,w-.14,.055,.085,C.pale,ry);
   }
   drawSideWindow(wallX,winZ,localH,winW,winH,normX){
     // Local coordinate system for the wall:
@@ -754,7 +740,7 @@ class WorldObjects{
     p=P(0,legH*.3,0);this.pb(p[0],p[1],p[2],lx*2,.025,legW,dk,ry);
     p=P(0,legH*.3,0);this.pb(p[0],p[1],p[2],legW,.025,lz*2,dk,ry);
   }
-  draw(gl,prog,loc){
+  draw(gl,loc){
     this._gl=gl;this._loc=loc;
     for(const f of this.floors)this.pfl((f.x0+f.x1)/2,f.y,(f.z0+f.z1)/2,(f.x1-f.x0)/2,(f.z1-f.z0)/2,C.floorW);
     this.bldWithDoor(TOWN.saloon,C.wood,'gable');
@@ -917,7 +903,7 @@ class Player{
     const r=camera.right.clone();r.y=0;r.normXZ();
     let x=0,z=0;
     if(input.down('w'))z++;if(input.down('s'))z--;if(input.down('d'))x++;if(input.down('a'))x--;
-    const moving=(x!==0||z===0&&false);const moved=(x!==0||z!==0);
+    const moved=(x!==0||z!==0);
     const dir=new V3();
     if(moved){dir.add(f.clone().mul(z));dir.add(r.clone().mul(x));dir.normXZ()}
     const wantsSprint=input.down('shift')&&!this.crouching&&moved&&this.stamina>4;
@@ -1014,9 +1000,9 @@ class Camera{
 
 //[SEC-12] DayCycle
 class DayCycle{
-  constructor(){this.t=8.3;this.daySeconds=240;this.sun=new V3()}
+  constructor(){this.t=8.3;this.daySeconds=240;this.sun=new V3();this._top=new V3();this._h=new V3();this._bot=new V3();this._fog=new V3()}
   update(dt){this.t=(this.t+24*dt/this.daySeconds)%24;const a=(this.t-6)/24*TAU;this.sun.set(Math.cos(a),-Math.sin(a),.35).norm()}
-  colors(){const dl=clamp(Math.sin((this.t-6)/24*TAU)*.5+.5,.03,1),dn=smooth(.05,.28,dl);return{top:new V3(lerp(.025,.36,dn),lerp(.04,.56,dn),lerp(.08,.78,dn)),h:new V3(lerp(.04,.95,dn),lerp(.06,.74,dn),lerp(.09,.52,dn)),bot:new V3(lerp(.015,.38,dl),lerp(.02,.29,dl),lerp(.03,.21,dl)),fog:new V3(lerp(.025,.52,dn),lerp(.03,.45,dn),lerp(.05,.34,dn))}}
+  colors(){const dl=clamp(Math.sin((this.t-6)/24*TAU)*.5+.5,.03,1),dn=smooth(.05,.28,dl);const t=this._top,h=this._h,b=this._bot,f=this._fog;t.set(lerp(.025,.36,dn),lerp(.04,.56,dn),lerp(.08,.78,dn));h.set(lerp(.04,.95,dn),lerp(.06,.74,dn),lerp(.09,.52,dn));b.set(lerp(.015,.38,dl),lerp(.02,.29,dl),lerp(.03,.21,dl));f.set(lerp(.025,.52,dn),lerp(.03,.45,dn),lerp(.05,.34,dn));return{top:t,h:h,bot:b,fog:f}}
 }
 
 //[SEC-13] Game
@@ -1047,6 +1033,7 @@ class Game{
     this.meshLoc={proj:gl.getUniformLocation(this.meshProgram,'uProj'),view:gl.getUniformLocation(this.meshProgram,'uView'),model:gl.getUniformLocation(this.meshProgram,'uModel'),sun:gl.getUniformLocation(this.meshProgram,'uSun'),sky:gl.getUniformLocation(this.meshProgram,'uSky'),cam:gl.getUniformLocation(this.meshProgram,'uCam'),fog:gl.getUniformLocation(this.meshProgram,'uFog'),fs:gl.getUniformLocation(this.meshProgram,'uFogStart'),fe:gl.getUniformLocation(this.meshProgram,'uFogEnd'),color:gl.getUniformLocation(this.meshProgram,'uColor')};
     this.skyLoc={top:gl.getUniformLocation(this.skyProgram,'top'),horizon:gl.getUniformLocation(this.skyProgram,'horizon'),bottom:gl.getUniformLocation(this.skyProgram,'bottom'),time:gl.getUniformLocation(this.skyProgram,'time')};
     this.tmpModel=mat4Identity();
+    this._I=mat4Identity();
     this.day=new DayCycle();this.input=new Input(canvas);
     this.running=true;this.last=performance.now();
     this.camera.target.copy(this.player.pos);this.camera.target.y+=1;
@@ -1059,7 +1046,7 @@ class Game{
   }
   setCamMode(mode){
     this.camera.mode=mode;
-    document.getElementById('mode').textContent='v21 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG CAMERA • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+    document.getElementById('mode').textContent='v23 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG CAMERA • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
   bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
   resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
@@ -1111,9 +1098,9 @@ class Game{
     gl.uniform3f(this.meshLoc.cam,this.camera.position.x,this.camera.position.y,this.camera.position.z);
     gl.uniform3f(this.meshLoc.fog,c.fog.x,c.fog.y,c.fog.z);
     gl.uniform1f(this.meshLoc.fs,45);gl.uniform1f(this.meshLoc.fe,145);
-    gl.uniformMatrix4fv(this.meshLoc.model,false,mat4Identity());gl.uniform3f(this.meshLoc.color,1,1,1);
+    gl.uniformMatrix4fv(this.meshLoc.model,false,_I);gl.uniform3f(this.meshLoc.color,1,1,1);
     this.world.mesh.draw();
-    this.objects.draw(gl,this.meshProgram,this.meshLoc,this);
+    this.objects.draw(gl,this.meshLoc);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
     if(this.debugAxes){this.drawDebugAxes(gl);this._renderDebugLabels();if(this._debugOverlay)this._debugOverlay.style.display='block'}else if(this._debugOverlay){this._debugOverlay.style.display='none'}
@@ -1137,7 +1124,7 @@ class Game{
     const dir=new V3(des.x-t.x,des.y-t.y,des.z-t.z);
     const desiredDistance=dir.len()||1e-4;
     dir.mul(1/desiredDistance);
-    const boxes=this.objects.camBoxes.slice();
+    const boxes=this.objects.camBoxes.concat();
     for(const d of this.objects.doors){
       const I=d.inside;
       if(t.x>I.x0&&t.x<I.x1&&t.z>I.z0&&t.z<I.z1&&d.open<.3)
