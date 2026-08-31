@@ -4,8 +4,8 @@
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v26.
-Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish) → v25 (back-right cabinet removal, side window fix, office lintel cam) → v26 (removed vignette/compass/dust, rotated teller chairs, vault redesign, manager cabinet).
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v26.3.
+Evolution: ... → v26 (removed vignette/compass/dust, rotated teller chairs, vault redesign, manager cabinet) → v26.3 (vault gold table, manager chair+desk, cabinet repositioned).
 MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 Game 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
 
 //[SEC-01] DOM
@@ -341,10 +341,12 @@ class WorldObjects{
     this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     // vault interior colliders
-    this.dot(B.x+V.x1-VT-0.55,vz1-0.5,.4);                  // storage crate 1
-    this.dot(B.x+V.x1-VT-1.45,vz1-0.5,.4);                  // storage crate 2
-    // manager office cabinet collider — against right wall, rotated (x: 13.17–13.72, z: 21.9–22.9)
-    this.boxCol(x1-WALL_T-0.55,22.4-0.5,x1-WALL_T,22.4+0.5);
+    this.dot(8.9,26.5,.55);                                 // vault gold table
+    // manager office colliders
+    this.dot(10.3,26.0,.3);                                  // manager chair
+    this.boxCol(10.8,25.7,11.8,26.3);                         // manager desk
+    // manager office cabinet collider — against right wall, z=26.6
+    this.boxCol(x1-WALL_T-0.55,26.6-0.5,x1-WALL_T,26.6+0.5);
   }
 
   g(x,z){return this.terrain.sample(x,z)}
@@ -611,7 +613,14 @@ class WorldObjects{
     this.pb((offX0+offGapL)/2,gy+1.8,offZ,offGapL-offX0,3.6,WALL_T,C.stone);
     this.pb((offGapR+offX1)/2,gy+1.8,offZ,offX1-offGapR,3.6,WALL_T,C.stone);
     this.pb(offDoorX,gy+(DOOR_H+3.6)/2,offZ,DOOR_GAP+.06,3.6-DOOR_H,WALL_T,C.stone);
-    this.bankChair(B.x+4.35,B.z+4.8,Math.PI);
+    // manager desk area — chair against west, desk in front
+    this.bankChair(10.3,26.0,Math.PI/2);
+    const dkX=11.3,dkZ=26.0;
+    this.pb(dkX,gy+.72,dkZ, 1.0,.05,.6, C.wood2);            // desk top
+    this.pb(dkX-.42,gy+.34,dkZ-.22, .06,.68,.06, C.dark);     // leg FL
+    this.pb(dkX+.42,gy+.34,dkZ-.22, .06,.68,.06, C.dark);     // leg FR
+    this.pb(dkX-.42,gy+.34,dkZ+.22, .06,.68,.06, C.dark);     // leg BL
+    this.pb(dkX+.42,gy+.34,dkZ+.22, .06,.68,.06, C.dark);     // leg BR
     // waiting area: rug, chairs, round table
     this.pb(x0+2.5,gy+.02,z0+2.85,2.6,.04,2.2,[.4,.13,.11]);
     this.bankChair(x0+1.85,z0+2.25,0);this.bankChair(x0+3.15,z0+2.25,0);
@@ -638,20 +647,25 @@ class WorldObjects{
       this.pb(bx,by,vz1-0.06, 0.48,0.34,0.10, BANK_STEEL);
       this.pb(bx,by,vz1-0.12, 0.03,0.08,0.03, C.dark);
     }}
-    // gold/metal storage crates (right side, against back wall)
-    this.pb(vx1-VT-0.55,gy+0.33,vz1-0.5, 0.75,0.65,0.6, C.dark);
-    this.pb(vx1-VT-0.55,gy+0.66,vz1-0.5, 0.69,0.04,0.54, BANK_STEEL);
-    this.pb(vx1-VT-1.45,gy+0.33,vz1-0.5, 0.75,0.65,0.6, C.dark);
-    this.pb(vx1-VT-1.45,gy+0.66,vz1-0.5, 0.69,0.04,0.54, BANK_STEEL);
+    // vault table with gold (replaced crates — center-right area)
+    const vtX=8.9,vtZ=26.5;
+    this.pb(vtX,gy+.72,vtZ, 1.1,.05,.65, C.wood2);          // table top
+    this.pb(vtX-.48,gy+.34,vtZ-.25, .06,.68,.06, C.dark);     // leg FL
+    this.pb(vtX+.48,gy+.34,vtZ-.25, .06,.68,.06, C.dark);     // leg FR
+    this.pb(vtX-.48,gy+.34,vtZ+.25, .06,.68,.06, C.dark);     // leg BL
+    this.pb(vtX+.48,gy+.34,vtZ+.25, .06,.68,.06, C.dark);     // leg BR
+    for(let i=0;i<6;i++){this.pb(vtX-.35+i*0.14, gy+.78, vtZ, 0.10,0.06,0.10, C.gold)} // gold on table
     // gold/money stacks (on floor, left of center)
-    for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.5, 0.18,0.12,0.28, C.gold)};
+    for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.5, 0.18,0.12,0.28, C.gold)}
+    // extra gold near safe deposit boxes
+    for(let i=0;i<4;i++){this.pb(dpx0+1.8+i*0.18, gy+0.14, vz1-0.35, 0.16,0.10,0.20, C.gold)}
     // interior lamp (centered, hanging from ceiling)
     const lampZ=(vz0+VT+vz1)/2;
     this.pb(B.x,top-0.35,lampZ, 0.04,0.45,0.04, C.dark);
     this.pb(B.x,top-0.65,lampZ, 0.32,0.18,0.32, BANK_STEEL);
     this.pb(B.x,top-0.77,lampZ, 0.18,0.05,0.18, [1.0,0.85,0.5]);
     // manager office cabinet — against right wall, rotated 90° CCW (doors face west)
-    const mcX=x1-WALL_T-0.275, mcZ=22.4; // center: 0.55d(x) × 1.0w(z), flush right wall
+    const mcX=x1-WALL_T-0.275, mcZ=26.6; // center: 0.55d(x) × 1.0w(z), flush right wall, inside office
     this.pb(mcX,gy+.9,mcZ, 0.55,1.8,1.0, C.dark);            // cabinet body
     this.pb(mcX,gy+1.83,mcZ, 0.59,0.06,1.04, C.dark);          // top cap
     this.pb(mcX-0.275,gy+.9,mcZ-0.22, 0.035,1.7,0.44, C.wood2); // left door (west face)
@@ -1073,7 +1087,7 @@ class Game{
   }
   setCamMode(mode){
     this.camera.mode=mode;
-    document.getElementById('mode').textContent='v26 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+    document.getElementById('mode').textContent='v26.3 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
   setDebugMode(enabled){
     this.debugMode=!!enabled;
@@ -1330,9 +1344,10 @@ class Game{
     a('Bank Office Door',bkDoorX,2.6,bkOffZ);
     a('Bank Vault Door',vdx,2.6,vz0+VT/2);
     a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
-    a('Bank Manager Chair',B.x+4.35,1.4,B.z+4.8);
+    a('Bank Manager Chair',10.3,1.4,26.0);
+    a('Bank Manager Desk',11.3,0.8,26.0);
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
-    a('Bank Manager Cabinet',x1-WALL_T-0.275,1.6,22.4);
+    a('Bank Manager Cabinet',x1-WALL_T-0.275,1.6,26.6);
     for(let i=0;i<this.objects.pushables.length;i++){
       const p=this.objects.pushables[i];
       const gy=this.world.sample(p.x,p.z);
