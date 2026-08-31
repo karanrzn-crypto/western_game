@@ -602,10 +602,10 @@ class WorldObjects{
     this.bankWin(x0+3.6,gy+2.4,frontZ-.15,.85,2.4,0);
     this.bankWin(x1-3.6,gy+2.4,frontZ-.15,.85,2.4,0);
     this.bankWin(x1-1.3,gy+2.4,frontZ-.15,.85,2.4,0);
-    this.bankWin(x0+WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,Math.PI/2);
-    this.bankWin(x0+WALL_T/2,gy+2.4,B.z+.25,.85,2.4,Math.PI/2);
-    this.bankWin(x1-WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,-Math.PI/2,false);
-    this.bankWin(x1-WALL_T/2,gy+2.4,B.z+.25,.85,2.4,-Math.PI/2,false);
+    this.drawSideWindow(x0+WALL_T/2,B.z-3.25,2.4,.85,2.4,-1);
+    this.drawSideWindow(x0+WALL_T/2,B.z+.25,2.4,.85,2.4,-1);
+    this.drawSideWindow(x1-WALL_T/2,B.z-3.25,2.4,.85,2.4,1);
+    this.drawSideWindow(x1-WALL_T/2,B.z+.25,2.4,.85,2.4,1);
     // interior: ceiling beams + hanging lamps
     for(const bz of[B.z-3.35,B.z-.45,B.z+3.55])this.pb(B.x,top-.1,bz,B.w-1.2,.18,.3,C.dark);
     for(const L of[[B.x,B.z-2.95],[B.x-3.2,B.z+.35],[B.x+3.3,B.z+.35]]){
@@ -671,13 +671,12 @@ class WorldObjects{
     this.pb(wx,wy,wz,.5,.05,.05,C.gold);
     this.pb(wx,wy,wz-.05,.13,.13,.1,C.gold);
   }
-  bankWin(cx,cy,cz,w,h,ry,bars=true){
+  bankWin(cx,cy,cz,w,h,ry){
     this.pb(cx,cy,cz,w,h,.06,BANK_GLASS,ry);
     this.pb(cx,cy+h/2+.055,cz,w+.22,.11,.13,C.pale,ry);
     this.pb(cx,cy-h/2-.055,cz,w+.22,.11,.15,C.pale,ry);
     this.pb(cx-w/2-.055,cy,cz,.11,h+.22,.13,C.pale,ry);
     this.pb(cx+w/2+.055,cy,cz,.11,h+.22,.13,C.pale,ry);
-    if(!bars)return;
     const bx=Math.cos(ry),bz=Math.sin(ry);
     const fwdX=-Math.sin(ry),fwdZ=-Math.cos(ry);
     const fwdOff=.07;
@@ -688,6 +687,27 @@ class WorldObjects{
     }
     const hlx=0,hlz=0;
     this.pb(cx+bx*hlx+fwdX*fwdOff,cy,cz+bz*hlz+fwdZ*fwdOff,w-.14,.055,.085,C.pale,ry);
+  }
+  drawSideWindow(wallX,winZ,localH,winW,winH,normX){
+    // Builds a window assembly in local wall coordinates, then places in world.
+    // wallX: wall center X | winZ: window center Z (absolute) | localH: height above ground
+    // winW: width along wall (Z) | winH: height (Y) | normX: +1 right wall, -1 left wall
+    const gy=this.g(wallX,winZ);
+    const cx=wallX,cy=gy+localH,cz=winZ;
+    const fT=.07,fE=.06,gD=.04;
+    const bT=.045,bD=.06,bOff=.05,bM=winW*.18;
+    // glass — sits at wall center plane
+    this.pb(cx,cy,cz,gD,winH,winW,BANK_GLASS);
+    // frame — all pieces relative to window center, at wall plane
+    this.pb(cx,cy+winH/2+fE/2,cz,fT,fT,winW+2*fE,C.pale);
+    this.pb(cx,cy-winH/2-fE/2,cz,fT,fT,winW+2*fE,C.pale);
+    this.pb(cx,cy,cz-winW/2-fE/2,fT,winH+2*fE,fT,C.pale);
+    this.pb(cx,cy,cz+winW/2+fE/2,fT,winH+2*fE,fT,C.pale);
+    // bars — offset outside the glass in wall-normal direction
+    const bx=cx+normX*bOff,barH=winH-.12,sp=(winW-2*bM)/3;
+    this.pb(bx,cy,cz-sp,bT,barH,bD,C.pale);
+    this.pb(bx,cy,cz+sp,bT,barH,bD,C.pale);
+    this.pb(bx,cy,cz,bT,bD,winW-2*bM,C.pale);
   }
   bankChair(x,z,ry){
     const g=this.g(x,z);
