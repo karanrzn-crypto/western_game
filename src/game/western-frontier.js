@@ -1,11 +1,11 @@
 // Western Frontier - Game Engine
-// Part 3: TOWN v24
+// Part 3: TOWN v25
 
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v24.
-Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish).
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v25.
+Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish) → v25 (back-right cabinet removal, side window fix, office lintel cam).
 MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 DustSystem 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
 
 //[SEC-01] DOM
@@ -329,6 +329,7 @@ class WorldObjects{
     this.boxCol(bkGapR,bkOffZ-.14,bkX1,bkOffZ+.14);               // office partition right of door
     this.cam(bkX0-.1,bkOffZ-.15,bkGapL,bkOffZ+.15,gy+3.6);  // office partition cam left
     this.cam(bkGapR,bkOffZ-.15,bkX1+.1,bkOffZ+.15,gy+3.6);  // office partition cam right
+    this.cam(bkGapL,bkOffZ-.15,bkGapR,bkOffZ+.15,gy+3.6,gy+DOOR_H); // office lintel cam (above door)
     // office door (uses existing door system)
     const od={x:bkDoorX,z:bkOffZ,w:DOOR_GAP,h:DOOR_H,side:-1,open:0,target:0,pushing:false,pushT:0,speed:DOOR_SPEED,swing:0,key:'bank-office'};
     od.col={x0:bkGapL,x1:bkGapR,z0:bkOffZ-.09,z1:bkOffZ+.09,door:true,off:false};
@@ -339,7 +340,7 @@ class WorldObjects{
     this.dot(x0+2.5,z0+2.85,.42);                            // waiting table
     this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
     this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
-    this.boxCol(vx1+.15,vz1-.7,x1-WALL_T-.3,vz1-.2);         // back-right cabinet
+    // back-right cabinet removed (was unwanted object)
     this.boxCol(vx0+VT,vz1-2.1,vx0+VT+.4,vz1-.35);           // vault shelves
     this.dot(B.x+1.3,vz1-1.3,.55);                           // strongbox
     this.dot(B.x-1.3,vz1-1.65,.45);                          // gold table
@@ -618,11 +619,10 @@ class WorldObjects{
     this.pc(x0+2.5,gy+.29,z0+2.85,.07,.58,C.dark);
     // teller stools (pushable banker chairs)
     for(let i=0;i<2;i++)this.drawBankerChair(this.pushables[i].x,gy,this.pushables[i].z,this.pushables[i].ry);
-    // wall cabinets flanking the vault at the back
+    // vault geometry
     const V=B.vault,VT=.25;
     const vx0=B.x+V.x0,vx1=B.x+V.x1,vz0=B.z+V.z0,vz1=z1-WALL_T;
     const vdx=B.x+V.doorX,vdw=V.doorW,vcy=gy+B.h/2;
-    this.pb((vx1+.15+x1-WALL_T-.3)/2,gy+.55,(vz1-.7+vz1-.2)/2,x1-WALL_T-.3-(vx1+.15),1.1,.5,C.wood2);
     // vault walls (doorway on the lobby side, drawn by the door system)
     this.pb((vx0+vdx-vdw/2)/2,vcy,vz0+VT/2,(vdx-vdw/2)-vx0,B.h,VT,C.dark);
     this.pb((vdx+vdw/2+vx1)/2,vcy,vz0+VT/2,vx1-(vdx+vdw/2),B.h,VT,C.dark);
@@ -667,46 +667,53 @@ class WorldObjects{
     this.pb(cx+bx*0+fwdX*fwdOff,cy,cz+bz*0+fwdZ*fwdOff,w-.14,.055,.085,C.pale,ry);
   }
   drawSideWindow(wallX,winZ,localH,winW,winH,normX){
-    // Local coordinate system for the wall:
-    //   wallCenter = (wallX, groundY, bankCenterZ)
-    //   horizontalAxis = (0, 0, 1)  — along the wall (Z)
-    //   normal      = (normX, 0, 0) — outward from wall surface
-    //   vertical     = (0, 1, 0)
-    // Window center in world space:
-    //   windowCenter = wallCenter + vertical*localH + horizontal*(winZ - bankCenterZ)
-    //              = (wallX, gy+localH, winZ)
-    // Every component below is positioned relative to windowCenter using these axes.
+    // Local coordinate system for the side wall:
+    //   wallNormal  = (normX, 0, 0)   — outward from wall surface
+    //   horizAxis   = (0, 0, 1)       — along the wall (Z direction)
+    //   vertAxis    = (0, 1, 0)       — upward
+    //
+    // windowCenter sits at the wall's outer face, slightly offset outward,
+    // so the glass is visible from outside (matches bankWin approach).
+    //   wallFaceX = wallX + normX * (WALL_T / 2)
+    //   wcX = wallFaceX + normX * 0.01   (1cm outside the face)
+    //   wcY = gy + localH
+    //   wcZ = winZ
+    //
+    // pb(x,y,z, sx,sy,sz, c): sx=X-size, sy=Y-size, sz=Z-size
+    // For side walls: X = normal dir, Y = vertical, Z = horizontal along wall.
     const gy=this.g(wallX,winZ);
-    const wcX=wallX, wcY=gy+localH, wcZ=winZ;
-    const nx=normX; // wall outward normal X component
-    const fT=.07, fE=.06; // frame thickness, frame extension beyond glass
-    const gD=.04;       // glass depth (in normal direction)
-    const bT=.045, bD=.06, bFwd=.04; // bar thickness, depth, forward offset from glass
-    const bM=winW*.18; // bar margin from window edges
-    // ---- GLASS ---- sits at wall center plane ----
-    // pos = windowCenter + normal*(gD/2)
-    this.pb(wcX+nx*gD/2, wcY, wcZ, gD, winH, winW, BANK_GLASS);
-    // ---- FRAME ---- all pieces at wall center plane, relative to windowCenter ----
-    // Top:    windowCenter + vertical*(+winH/2+fE/2) + horizontal*0
-    this.pb(wcX, wcY+winH/2+fE/2, wcZ, fT, fT, winW+2*fE, C.pale);
-    // Bottom: windowCenter + vertical*(-winH/2-fE/2) + horizontal*0
-    this.pb(wcX, wcY-winH/2-fE/2, wcZ, fT, fT, winW+2*fE, C.pale);
-    // Left:   windowCenter + vertical*0 + horizontal*(-winW/2-fE/2)
-    this.pb(wcX, wcY, wcZ-winW/2-fE/2, fT, winH+2*fE, fT, C.pale);
-    // Right:  windowCenter + vertical*0 + horizontal*(+winW/2+fE/2)
-    this.pb(wcX, wcY, wcZ+winW/2+fE/2, fT, winH+2*fE, fT, C.pale);
-    // ---- BARS ---- on outside of glass, offset in normal direction ----
-    // barBaseX = windowCenter.x + normal * (gD/2 + bFwd)
-    const barBaseX=wcX+nx*(gD/2+bFwd);
+    const wallFaceX=wallX+normX*(WALL_T/2);
+    const wcX=wallFaceX+normX*0.01;  // window center X — on outer face
+    const wcY=gy+localH;               // window center Y
+    const wcZ=winZ;                     // window center Z
+    const nx=normX;
+    // dimensions
+    const gD=.06;        // glass depth in X (normal) — matches bankWin
+    const fT=.07;        // frame thickness in X (normal)
+    const fE=.06;        // frame extension beyond glass in Z (horizontal)
+    const fH=.11;        // frame piece height in Y (vertical)
+    const bT=.045;       // bar thickness in X (normal)
+    const bD=.06;        // bar depth in Z (horizontal)
+    const bFwd=.07;      // bar forward offset from glass in X (normal)
+    const bM=winW*.18;   // bar margin from window edges in Z
+    // 1. GLASS — at windowCenter, depth along normal
+    this.pb(wcX, wcY, wcZ, gD, winH, winW, BANK_GLASS);
+    // 2. TOP FRAME — above glass, extends wider in Z
+    this.pb(wcX, wcY+winH/2+fH/2, wcZ, fT, fH, winW+2*fE, C.pale);
+    // 3. BOTTOM FRAME — below glass, extends wider in Z
+    this.pb(wcX, wcY-winH/2-fH/2, wcZ, fT, fH, winW+2*fE, C.pale);
+    // 4. LEFT FRAME — left of glass (negative Z), full height
+    this.pb(wcX, wcY, wcZ-winW/2-fE/2, fT, winH+2*fE, fE, C.pale);
+    // 5. RIGHT FRAME — right of glass (positive Z), full height
+    this.pb(wcX, wcY, wcZ+winW/2+fE/2, fT, winH+2*fE, fE, C.pale);
+    // 6. BARS — on outside of glass, offset further in normal direction
+    const barX=wcX+nx*(gD/2+bFwd);
     const barH=winH-.14;
     const usable=winW-2*bM;
-    const sp=usable/3; // 2 bars divide usable into 3 equal gaps
-    // Vertical bar 1: barBase + horizontal*(-sp)
-    this.pb(barBaseX, wcY, wcZ-sp, bT, barH, bD, C.pale);
-    // Vertical bar 2: barBase + horizontal*(+sp)
-    this.pb(barBaseX, wcY, wcZ+sp, bT, barH, bD, C.pale);
-    // Horizontal bar: barBase + vertical*0, spans usable width
-    this.pb(barBaseX, wcY, wcZ, bT, bD, usable, C.pale);
+    const sp=usable/3; // 2 vertical bars divide usable into 3 equal gaps
+    this.pb(barX, wcY, wcZ-sp, bT, barH, bD, C.pale);   // vertical bar left
+    this.pb(barX, wcY, wcZ+sp, bT, barH, bD, C.pale);   // vertical bar right
+    this.pb(barX, wcY, wcZ, bT, bD, usable, C.pale);    // horizontal bar
   }
   bankChair(x,z,ry){
     const g=this.g(x,z);
@@ -1079,7 +1086,7 @@ class Game{
   }
   setCamMode(mode){
     this.camera.mode=mode;
-    document.getElementById('mode').textContent='v24 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+    document.getElementById('mode').textContent='v25 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
   bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
   resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
