@@ -341,9 +341,11 @@ class WorldObjects{
     this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     // vault interior colliders (redesigned v26 — simple, open for heist)
-    this.dot(B.x+1.5,vz1-1.0,.5);                            // strongbox (heist target)
-    // manager office cabinet collider — against back wall
-    this.boxCol(bkX0+.2,z1-WALL_T-.55,bkX0+1.2,z1-WALL_T);
+    this.dot(B.x+V.x1-VT-0.7,vz1-0.6,.5);                     // strongbox (heist target)
+    this.dot(B.x+V.x1-VT-0.55,vz1-0.5,.4);                  // storage crate 1
+    this.dot(B.x+V.x1-VT-1.45,vz1-0.5,.4);                  // storage crate 2
+    // manager office cabinet collider — against back wall (x: 10.2–11.2, clear of vault wall at 9.7)
+    this.boxCol(bkX0+1.2,z1-WALL_T-.55,bkX0+2.2,z1-WALL_T);
   }
 
   g(x,z){return this.terrain.sample(x,z)}
@@ -630,26 +632,26 @@ class WorldObjects{
     this.pb(vx0+VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
     this.pb(vx1-VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
     // vault interior — believable Western bank vault
-    // strongbox — main heist target (back-right)
-    const sbx=B.x+1.5,sbz=vz1-1.0;
+    // strongbox — main heist target (back-right corner)
+    const sbx=vx1-VT-0.7,sbz=vz1-0.6;
     this.pb(sbx,gy+.34,sbz,.95,.68,.65,BANK_STEEL);
     this.pb(sbx,gy+.73,sbz,1.0,.1,.7,BANK_STEEL);
-    // safe deposit boxes on back wall (3 rows x 4 cols)
-    const dpx0=vx0+VT+0.55;
+    // safe deposit boxes on back wall (3 rows x 4 cols) — flush against wall
+    const dpx0=vx0+VT+0.5;
     for(let row=0;row<3;row++){for(let col=0;col<4;col++){
       const bx=dpx0+col*0.55,by=gy+0.55+row*0.48;
-      this.pb(bx,by,vz1-0.32, 0.48,0.34,0.08, BANK_STEEL);
-      this.pb(bx,by,vz1-0.38, 0.03,0.08,0.03, C.dark);
+      this.pb(bx,by,vz1-0.06, 0.48,0.34,0.10, BANK_STEEL);
+      this.pb(bx,by,vz1-0.12, 0.03,0.08,0.03, C.dark);
     }}
-    // gold/metal storage crates (right side)
-    this.pb(vx1-VT-0.6,gy+0.33,vz1-1.35, 0.75,0.65,0.6, C.dark);
-    this.pb(vx1-VT-0.6,gy+0.66,vz1-1.35, 0.69,0.04,0.54, BANK_STEEL);
-    this.pb(vx1-VT-1.45,gy+0.33,vz1-0.85, 0.75,0.65,0.6, C.dark);
-    this.pb(vx1-VT-1.45,gy+0.66,vz1-0.85, 0.69,0.04,0.54, BANK_STEEL);
-    // gold/money stacks (on floor, left-center)
-    for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.58, 0.18,0.12,0.28, C.gold)}
+    // gold/metal storage crates (right side, against back wall)
+    this.pb(vx1-VT-0.55,gy+0.33,vz1-0.5, 0.75,0.65,0.6, C.dark);
+    this.pb(vx1-VT-0.55,gy+0.66,vz1-0.5, 0.69,0.04,0.54, BANK_STEEL);
+    this.pb(vx1-VT-1.45,gy+0.33,vz1-0.5, 0.75,0.65,0.6, C.dark);
+    this.pb(vx1-VT-1.45,gy+0.66,vz1-0.5, 0.69,0.04,0.54, BANK_STEEL);
+    // gold/money stacks (on floor, left of center)
+    for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.5, 0.18,0.12,0.28, C.gold)}
     // wall shelf (back wall, right half — keeps some open floor)
-    const shX=(vx1-VT-.1+B.x+V.x1/2)/2,shZ=vz1-.15,shW=vx1-VT-.1-(B.x+V.x1/2);
+    const shX=(vx1-VT-.1+B.x+V.x1/2)/2,shZ=vz1-.06,shW=vx1-VT-.1-(B.x+V.x1/2);
     this.pb(shX,gy+1.4,shZ,shW,.08,.35,C.dark);
     this.pb(shX,gy+1.75,shZ,shW,.5,.04,C.dark);
     // interior lamp (centered, hanging from ceiling)
@@ -659,7 +661,8 @@ class WorldObjects{
     this.pb(B.x,top-0.77,lampZ, 0.18,0.05,0.18, [1.0,0.85,0.5]);
     // manager office — proper cabinet against back wall (for future Key placement)
     // back wall inner face at z1-WALL_T=27.97; cabinet pushed against it
-    const mcX=offX0+.7, mcZ=z1-WALL_T-.275; // center of 1.0w x 0.55d cabinet
+    // positioned at offX0+1.2..2.2 to clear vault east wall (vx1=9.7)
+    const mcX=offX0+1.7, mcZ=z1-WALL_T-.275; // center of 1.0w x 0.55d cabinet
     this.pb(mcX,gy+.9,mcZ, 1.0,1.8,0.55, C.dark);            // cabinet body
     this.pb(mcX,gy+1.83,mcZ, 1.04,0.06,0.59, C.dark);          // top cap
     this.pb(mcX,gy+.9,mcZ-.275, 0.44,1.7,0.035, C.wood2);       // left door
@@ -1340,9 +1343,9 @@ class Game{
     a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
     a('Bank Manager Chair',B.x+4.35,1.4,B.z+4.8);
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
-    a('Bank Strongbox',B.x+1.5,1.0,vz1-1.0);
-    a('Bank Vault Shelf',(B.x+V.x1/2+vx1-VT)/2,1.8,vz1-.15);
-    a('Bank Manager Cabinet',bkX0+.7,1.6,z1-WALL_T-.275);
+    a('Bank Strongbox',B.x+V.x1-VT-0.7,1.0,vz1-0.6);
+    a('Bank Vault Shelf',(B.x+V.x1/2+(B.x+V.x1)-VT)/2,1.8,vz1-.15);
+    a('Bank Manager Cabinet',bkX0+1.7,1.6,z1-WALL_T-.275);
     for(let i=0;i<this.objects.pushables.length;i++){
       const p=this.objects.pushables[i];
       const gy=this.world.sample(p.x,p.z);
