@@ -639,7 +639,7 @@ class WorldObjects{
     this.pb(shX,gy+1.4,shZ,shW,.08,.35,C.dark);
     this.pb(shX,gy+1.75,shZ,shW,.5,.04,C.dark);
     // manager office — cabinet on left side (for future Key placement)
-    const cabX=(bkX0+.3+bkX0+1.1)/2,cabZ=(bkOffZ+1.5+bkOffZ+2.3)/2;
+    const cabX=(offX0+.3+offX0+1.1)/2,cabZ=(offZ+1.5+offZ+2.3)/2;
     this.pb(cabX,gy+.9,cabZ,.8,1.8,.45,C.wood2);       // cabinet body
     this.pb(cabX,gy+1.82,cabZ,.84,.06,.49,C.dark);       // cabinet top
     this.pb(cabX,gy+.85,cabZ,.04,1.7,.41,C.dark);        // cabinet door (left face)
