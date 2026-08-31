@@ -22,7 +22,7 @@ MAP: 01 DOM(+error listener) 02 math 03 terrain 04 input 05 meshes 06 Terrain
 CRITICAL: box tint (r,.82r,.58r) × uColor — whites need boost.*/
 
 //[SEC-01] DOM
-const canvas=document.getElementById('game'),statusLine=document.getElementById('statusLine'),notice=document.getElementById('notice'),errorEl=document.getElementById('error'),errorText=document.getElementById('errorText'),healthBar=document.getElementById('healthBar'),staminaBar=document.getElementById('staminaBar'),stateLine=document.getElementById('stateLine'),deathFade=document.getElementById('deathFade'),doorHint=document.getElementById('doorHint');
+const canvas=document.getElementById('game'),statusLine=document.getElementById('statusLine'),notice=document.getElementById('notice'),errorEl=document.getElementById('error'),errorText=document.getElementById('errorText'),healthBar=document.getElementById('healthBar'),staminaBar=document.getElementById('staminaBar'),stateLine=document.getElementById('stateLine'),deathFade=document.getElementById('deathFade'),doorHint=document.getElementById('doorHint'),healthVal=document.getElementById('healthVal'),staminaVal=document.getElementById('staminaVal');
 function fail(msg){errorEl.style.display='grid';errorText.textContent=String(msg)}
 /* Error listener FIRST: a top-level ReferenceError anywhere below now shows the
    overlay instead of freezing the page on "Starting world…". */
@@ -1204,9 +1204,12 @@ class Game{
 
   hud(){
     const hr=Math.floor(this.day.t),min=Math.floor((this.day.t-hr)*60);
-    statusLine.textContent=`Health ${Math.ceil(this.player.health)}  •  ${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}  •  ${this.camera.mode==='third'?'Third person':'First person'}`;
+    const hp=Math.ceil(this.player.health),st=Math.ceil(this.player.stamina);
+    statusLine.textContent=`${hp} HP  •  ${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}  •  ${this.camera.mode==='third'?'Third person':'First person'}`;
     healthBar.style.transform=`scaleX(${this.player.health/this.player.maxHealth})`;
     staminaBar.style.transform=`scaleX(${this.player.stamina/this.player.maxStamina})`;
+    if(healthVal)healthVal.textContent=hp;
+    if(staminaVal)staminaVal.textContent=st;
     let s=this.player.dead?'Death / Respawning…':this.player.state;
     let anyOpen=false;
     for(const d of this.objects.doors)if(d.open>.5){anyOpen=true;break}
@@ -1233,7 +1236,7 @@ try{
   const vb=document.getElementById('verBanner');
   vb.classList.add('show');
   setTimeout(()=>vb.classList.remove('show'),6000);
-  flashNotice('نسخه ۲۱ — بانک (BANK) اضافه شد');
+  flashNotice('نسخه ۲۲ — ۶ باگ اصلاح شد');
 }catch(err){
   fail((err&&err.stack)||String(err));
 }
