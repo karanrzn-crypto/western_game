@@ -603,8 +603,8 @@ class WorldObjects{
     this.bankWin(x1-1.3,gy+2.4,frontZ-.15,.85,2.4,0);
     this.bankWin(x0+WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,Math.PI/2);
     this.bankWin(x0+WALL_T/2,gy+2.4,B.z+.25,.85,2.4,Math.PI/2);
-    this.bankWin(x1-WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,-Math.PI/2);
-    this.bankWin(x1-WALL_T/2,gy+2.4,B.z+.25,.85,2.4,-Math.PI/2);
+    this.bankWin(x1-WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,-Math.PI/2,false);
+    this.bankWin(x1-WALL_T/2,gy+2.4,B.z+.25,.85,2.4,-Math.PI/2,false);
     // interior: ceiling beams + hanging lamps
     for(const bz of[B.z-3.35,B.z-.45,B.z+3.55])this.pb(B.x,top-.1,bz,B.w-1.2,.18,.3,C.dark);
     for(const L of[[B.x,B.z-2.95],[B.x-3.2,B.z+.35],[B.x+3.3,B.z+.35]]){
@@ -670,12 +670,13 @@ class WorldObjects{
     this.pb(wx,wy,wz,.5,.05,.05,C.gold);
     this.pb(wx,wy,wz-.05,.13,.13,.1,C.gold);
   }
-  bankWin(cx,cy,cz,w,h,ry){
+  bankWin(cx,cy,cz,w,h,ry,bars=true){
     this.pb(cx,cy,cz,w,h,.06,BANK_GLASS,ry);
     this.pb(cx,cy+h/2+.055,cz,w+.22,.11,.13,C.pale,ry);
     this.pb(cx,cy-h/2-.055,cz,w+.22,.11,.15,C.pale,ry);
     this.pb(cx-w/2-.055,cy,cz,.11,h+.22,.13,C.pale,ry);
     this.pb(cx+w/2+.055,cy,cz,.11,h+.22,.13,C.pale,ry);
+    if(!bars)return;
     const bx=Math.cos(ry),bz=Math.sin(ry);
     const fwdX=-Math.sin(ry),fwdZ=-Math.cos(ry);
     const fwdOff=.07;
