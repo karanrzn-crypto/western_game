@@ -248,7 +248,7 @@ class WorldObjects{
         this.cam(x1-WALL_T,sA,x1,sB,b.h);
         this.cam(x0,backZ-.15,x1,backZ+.15,b.h);
         if(TOWN[k].key&&this.gableRh[k])this.camGable(b,this.gableRh[k],b.h+.03);
-        else{this.cam(b.x-b.w/2-.1,b.z-b.d/2-.1,b.x+b.w/2+.1,b.z+b.d/2+.1,b.h+.2)}
+        else{const sgy=this.g(b.x,b.z),sTop=sgy+b.h;this.cam(b.x-b.w/2-.1,b.z-b.d/2-.1,b.x+b.w/2+.1,b.z+b.d/2+.1,sTop+.16,sTop-.02)}
         const d={x:b.x,z:frontZ,w:DOOR_GAP,h:DOOR_H,side:b.z<0?1:-1,open:0,target:0,pushing:false,pushT:0,speed:DOOR_SPEED,swing:0,key:b.key};
         d.col={x0:gapL,x1:gapR,z0:frontZ-.09,z1:frontZ+.09,door:true,off:false};
         d.inside={x0:x0+WALL_T,z0:z0+WALL_T/2,x1:x1-WALL_T,z1:z1-WALL_T/2};
@@ -336,14 +336,15 @@ class WorldObjects{
     this.boxCol(x0+1.05,cZ-.33,x1-2.45,cZ+.33);
     this.cam(x0+.95,cZ-.42,x1-2.35,cZ+.42,gy+2.9);
     this.boxCol(B.x+3.2,B.z+3.2,B.x+5.5,B.z+4.8);               // manager desk
-    this.boxCol(B.x+3.2,B.z+3.2,B.x+3.5,B.z+4.8);               // office partition wall
+    const bkOffZ=B.z+2.0;
+    this.boxCol(B.x+2.0,bkOffZ-.14,B.x+5.5,bkOffZ+.14);               // back-corner office partition
     this.dot(B.x+4.35,B.z+4.0,.3);                            // manager chair
-    this.cam(B.x+3.2,B.z+3.1,B.x+3.6,B.z+4.9,gy+3.6);
+    this.cam(B.x+2.0-.1,bkOffZ-.15,B.x+5.6,bkOffZ+.15,gy+3.6);  // office partition cam
     this.dot(x0+1.85,z0+2.25,.28);this.dot(x0+3.15,z0+2.25,.28);
     this.dot(x0+1.85,z0+3.45,.28);this.dot(x0+3.15,z0+3.45,.28);   // waiting chairs
     this.dot(x0+2.5,z0+2.85,.42);                            // waiting table
-    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,r:.2,building:'bank'});
-    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,r:.2,building:'bank'});
+    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.22,building:'bank'});
+    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.22,building:'bank'});
     this.boxCol(x0+.45,vz1-.7,vx0-.15,vz1-.2);               // back-left cabinet
     this.boxCol(vx1+.15,vz1-.7,x1-WALL_T-.3,vz1-.2);         // back-right cabinet
     this.boxCol(vx0+VT,vz1-2.1,vx0+VT+.4,vz1-.35);           // vault shelves
@@ -390,20 +391,38 @@ class WorldObjects{
     return out;
   }
   updatePushables(dt,player){
+    const PUSH_FORCE=2.5,MAX_SPEED=.8,FRICTION=.85;
     for(const p of this.pushables){
       const dx=player.pos.x-p.x,dz=player.pos.z-p.z;
       const d=Math.hypot(dx,dz);
       const minD=player.radius+p.r;
       if(d<minD&&d>1e-4){
-        const push=(minD-d)*.3;
-        p.x+=dx/d*push;
-        p.z+=dz/d*push;
+        const inv=1/d;
+        p.vx+=dx*inv*PUSH_FORCE*dt;
+        p.vz+=dz*inv*PUSH_FORCE*dt;
+      }
+      p.vx*=FRICTION;p.vz*=FRICTION;
+      const spd=Math.hypot(p.vx,p.vz);
+      if(spd>MAX_SPEED){const s=MAX_SPEED/spd;p.vx*=s;p.vz*=s}
+      if(spd>.001){
+        const nx=p.x+p.vx*dt,nz=p.z+p.vz*dt;
+        let blocked=false;
+        for(const c of this.cols){
+          if(c.x0!==undefined){
+            const cx=clamp(nx,c.x0,c.x1),cz=clamp(nz,c.z0,c.z1);
+            if(Math.hypot(nx-cx,nz-cz)<p.r){blocked=true;break}
+          }else{
+            if(Math.hypot(nx-c.x,nz-c.z)<p.r+c.r){blocked=true;break}
+          }
+        }
+        if(!blocked){p.x=nx;p.z=nz}
+        else{p.vx*=-.15;p.vz*=-.15}
       }
     }
   }
   resetPushables(buildingKey){
     for(const p of this.pushables){
-      if(p.building===buildingKey){p.x=p.ox;p.z=p.oz}
+      if(p.building===buildingKey){p.x=p.ox;p.z=p.oz;p.ry=p.ory;p.vx=0;p.vz=0}
     }
   }
   playerInsideBuilding(player){
@@ -591,8 +610,9 @@ class WorldObjects{
     for(let bx=x0+1.35;bx<=x1-2.75;bx+=.8)this.pb(bx,gy+2.08,cZ+.22,.05,1.35,.05,BANK_STEEL);
     this.pb(cw,gy+2.2,cZ+.22,10.4,1.15,.04,BANK_GLASS);
     this.pb(cw,gy+2.82,cZ+.22,10.4,.1,.09,BANK_STEEL);
-    // manager office partition wall
-    this.pb(B.x+3.35,gy+1.8,B.z+4.0,.28,3.6,B.d-3.0,C.stone);
+    // manager back-corner office partition (short wall from right wall, does NOT cross walkway)
+    const offZ=B.z+2.0,offX0=B.x+2.0,offX1=x1-WALL_T;
+    this.pb((offX0+offX1)/2,gy+1.8,offZ,offX1-offX0,3.6,WALL_T,C.stone);
     // manager desk (moved to back-right office)
     this.pb(B.x+4.35,gy+.39,B.z+4.0,1.7,.78,.9,C.dark);
     this.pb(B.x+4.35,gy+.84,B.z+4.0,1.85,.09,1.0,C.wood2);
@@ -605,8 +625,7 @@ class WorldObjects{
     this.pc(x0+2.5,gy+.57,z0+2.85,.42,.06,C.wood2);
     this.pc(x0+2.5,gy+.29,z0+2.85,.07,.58,C.dark);
     // teller stools (pushable banker chairs)
-    this.drawBankerChair(this.pushables[0].x,gy,this.pushables[0].z,0);
-    this.drawBankerChair(this.pushables[1].x,gy,this.pushables[1].z,0);
+    for(let i=0;i<2;i++)this.drawBankerChair(this.pushables[i].x,gy,this.pushables[i].z,this.pushables[i].ry);
     // wall cabinets flanking the vault at the back
     const V=B.vault,VT=.25;
     const vx0=B.x+V.x0,vx1=B.x+V.x1,vz0=B.z+V.z0,vz1=z1-WALL_T;
@@ -647,9 +666,15 @@ class WorldObjects{
     this.pb(cx-w/2-.055,cy,cz,.11,h+.22,.13,C.pale,ry);
     this.pb(cx+w/2+.055,cy,cz,.11,h+.22,.13,C.pale,ry);
     const bx=Math.cos(ry),bz=Math.sin(ry);
-    this.pb(cx-bx*w/4,cy,cz-bz*w/4,.06,h-.1,.09,C.pale,ry);
-    this.pb(cx+bx*w/4,cy,cz+bz*w/4,.06,h-.1,.09,C.pale,ry);
-    this.pb(cx,cy,cz,w-.1,.06,.09,C.pale,ry);
+    const fwdX=-Math.sin(ry),fwdZ=-Math.cos(ry);
+    const fwdOff=.07;
+    const margin=w*.18,barCount=2,spacing=(w-2*margin)/(barCount+1);
+    for(let i=1;i<=barCount;i++){
+      const lx=-w/2+margin+i*spacing;
+      this.pb(cx+bx*lx+fwdX*fwdOff,cy,cz+bz*lx+fwdZ*fwdOff,.055,h-.12,.085,C.pale,ry);
+    }
+    const hlx=0,hlz=0;
+    this.pb(cx+bx*hlx+fwdX*fwdOff,cy,cz+bz*hlz+fwdZ*fwdOff,w-.14,.055,.085,C.pale,ry);
   }
   bankChair(x,z,ry){
     const g=this.g(x,z);
@@ -660,19 +685,28 @@ class WorldObjects{
     p=P(.21,.02);this.pb(p[0],g+.27,p[1],.06,.5,.42,C.dark,ry);
   }
   drawBankerChair(x,gy,z,ry){
-    const hw=.22,hd=.11,seatH=.50,backH=.90,legH=.48,legR=.025;
+    const seatW=.24,seatD=.22,seatH=.48,seatT=.045;
+    const backW=.20,backH=.52,backT=.035;
+    const legW=.04,legD=.04,legH=seatH;
     const wood=C.wood2,dk=C.dark;
-    this.pb(x,gy+seatH,z,hw,.04,hd,wood,ry);
-    this.pb(x,gy+(seatH+backH)/2,z-hd/2+.03,hw-.04,backH-seatH,.035,dk,ry);
-    const lx=hw-.05,lz=hd-.05;
-    this.pb(x-lx,gy+legH/2,z-lz,legR,legH,legR,dk);
-    this.pb(x+lx,gy+legH/2,z-lz,legR,legH,legR,dk);
-    this.pb(x-lx,gy+legH/2,z+lz,legR,legH,legR,dk);
-    this.pb(x+lx,gy+legH/2,z+lz,legR,legH,legR,dk);
-    this.pb(x,gy+.12,z,lx*2-.04,.03,legR,dk);
-    this.pb(x,gy+.12,z,legR,.03,lz*2-.04,dk);
-    this.pb(x,gy+legH-.06,z,lx*2-.04,.03,legR,dk);
-    this.pb(x,gy+legH-.06,z,legR,.03,lz*2-.04,dk);
+    const P=(lx,ly,lz)=>[x+lx*Math.cos(ry)+lz*Math.sin(ry), gy+ly, z-lx*Math.sin(ry)+lz*Math.cos(ry)];
+    let p;
+    // seat
+    p=P(0,seatH,0);this.pb(p[0],p[1],p[2],seatW,seatT,seatD,wood,ry);
+    // backrest
+    p=P(0,seatH+backH/2,-seatD/2+.02);this.pb(p[0],p[1],p[2],backW,backH,backT,dk,ry);
+    // two vertical supports connecting seat to backrest
+    p=P(-backW/2+.03,seatH+backH*.35,-seatD/2+.02);this.pb(p[0],p[1],p[2],.03,backH*.65,.03,wood,ry);
+    p=P(backW/2-.03,seatH+backH*.35,-seatD/2+.02);this.pb(p[0],p[1],p[2],.03,backH*.65,.03,wood,ry);
+    // four legs
+    const lx=seatW/2-.04,lz=seatD/2-.04;
+    p=P(-lx,legH/2,-lz);this.pb(p[0],p[1],p[2],legW,legH,legD,dk);
+    p=P(lx,legH/2,-lz);this.pb(p[0],p[1],p[2],legW,legH,legD,dk);
+    p=P(-lx,legH/2,lz);this.pb(p[0],p[1],p[2],legW,legH,legD,dk);
+    p=P(lx,legH/2,lz);this.pb(p[0],p[1],p[2],legW,legH,legD,dk);
+    // cross braces (bottom)
+    p=P(0,legH*.3,0);this.pb(p[0],p[1],p[2],lx*2,.025,legW,dk,ry);
+    p=P(0,legH*.3,0);this.pb(p[0],p[1],p[2],legW,.025,lz*2,dk,ry);
   }
   draw(gl,prog,loc){
     this._gl=gl;this._loc=loc;
