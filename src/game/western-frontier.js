@@ -342,8 +342,8 @@ class WorldObjects{
     this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     // vault interior colliders (redesigned v26 — simple, open for heist)
     this.dot(B.x+1.5,vz1-1.0,.5);                            // strongbox (heist target)
-    // manager office cabinet (left side, for future Key placement)
-    this.boxCol(bkX0+.3,bkOffZ+1.5,bkX0+1.1,bkOffZ+2.3);
+    // manager office cabinet collider — against back wall
+    this.boxCol(bkX0+.2,z1-WALL_T-.55,bkX0+1.2,z1-WALL_T);
   }
 
   g(x,z){return this.terrain.sample(x,z)}
@@ -629,21 +629,45 @@ class WorldObjects{
     this.pb(vdx,gy+(DOOR_H+B.h)/2,vz0+VT/2,vdw+.06,B.h-DOOR_H,VT,C.dark);
     this.pb(vx0+VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
     this.pb(vx1-VT/2,vcy,(vz0+VT+vz1)/2,VT,B.h,vz1-(vz0+VT),C.dark);
-    // vault interior (v26 — simple, clean, open for heist mechanics)
-    // strongbox — main heist target, positioned at back-right
+    // vault interior — believable Western bank vault
+    // strongbox — main heist target (back-right)
     const sbx=B.x+1.5,sbz=vz1-1.0;
     this.pb(sbx,gy+.34,sbz,.95,.68,.65,BANK_STEEL);
     this.pb(sbx,gy+.73,sbz,1.0,.1,.7,BANK_STEEL);
-    // simple wall shelf along back wall (right half only)
+    // safe deposit boxes on back wall (3 rows x 4 cols)
+    const dpx0=vx0+VT+0.55;
+    for(let row=0;row<3;row++){for(let col=0;col<4;col++){
+      const bx=dpx0+col*0.55,by=gy+0.55+row*0.48;
+      this.pb(bx,by,vz1-0.32, 0.48,0.34,0.08, BANK_STEEL);
+      this.pb(bx,by,vz1-0.38, 0.03,0.08,0.03, C.dark);
+    }}
+    // gold/metal storage crates (right side)
+    this.pb(vx1-VT-0.6,gy+0.33,vz1-1.35, 0.75,0.65,0.6, C.dark);
+    this.pb(vx1-VT-0.6,gy+0.66,vz1-1.35, 0.69,0.04,0.54, BANK_STEEL);
+    this.pb(vx1-VT-1.45,gy+0.33,vz1-0.85, 0.75,0.65,0.6, C.dark);
+    this.pb(vx1-VT-1.45,gy+0.66,vz1-0.85, 0.69,0.04,0.54, BANK_STEEL);
+    // gold/money stacks (on floor, left-center)
+    for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.58, 0.18,0.12,0.28, C.gold)}
+    // wall shelf (back wall, right half — keeps some open floor)
     const shX=(vx1-VT-.1+B.x+V.x1/2)/2,shZ=vz1-.15,shW=vx1-VT-.1-(B.x+V.x1/2);
     this.pb(shX,gy+1.4,shZ,shW,.08,.35,C.dark);
     this.pb(shX,gy+1.75,shZ,shW,.5,.04,C.dark);
-    // manager office — cabinet on left side (for future Key placement)
-    const cabX=(offX0+.3+offX0+1.1)/2,cabZ=(offZ+1.5+offZ+2.3)/2;
-    this.pb(cabX,gy+.9,cabZ,.8,1.8,.45,C.wood2);       // cabinet body
-    this.pb(cabX,gy+1.82,cabZ,.84,.06,.49,C.dark);       // cabinet top
-    this.pb(cabX,gy+.85,cabZ,.04,1.7,.41,C.dark);        // cabinet door (left face)
-    this.pb(cabX,gy+1.15,cabZ-.01,.06,.18,.06,C.gold);    // small gold handle
+    // interior lamp (centered, hanging from ceiling)
+    const lampZ=(vz0+VT+vz1)/2;
+    this.pb(B.x,top-0.35,lampZ, 0.04,0.45,0.04, C.dark);
+    this.pb(B.x,top-0.65,lampZ, 0.32,0.18,0.32, BANK_STEEL);
+    this.pb(B.x,top-0.77,lampZ, 0.18,0.05,0.18, [1.0,0.85,0.5]);
+    // manager office — proper cabinet against back wall (for future Key placement)
+    // back wall inner face at z1-WALL_T=27.97; cabinet pushed against it
+    const mcX=offX0+.7, mcZ=z1-WALL_T-.275; // center of 1.0w x 0.55d cabinet
+    this.pb(mcX,gy+.9,mcZ, 1.0,1.8,0.55, C.dark);            // cabinet body
+    this.pb(mcX,gy+1.83,mcZ, 1.04,0.06,0.59, C.dark);          // top cap
+    this.pb(mcX,gy+.9,mcZ-.275, 0.44,1.7,0.035, C.wood2);       // left door
+    this.pb(mcX,gy+.9,mcZ+.275, 0.44,1.7,0.035, C.wood2);       // right door (back face)
+    this.pb(mcX,gy+.9,mcZ-.295, 0.46,1.72,0.015, C.dark);       // door frame overlay
+    for(let si=0;si<3;si++){const sy=gy+.38+si*.48;this.pb(mcX,sy,mcZ,0.92,0.04,0.50,C.dark)} // 3 shelves
+    this.pb(mcX-.06,gy+.9,mcZ-.31, 0.03,0.14,0.03, C.gold);    // left handle
+    this.pb(mcX+.06,gy+.9,mcZ-.31, 0.03,0.14,0.03, C.gold);    // right handle
     // brass vault wheel, wall-mounted right of the vault door
     const wx=vdx+1.75,wy=gy+1.35,wz=vz0-.08;
     mat4YPR(this.tmpModel,new V3(wx,wy,wz),new V3(.27,.035,.27),0,Math.PI/2,0);
@@ -1019,8 +1043,8 @@ class DayCycle{
 //[SEC-12] Game
 class Game{
   constructor(){
-    this.debugAxes=false;
-    this._debugOverlay=document.getElementById('debugOverlay');
+    this.debugMode=false;this.debugAxes=false;
+    this.debugOverlay=document.getElementById('debugOverlay')||null;
     this._debugLabelEls=[];
     this._lastDebugCount=-1;
     statusLine.textContent='Creating WebGL…';
@@ -1059,7 +1083,14 @@ class Game{
     this.camera.mode=mode;
     document.getElementById('mode').textContent='v26 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
-  bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
+  setDebugMode(enabled){
+    this.debugMode=!!enabled;
+    this.debugAxes=!!enabled;
+    if(this.debugOverlay){this.debugOverlay.style.display=this.debugMode?'block':'none'}
+    if(!this.debugMode){this._hideDebugLabels?.()}
+  }
+  _hideDebugLabels(){if(this._debugLabelEls)for(const el of this._debugLabelEls)el.style.display='none'}
+  bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){e.preventDefault();this.setDebugMode(!this.debugMode);flashNotice(this.debugMode?'Debug ON':'Debug OFF')}})}
   resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
 
   update(dt){
@@ -1114,7 +1145,7 @@ class Game{
     this.objects.draw(gl,this.meshLoc);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
-    if(this.debugAxes){this.drawDebugAxes(gl);this._renderDebugLabels();if(this._debugOverlay)this._debugOverlay.style.display='block'}else if(this._debugOverlay){this._debugOverlay.style.display='none'}
+    if(this.debugMode){this.drawDebugAxes?.(gl);this._renderDebugLabels?.();if(this.debugOverlay)this.debugOverlay.style.display='block'}else if(this.debugOverlay){this.debugOverlay.style.display='none'}
   }
   part(gl,pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box'){
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,pos,scale,ry,rx,rz));
@@ -1311,7 +1342,7 @@ class Game{
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
     a('Bank Strongbox',B.x+1.5,1.0,vz1-1.0);
     a('Bank Vault Shelf',(B.x+V.x1/2+vx1-VT)/2,1.8,vz1-.15);
-    a('Bank Manager Cabinet',(bkX0+.3+bkX0+1.1)/2,1.6,(bkOffZ+1.5+bkOffZ+2.3)/2);
+    a('Bank Manager Cabinet',bkX0+.7,1.6,z1-WALL_T-.275);
     for(let i=0;i<this.objects.pushables.length;i++){
       const p=this.objects.pushables[i];
       const gy=this.world.sample(p.x,p.z);
@@ -1341,7 +1372,7 @@ class Game{
     return L;
   }
   _renderDebugLabels(){
-    const ov=this._debugOverlay;if(!ov)return;
+    const ov=this.debugOverlay;if(!ov)return;
     const labels=this._getDebugLabels();
     if(labels.length!==this._lastDebugCount){
       while(this._debugLabelEls.length<labels.length){const el=document.createElement('div');el.className='dbg-label';ov.appendChild(el);this._debugLabelEls.push(el)}
