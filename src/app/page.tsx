@@ -6,6 +6,7 @@ export default function WesternFrontierPage() {
   const initialized = useRef(false);
   const fpsRef = useRef({ frames: 0, last: 0, value: 0 });
   const fpsDisplayRef = useRef<HTMLSpanElement>(null);
+  const compassRef = useRef<HTMLDivElement>(null);
 
   const updateFps = useCallback(() => {
     const f = fpsRef.current;
@@ -15,8 +16,20 @@ export default function WesternFrontierPage() {
       f.value = Math.round((f.frames * 1000) / (now - f.last));
       f.frames = 0;
       f.last = now;
-      if (fpsDisplayRef.current) fpsDisplayRef.current.textContent = f.value.toString();
+      const el = fpsDisplayRef.current;
+      if (el) {
+        el.textContent = f.value.toString();
+        el.className = f.value < 20 ? "bad" : f.value < 35 ? "warn" : "";
+      }
     }
+  }, []);
+
+  const updateCompass = useCallback(() => {
+    const g = (window as any).__WESTERN_FRONTIER__?.game;
+    const el = compassRef.current;
+    if (!g || !el) return;
+    const yaw = g.camera.yaw;
+    el.style.transform = `translate(-50%, -50%) rotate(${(-yaw * 180) / Math.PI}deg)`;
   }, []);
 
   useEffect(() => {
@@ -30,91 +43,200 @@ export default function WesternFrontierPage() {
     let raf: number;
     const hudLoop = () => {
       updateFps();
+      updateCompass();
       raf = requestAnimationFrame(hudLoop);
     };
     raf = requestAnimationFrame(hudLoop);
     return () => cancelAnimationFrame(raf);
-  }, [updateFps]);
+  }, [updateFps, updateCompass]);
 
   return (
     <>
       <style
         dangerouslySetInnerHTML={{
           __html: `
-:root{--glass:rgba(15,17,18,.6);--line:rgba(255,255,255,.15);--ink:#f3ead7;--muted:#c9bfae;--gold:#e4b66d;--red:#c0392b;--green:#27ae60}
+:root{
+  --glass:rgba(12,14,16,.65);
+  --glass-strong:rgba(12,14,16,.78);
+  --line:rgba(255,255,255,.13);
+  --line-gold:rgba(228,182,109,.3);
+  --ink:#f3ead7;
+  --muted:#9a9282;
+  --gold:#e4b66d;
+  --gold-dim:rgba(228,182,109,.5);
+  --red:#c0392b;
+  --green:#27ae60;
+  --amber:#d4930a;
+}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 #game{position:fixed;inset:0;width:100%;height:100%;display:block;background:#0b1015;cursor:crosshair}
-#hud{position:fixed;inset:0;pointer-events:none}
-.card{background:var(--glass);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 35px rgba(0,0,0,.22);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
-#status{position:absolute;top:15px;left:15px;min-width:285px;padding:11px 13px}
-#title{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--gold);margin-bottom:5px}
-#statusLine{font-size:12px;line-height:1.5;color:var(--ink)}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:3}
+
+/* ---------- VIGNETTE ---------- */
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.35) 78%,rgba(0,0,0,.7) 100%)}
+
+/* ---------- CARD SYSTEM ---------- */
+.card{background:var(--glass);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+/* ---------- TOP LEFT: STATUS ---------- */
+#status{position:absolute;top:15px;left:15px;min-width:290px;padding:11px 14px}
+#title{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:5px;text-shadow:0 0 12px rgba(228,182,109,.15)}
+#statusLine{font-size:11.5px;line-height:1.5;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* ---------- TOP RIGHT: FPS ---------- */
 #topRight{position:absolute;top:15px;right:15px;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-#fpsBox{padding:6px 10px;font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);display:flex;align-items:center;gap:6px}
+#fpsBox{padding:6px 10px;font-size:10.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);display:flex;align-items:center;gap:6px}
 #fpsVal{color:var(--green);font-weight:700;min-width:22px;text-align:right}
-#help{position:absolute;left:15px;bottom:15px;padding:9px 12px;font-size:12px;line-height:1.6;color:var(--muted)}
+#fpsVal.warn{color:var(--amber)}
+#fpsVal.bad{color:var(--red)}
+
+/* ---------- COMPASS (top center) ---------- */
+#compassWrap{position:absolute;top:14px;left:50%;pointer-events:none}
+#compassRing{position:relative;width:64px;height:64px}
+#compassRing::before{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--line);background:rgba(0,0,0,.35);box-shadow:0 2px 12px rgba(0,0,0,.3)}
+#compassNeedle{position:absolute;left:50%;top:50%;width:56px;height:56px;transform:translate(-50%,-50%);transition:transform .12s ease-out}
+#compassNeedle .dir{position:absolute;left:50%;font-size:10px;font-weight:800;letter-spacing:.04em;transform:translateX(-50%);white-space:nowrap}
+#compassNeedle .dir.n{top:3px;color:var(--red);text-shadow:0 0 6px rgba(192,57,43,.4)}
+#compassNeedle .dir.s{bottom:3px;color:var(--muted)}
+#compassNeedle .dir.e{right:1px;top:50%;transform:translate(-50%,-50%);color:var(--muted)}
+#compassNeedle .dir.w{left:1px;top:50%;transform:translate(-50%,-50%);color:var(--muted)}
+#compassCenter{position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(228,182,109,.4);z-index:1}
+#compassArrow{position:absolute;left:50%;top:6px;width:0;height:0;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:8px solid var(--red);opacity:.7;z-index:1}
+
+/* ---------- BOTTOM LEFT: HELP ---------- */
+#help{position:absolute;left:15px;bottom:15px;padding:9px 12px;font-size:11px;line-height:1.65;color:var(--muted)}
 #help b{color:var(--ink)}
-#meters{position:absolute;left:15px;bottom:88px;width:265px;padding:10px 12px}
-.meter{height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin:5px 0 7px}
-.meter i{display:block;height:100%;width:100%;transform-origin:left center;border-radius:99px}
-.meterLabel{font-size:10px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
-#stateLine{font-size:11px;color:var(--muted);margin-top:4px}
-#mode{position:absolute;right:15px;bottom:15px;padding:8px 11px;color:var(--muted);font-size:11px}
-#crosshair{position:absolute;left:50%;top:50%;width:15px;height:15px;transform:translate(-50%,-50%);opacity:.88}
-#crosshair::before,#crosshair::after{content:"";position:absolute;left:50%;top:50%;background:#fff;transform:translate(-50%,-50%);border-radius:1px}
-#crosshair::before{width:1.5px;height:15px}#crosshair::after{width:15px;height:1.5px}
-#centerDot{position:absolute;left:50%;top:50%;width:2px;height:2px;transform:translate(-50%,-50%);background:#fff;border-radius:50%}
-#notice{position:absolute;left:50%;top:22px;transform:translateX(-50%);padding:8px 11px;opacity:0;transition:opacity .18s;font-size:12px;color:var(--ink)}
+
+/* ---------- BOTTOM LEFT ABOVE HELP: METERS ---------- */
+#meters{position:absolute;left:15px;bottom:95px;width:250px;padding:10px 13px}
+.meterRow{display:flex;align-items:center;gap:8px;margin:4px 0}
+.meterIcon{font-size:13px;width:18px;text-align:center;flex-shrink:0;filter:drop-shadow(0 0 3px rgba(0,0,0,.3))}
+.meterTrack{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+.meterFill{display:block;height:100%;width:100%;transform-origin:left center;border-radius:99px;transition:transform .15s ease-out}
+.meterVal{font-size:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;min-width:24px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+#stateLine{font-size:10.5px;color:var(--muted);margin-top:6px;padding-top:5px;border-top:1px solid var(--line);letter-spacing:.03em}
+
+/* ---------- BOTTOM RIGHT: MODE ---------- */
+#mode{position:absolute;right:15px;bottom:15px;padding:8px 11px;color:var(--muted);font-size:10.5px;letter-spacing:.02em}
+
+/* ---------- CROSSHAIR ---------- */
+#crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);opacity:.75}
+#crosshair::before,#crosshair::after{content:"";position:absolute;left:50%;top:50%;background:rgba(255,255,255,.85);transform:translate(-50%,-50%);border-radius:1px;box-shadow:0 0 4px rgba(0,0,0,.4)}
+#crosshair::before{width:1.5px;height:18px}#crosshair::after{width:18px;height:1.5px}
+#centerDot{position:absolute;left:50%;top:50%;width:2.5px;height:2.5px;transform:translate(-50%,-50%);background:rgba(255,255,255,.9);border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.5)}
+
+/* ---------- NOTICE ---------- */
+#notice{position:absolute;left:50%;top:22px;transform:translateX(-50%);padding:8px 14px;opacity:0;transition:opacity .18s;font-size:12px;color:var(--ink);border:1px solid var(--line-gold)}
 #notice.show{opacity:1}
-#doorHint{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);padding:10px 18px;background:rgba(10,12,14,.85);border:1px solid var(--gold);border-radius:10px;font-size:14px;color:var(--gold);display:none;z-index:8}
-#verBanner{position:fixed;top:34%;left:50%;transform:translateX(-50%);padding:16px 30px;font-size:22px;font-weight:800;color:var(--gold);background:rgba(10,12,14,.85);border:1px solid var(--gold);border-radius:14px;z-index:8;opacity:0;transition:opacity .6s;pointer-events:none}
+
+/* ---------- DOOR HINT ---------- */
+#doorHint{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);padding:10px 20px;background:rgba(10,12,14,.88);border:1px solid var(--gold);border-radius:10px;font-size:14px;color:var(--gold);display:none;z-index:8;box-shadow:0 4px 20px rgba(0,0,0,.3),0 0 15px rgba(228,182,109,.08);letter-spacing:.03em}
+
+/* ---------- VERSION BANNER ---------- */
+#verBanner{position:fixed;top:34%;left:50%;transform:translateX(-50%);padding:16px 32px;font-size:22px;font-weight:800;color:var(--gold);background:rgba(10,12,14,.88);border:1px solid var(--line-gold);border-radius:14px;z-index:8;opacity:0;transition:opacity .6s;pointer-events:none;text-shadow:0 2px 12px rgba(228,182,109,.2);box-shadow:0 8px 40px rgba(0,0,0,.4)}
 #verBanner.show{opacity:1}
-#deathFade{position:fixed;inset:0;background:rgba(0,0,0,.72);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .35s;z-index:9}
+
+/* ---------- DEATH SCREEN ---------- */
+#deathFade{position:fixed;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .5s ease-out;z-index:9;
+  background:radial-gradient(ellipse at center,rgba(120,10,10,.3) 0%,rgba(0,0,0,.82) 70%)}
 #deathFade.show{opacity:1}
-#deathFade div{font-size:28px;letter-spacing:.18em;color:#eee;text-shadow:0 4px 24px #000}
+#deathFade.show .deathInner{animation:deathPulse 1.8s ease-in-out infinite}
+.deathInner{text-align:center}
+.deathInner .deathTitle{font-size:36px;letter-spacing:.22em;color:#ddd;text-shadow:0 0 30px rgba(200,50,50,.4),0 4px 16px rgba(0,0,0,.7);font-weight:900}
+.deathInner .deathSub{font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:.08em}
+@keyframes deathPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.98)}}
+
+/* ---------- ERROR ---------- */
 #error{position:fixed;inset:0;display:none;place-items:center;background:#090c10;padding:25px;z-index:20}
 #errorBox{max-width:760px;padding:20px;background:#14181e;border:1px solid rgba(255,255,255,.13);border-radius:14px;box-shadow:0 25px 90px rgba(0,0,0,.45)}
 #error h2{margin:0 0 8px;font-size:20px}.errorText{white-space:pre-wrap;color:#eabbbb;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- LOADING SCREEN ---------- */
 #loadingOverlay{position:fixed;inset:0;background:#0b1015;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease}
 #loadingOverlay.hide{opacity:0;pointer-events:none}
-#loadingOverlay h1{font-size:32px;font-weight:800;letter-spacing:.18em;color:var(--gold);margin-bottom:8px;text-shadow:0 2px 20px rgba(228,182,109,.3)}
-#loadingOverlay p{font-size:13px;color:var(--muted);letter-spacing:.1em;margin-bottom:32px}
-#loadingBar{width:220px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
-#loadingBarFill{width:0%;height:100%;background:var(--gold);border-radius:99px;transition:width .3s ease-out}
+.loadDecor{position:absolute;width:320px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);margin-bottom:20px}
+.loadDecor.top{top:calc(50% - 55px)}
+.loadDecor.bot{top:calc(50% + 45px)}
+#loadingOverlay h1{font-size:34px;font-weight:900;letter-spacing:.22em;color:var(--gold);margin-bottom:6px;text-shadow:0 2px 24px rgba(228,182,109,.25);position:relative;z-index:1}
+#loadingOverlay .loadSub{font-size:12px;color:var(--muted);letter-spacing:.12em;margin-bottom:28px;text-transform:uppercase}
+#loadingBar{width:200px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;position:relative;z-index:1}
+#loadingBarFill{width:0%;height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:99px;transition:width .3s ease-out;box-shadow:0 0 8px rgba(228,182,109,.3)}
+#loadingOverlay .loadTip{position:absolute;bottom:60px;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.04em;text-align:center;max-width:320px;line-height:1.5}
+
+/* ---------- DEBUG OVERLAY ---------- */
 #debugOverlay{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;display:none}
 .dbg-label{position:absolute;transform:translate(-50%,-130%);background:rgba(0,0,0,.78);color:#fff;font:11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;padding:2px 7px;border-radius:4px;white-space:nowrap;border:1px solid rgba(255,255,255,.22);text-shadow:0 1px 2px rgba(0,0,0,.5)}
-@media(max-width:700px){#help{font-size:10px}#meters{width:200px}}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:700px){
+  #help{font-size:9.5px}
+  #meters{width:195px}
+  #compassRing{width:50px;height:50px}
+  #compassNeedle{width:44px;height:44px}
+  #status{min-width:auto;max-width:55vw}
+}
           `,
         }}
       />
 
+      {/* ---- LOADING SCREEN ---- */}
       <div id="loadingOverlay">
+        <div className="loadDecor top" />
         <h1>WESTERN FRONTIER</h1>
-        <p>PART 3 — TOWN</p>
+        <p className="loadSub">Part 3 — Town</p>
         <div id="loadingBar"><div id="loadingBarFill" /></div>
+        <p className="loadTip">
+          W A S D to move &bull; Shift to sprint &bull; Space to jump &bull; E to open doors
+        </p>
+        <div className="loadDecor bot" />
       </div>
 
+      {/* ---- GAME CANVAS ---- */}
       <canvas id="game" />
 
+      {/* ---- VIGNETTE OVERLAY ---- */}
+      <div id="vignette" />
+
+      {/* ---- DEBUG OVERLAY ---- */}
       <div id="debugOverlay" />
 
+      {/* ---- VERSION BANNER ---- */}
       <div id="verBanner">
-        شهر وسترن — نسخه ۲۳
+        Western Frontier — v24
       </div>
 
+      {/* ---- DOOR HINT ---- */}
       <div id="doorHint">
         فشار بده: <b>E</b> — باز کردن در
       </div>
 
+      {/* ---- HUD ---- */}
       <div id="hud">
+        {/* Status (top-left) */}
         <div id="status" className="card">
           <div id="title">
-            WESTERN FRONTIER // PART 3 — TOWN v23
+            WESTERN FRONTIER // TOWN v24
           </div>
-          <div id="statusLine">Starting world…</div>
+          <div id="statusLine">Starting world...</div>
         </div>
 
+        {/* Compass (top-center) */}
+        <div id="compassWrap">
+          <div id="compassRing">
+            <div id="compassNeedle" ref={compassRef}>
+              <span className="dir n">N</span>
+              <span className="dir s">S</span>
+              <span className="dir e">E</span>
+              <span className="dir w">W</span>
+              <div id="compassArrow" />
+            </div>
+            <div id="compassCenter" />
+          </div>
+        </div>
+
+        {/* FPS (top-right) */}
         <div id="topRight">
           <div id="fpsBox" className="card">
             <span>FPS</span>
@@ -122,41 +244,57 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
           </div>
         </div>
 
+        {/* Health & Stamina (bottom-left) */}
         <div id="meters" className="card">
-          <div className="meterLabel">Player Health</div>
-          <div className="meter">
-            <i id="healthBar" style={{ color: "#c0392b" }} />
+          <div className="meterRow">
+            <span className="meterIcon">❤</span>
+            <div className="meterTrack">
+              <i id="healthBar" className="meterFill" style={{ color: "#c0392b", background: "linear-gradient(90deg, #8b1a1a, #c0392b)" }} />
+            </div>
+            <span id="healthVal" className="meterVal" style={{ color: "#c0392b" }}>100</span>
           </div>
-          <div className="meterLabel">Player Stamina</div>
-          <div className="meter">
-            <i id="staminaBar" style={{ color: "#27ae60" }} />
+          <div className="meterRow">
+            <span className="meterIcon">⚡</span>
+            <div className="meterTrack">
+              <i id="staminaBar" className="meterFill" style={{ color: "#27ae60", background: "linear-gradient(90deg, #1a6b3a, #27ae60)" }} />
+            </div>
+            <span id="staminaVal" className="meterVal" style={{ color: "#27ae60" }}>100</span>
           </div>
           <div id="stateLine">Idle</div>
         </div>
 
+        {/* Mode (bottom-right) */}
         <div id="mode" className="card">
-          v23 • THIRD PERSON • LMB/RMB + DRAG CAMERA • V =
+          v24 &bull; THIRD PERSON &bull; LMB/RMB + DRAG &bull; V =
           FIRST PERSON
         </div>
 
+        {/* Help (bottom-left) */}
         <div id="help" className="card">
-          <b>W A S D</b> walk | <b>Shift</b> sprint | <b>Space</b> jump{" "}
-          | <b>C</b> sneak | <b>E</b> push door | <b>F3</b> coords | <b>V</b> view | <b>R</b> respawn
+          <b>WASD</b> move &bull; <b>Shift</b> sprint &bull; <b>Space</b> jump{" "}
+          &bull; <b>C</b> sneak &bull; <b>E</b> door &bull; <b>F3</b> debug &bull; <b>V</b> view &bull; <b>R</b> respawn
         </div>
 
+        {/* Crosshair */}
         <div id="crosshair">
           <span id="centerDot" />
         </div>
 
+        {/* Notice toast */}
         <div id="notice" className="card">
           Mouse captured — move to look. Press Esc to release.
         </div>
       </div>
 
+      {/* ---- DEATH SCREEN ---- */}
       <div id="deathFade">
-        <div>YOU DIED</div>
+        <div className="deathInner">
+          <div className="deathTitle">YOU DIED</div>
+          <div className="deathSub">Press R to respawn</div>
+        </div>
       </div>
 
+      {/* ---- ERROR ---- */}
       <div id="error">
         <div id="errorBox">
           <h2>Game could not start</h2>
@@ -164,6 +302,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
         </div>
       </div>
 
+      {/* ---- LOADING BAR SCRIPT ---- */}
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -171,12 +310,12 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
   var bar=document.getElementById('loadingBarFill');
   var overlay=document.getElementById('loadingOverlay');
   if(!bar||!overlay)return;
-  var steps=[15,35,55,72,88,100];
+  var steps=[12,28,48,65,80,92,100];
   var i=0;
   var iv=setInterval(function(){
-    if(i>=steps.length){clearInterval(iv);setTimeout(function(){overlay.classList.add('hide')},300);return}
+    if(i>=steps.length){clearInterval(iv);setTimeout(function(){overlay.classList.add('hide')},400);return}
     bar.style.width=steps[i]+'%';i++;
-  },280);
+  },220);
 })();
           `,
         }}

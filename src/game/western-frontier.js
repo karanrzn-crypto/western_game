@@ -1,12 +1,12 @@
 // Western Frontier - Game Engine
-// Part 3: TOWN v23
+// Part 3: TOWN v24
 
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v23.
-Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization).
-MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 ctor 13 update 14 render+clip 15 drawPlayer 16 arms 17 HUD 18 boot.*/
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v24.
+Evolution: v21→v21.1 (boot fix) → v22 (office door, chair scale, minimap/compass removal) → v23 (desk/cabinet removal, office camera fix, side window rebuild, debug labels, FPS optimization) → v23.1 (code quality) → v24 (critical _I bug fix, vignette, compass, HUD redesign, dust particles, loading screen polish).
+MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS 08 shaders 09 Player 10 Camera 11 DayCycle 12 DustSystem 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
 
 //[SEC-01] DOM
 const canvas=document.getElementById('game'),statusLine=document.getElementById('statusLine'),notice=document.getElementById('notice'),errorEl=document.getElementById('error'),errorText=document.getElementById('errorText'),healthBar=document.getElementById('healthBar'),staminaBar=document.getElementById('staminaBar'),stateLine=document.getElementById('stateLine'),deathFade=document.getElementById('deathFade'),doorHint=document.getElementById('doorHint'),healthVal=document.getElementById('healthVal'),staminaVal=document.getElementById('staminaVal');
@@ -1005,6 +1005,39 @@ class DayCycle{
   colors(){const dl=clamp(Math.sin((this.t-6)/24*TAU)*.5+.5,.03,1),dn=smooth(.05,.28,dl);const t=this._top,h=this._h,b=this._bot,f=this._fog;t.set(lerp(.025,.36,dn),lerp(.04,.56,dn),lerp(.08,.78,dn));h.set(lerp(.04,.95,dn),lerp(.06,.74,dn),lerp(.09,.52,dn));b.set(lerp(.015,.38,dl),lerp(.02,.29,dl),lerp(.03,.21,dl));f.set(lerp(.025,.52,dn),lerp(.03,.45,dn),lerp(.05,.34,dn));return{top:t,h:h,bot:b,fog:f}}
 }
 
+//[SEC-12] Dust Particle System
+const MAX_DUST=60;
+class DustSystem{
+  constructor(){this.particles=[];this.timer=0}
+  emit(x,y,z,speed){
+    if(this.particles.length>=MAX_DUST)return;
+    const a=Math.random()*TAU,sp=.3+Math.random()*.6;
+    this.particles.push({x:x+(Math.random()-.5)*.3,y,z:z+(Math.random()-.5)*.3,vx:Math.cos(a)*sp*.4,vy:.4+Math.random()*.5,vz:Math.sin(a)*sp*.4,life:1,decay:1.2+Math.random()*.8,size:.02+Math.random()*.03})
+  }
+  update(dt){
+    this.timer-=dt;
+    for(let i=this.particles.length-1;i>=0;i--){
+      const p=this.particles[i];
+      p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;
+      p.vy-=.8*dt;
+      p.life-=p.decay*dt;
+      if(p.life<=0){this.particles.splice(i,1);continue}
+    }
+  }
+  draw(gl,loc,boxMesh){
+    if(!this.particles.length)return;
+    const m=mat4Identity();
+    for(const p of this.particles){
+      const s=p.size*p.life;
+      m[0]=s;m[5]=s;m[10]=s;m[12]=p.x;m[13]=p.y;m[14]=p.z;m[15]=1;
+      gl.uniformMatrix4fv(loc.model,false,m);
+      const a=clamp(p.life,.0,1);
+      gl.uniform3f(loc.color,.55*a,.45*a,.35*a);
+      boxMesh.draw();
+    }
+  }
+}
+
 //[SEC-13] Game
 class Game{
   constructor(){
@@ -1034,7 +1067,7 @@ class Game{
     this.skyLoc={top:gl.getUniformLocation(this.skyProgram,'top'),horizon:gl.getUniformLocation(this.skyProgram,'horizon'),bottom:gl.getUniformLocation(this.skyProgram,'bottom'),time:gl.getUniformLocation(this.skyProgram,'time')};
     this.tmpModel=mat4Identity();
     this._I=mat4Identity();
-    this.day=new DayCycle();this.input=new Input(canvas);
+    this.day=new DayCycle();this.input=new Input(canvas);this.dust=new DustSystem();
     this.running=true;this.last=performance.now();
     this.camera.target.copy(this.player.pos);this.camera.target.y+=1;
     this.camera.desiredPosition.set(this.player.pos.x+3,this.player.pos.y+2,this.player.pos.z+5);
@@ -1046,7 +1079,7 @@ class Game{
   }
   setCamMode(mode){
     this.camera.mode=mode;
-    document.getElementById('mode').textContent='v23 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG CAMERA • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+    document.getElementById('mode').textContent='v24 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
   bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
   resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
@@ -1081,6 +1114,18 @@ class Game{
     this.camera.update(this.player,dt);
     this.clipCamera(dt);
     this.camera.buildView();
+    // Dust emission: only when grounded, moving, and outside
+    const hs=Math.hypot(this.player.vel.x,this.player.vel.z);
+    if(this.player.grounded&&hs>.8&&!inside){
+      this.dust.timer-=dt;
+      const rate=hs>4?.03:(hs>2.5?.06:.1);
+      if(this.dust.timer<=0){
+        const gy=this.world.sample(this.player.pos.x,this.player.pos.z);
+        this.dust.emit(this.player.pos.x,gy,this.player.pos.z,hs);
+        this.dust.timer=rate;
+      }
+    }
+    this.dust.update(dt);
   }
 
   render(){
@@ -1098,9 +1143,10 @@ class Game{
     gl.uniform3f(this.meshLoc.cam,this.camera.position.x,this.camera.position.y,this.camera.position.z);
     gl.uniform3f(this.meshLoc.fog,c.fog.x,c.fog.y,c.fog.z);
     gl.uniform1f(this.meshLoc.fs,45);gl.uniform1f(this.meshLoc.fe,145);
-    gl.uniformMatrix4fv(this.meshLoc.model,false,_I);gl.uniform3f(this.meshLoc.color,1,1,1);
+    gl.uniformMatrix4fv(this.meshLoc.model,false,this._I);gl.uniform3f(this.meshLoc.color,1,1,1);
     this.world.mesh.draw();
     this.objects.draw(gl,this.meshLoc);
+    this.dust.draw(gl,this.meshLoc,this.playerBox);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
     if(this.debugAxes){this.drawDebugAxes(gl);this._renderDebugLabels();if(this._debugOverlay)this._debugOverlay.style.display='block'}else if(this._debugOverlay){this._debugOverlay.style.display='none'}
@@ -1387,7 +1433,7 @@ try{
   const vb=document.getElementById('verBanner');
   vb.classList.add('show');
   setTimeout(()=>vb.classList.remove('show'),6000);
-  flashNotice('نسخه ۲۳ — مختصات + بهینه‌سازی FPS');
+  flashNotice('نسخه ۲۴ — قطب‌نما + ذرات گرد و غبار + بهبود رابط کاربری');
 }catch(err){
   fail((err&&err.stack)||String(err));
 }
