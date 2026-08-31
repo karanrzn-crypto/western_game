@@ -336,15 +336,23 @@ class WorldObjects{
     this.boxCol(x0+1.05,cZ-.33,x1-2.45,cZ+.33);
     this.cam(x0+.95,cZ-.42,x1-2.35,cZ+.42,gy+2.9);
     this.boxCol(B.x+3.2,B.z+3.2,B.x+5.5,B.z+4.8);               // manager desk
-    const bkOffZ=B.z+2.0;
-    this.boxCol(B.x+2.0,bkOffZ-.14,B.x+5.5,bkOffZ+.14);               // back-corner office partition
+    const bkOffZ=B.z+2.0,bkX0=B.x+2.0,bkX1=x1-WALL_T;
+    const bkDoorX=(bkX0+bkX1)/2,bkGapL=bkDoorX-DOOR_GAP/2,bkGapR=bkDoorX+DOOR_GAP/2;
+    this.boxCol(bkX0,bkOffZ-.14,bkGapL,bkOffZ+.14);               // office partition left of door
+    this.boxCol(bkGapR,bkOffZ-.14,bkX1,bkOffZ+.14);               // office partition right of door
     this.dot(B.x+4.35,B.z+4.0,.3);                            // manager chair
-    this.cam(B.x+2.0-.1,bkOffZ-.15,B.x+5.6,bkOffZ+.15,gy+3.6);  // office partition cam
+    this.cam(bkX0-.1,bkOffZ-.15,bkGapL,bkOffZ+.15,gy+3.6);  // office partition cam left
+    this.cam(bkGapR,bkOffZ-.15,bkX1+.1,bkOffZ+.15,gy+3.6);  // office partition cam right
+    // office door (uses existing door system)
+    const od={x:bkDoorX,z:bkOffZ,w:DOOR_GAP,h:DOOR_H,side:-1,open:0,target:0,pushing:false,pushT:0,speed:DOOR_SPEED,swing:0,key:'bank-office'};
+    od.col={x0:bkGapL,x1:bkGapR,z0:bkOffZ-.09,z1:bkOffZ+.09,door:true,off:false};
+    od.inside={x0:bkX0,z0:bkOffZ,x1:bkX1,z1:z1-WALL_T};
+    this.doors.push(od);
     this.dot(x0+1.85,z0+2.25,.28);this.dot(x0+3.15,z0+2.25,.28);
     this.dot(x0+1.85,z0+3.45,.28);this.dot(x0+3.15,z0+3.45,.28);   // waiting chairs
     this.dot(x0+2.5,z0+2.85,.42);                            // waiting table
-    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.22,building:'bank'});
-    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.22,building:'bank'});
+    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
+    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:0,ry:0,vx:0,vz:0,r:.30,building:'bank'});
     this.boxCol(x0+.45,vz1-.7,vx0-.15,vz1-.2);               // back-left cabinet
     this.boxCol(vx1+.15,vz1-.7,x1-WALL_T-.3,vz1-.2);         // back-right cabinet
     this.boxCol(vx0+VT,vz1-2.1,vx0+VT+.4,vz1-.35);           // vault shelves
@@ -593,10 +601,10 @@ class WorldObjects{
     this.bankWin(x0+3.6,gy+2.4,frontZ-.15,.85,2.4,0);
     this.bankWin(x1-3.6,gy+2.4,frontZ-.15,.85,2.4,0);
     this.bankWin(x1-1.3,gy+2.4,frontZ-.15,.85,2.4,0);
-    this.bankWin(x0-.02,gy+2.4,B.z-3.25,.85,2.4,Math.PI/2);
-    this.bankWin(x0-.02,gy+2.4,B.z+.25,.85,2.4,Math.PI/2);
-    this.bankWin(x1+.02,gy+2.4,B.z-3.25,.85,2.4,Math.PI/2);
-    this.bankWin(x1+.02,gy+2.4,B.z+.25,.85,2.4,Math.PI/2);
+    this.bankWin(x0+WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,Math.PI/2);
+    this.bankWin(x0+WALL_T/2,gy+2.4,B.z+.25,.85,2.4,Math.PI/2);
+    this.bankWin(x1-WALL_T/2,gy+2.4,B.z-3.25,.85,2.4,-Math.PI/2);
+    this.bankWin(x1-WALL_T/2,gy+2.4,B.z+.25,.85,2.4,-Math.PI/2);
     // interior: ceiling beams + hanging lamps
     for(const bz of[B.z-3.35,B.z-.45,B.z+3.55])this.pb(B.x,top-.1,bz,B.w-1.2,.18,.3,C.dark);
     for(const L of[[B.x,B.z-2.95],[B.x-3.2,B.z+.35],[B.x+3.3,B.z+.35]]){
@@ -612,7 +620,10 @@ class WorldObjects{
     this.pb(cw,gy+2.82,cZ+.22,10.4,.1,.09,BANK_STEEL);
     // manager back-corner office partition (short wall from right wall, does NOT cross walkway)
     const offZ=B.z+2.0,offX0=B.x+2.0,offX1=x1-WALL_T;
-    this.pb((offX0+offX1)/2,gy+1.8,offZ,offX1-offX0,3.6,WALL_T,C.stone);
+    const offDoorX=(offX0+offX1)/2,offGapL=offDoorX-DOOR_GAP/2,offGapR=offDoorX+DOOR_GAP/2;
+    this.pb((offX0+offGapL)/2,gy+1.8,offZ,offGapL-offX0,3.6,WALL_T,C.stone);
+    this.pb((offGapR+offX1)/2,gy+1.8,offZ,offX1-offGapR,3.6,WALL_T,C.stone);
+    this.pb(offDoorX,gy+(DOOR_H+3.6)/2,offZ,DOOR_GAP+.06,3.6-DOOR_H,WALL_T,C.stone);
     // manager desk (moved to back-right office)
     this.pb(B.x+4.35,gy+.39,B.z+4.0,1.7,.78,.9,C.dark);
     this.pb(B.x+4.35,gy+.84,B.z+4.0,1.85,.09,1.0,C.wood2);
@@ -685,9 +696,9 @@ class WorldObjects{
     p=P(.21,.02);this.pb(p[0],g+.27,p[1],.06,.5,.42,C.dark,ry);
   }
   drawBankerChair(x,gy,z,ry){
-    const seatW=.24,seatD=.22,seatH=.48,seatT=.045;
-    const backW=.20,backH=.52,backT=.035;
-    const legW=.04,legD=.04,legH=seatH;
+    const S=1.65,seatW=.24*S,seatD=.22*S,seatH=.48*S,seatT=.045*S;
+    const backW=.20*S,backH=.52*S,backT=.035*S;
+    const legW=.04*S,legD=.04*S,legH=seatH;
     const wood=C.wood2,dk=C.dark;
     const P=(lx,ly,lz)=>[x+lx*Math.cos(ry)+lz*Math.sin(ry), gy+ly, z-lx*Math.sin(ry)+lz*Math.cos(ry)];
     let p;
