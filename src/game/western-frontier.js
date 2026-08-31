@@ -55,7 +55,7 @@ function mat4YPR(out,p,s,ry=0,rx=0,rz=0){
 function lerpAngle(a,b,t){let d=((b-a+Math.PI)%TAU+TAU)%TAU-Math.PI;return a+d*t}
 
 //[SEC-03] Terrain height
-const TERRAIN_Y_OFFSET=0;
+const TERRAIN_Y_OFFSET=0;const TERRAIN_GRID=81;
 function hash2(x,z){let n=(x*374761393+z*668265263)>>>0;n=(n^(n>>>13))*1274126177>>>0;n^=n>>>16;return (n>>>0)/4294967295}
 function fade(t){return t*t*t*(t*(t*6-15)+10)}
 function valueNoise2(x,z){const x0=Math.floor(x),z0=Math.floor(z),tx=fade(x-x0),tz=fade(z-z0),a=hash2(x0,z0),b=hash2(x0+1,z0),c=hash2(x0,z0+1),d=hash2(x0+1,z0+1);return lerp(lerp(a,b,tx),lerp(c,d,tx),tz)}
@@ -150,7 +150,7 @@ function floorMesh(gl,rows=9){
 //[SEC-06] Terrain
 class Terrain{
   constructor(gl){
-    this.size=180;this.grid=121;this.heights=new Float32Array(this.grid*this.grid);
+    this.size=180;this.grid=TERRAIN_GRID;this.heights=new Float32Array(this.grid*this.grid);
     const step=this.size/(this.grid-1),P=[],N=[];
     for(let z=0;z<this.grid;z++)for(let x=0;x<this.grid;x++){const wx=x*step-this.size/2,wz=z*step-this.size/2,h=terrainHeight(wx,wz);this.heights[z*this.grid+x]=h;P.push(wx,h,wz);N.push(0,1,0)}
     for(let z=0;z<this.grid;z++)for(let x=0;x<this.grid;x++){
@@ -987,8 +987,9 @@ class DayCycle{
 //[SEC-13] Game
 class Game{
   constructor(){
+    this.debugAxes=false;
     statusLine.textContent='Creating WebGL…';
-    this.gl=canvas.getContext('webgl2',{alpha:false,antialias:true,depth:true,powerPreference:'high-performance'});
+    this.gl=canvas.getContext('webgl2',{alpha:false,antialias:false,depth:true,powerPreference:'high-performance'});
     if(!this.gl)throw new Error('WebGL2 unavailable');
     const gl=this.gl;
     statusLine.textContent='Creating terrain…';
@@ -1022,8 +1023,8 @@ class Game{
     this.camera.mode=mode;
     document.getElementById('mode').textContent='v21 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG CAMERA • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
   }
-  bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}})}
-  resize(){const d=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
+  bindModeKeys(){addEventListener('keydown',e=>{if(e.key.toLowerCase()==='v'){this.setCamMode(this.camera.mode==='third'?'first':'third');flashNotice()}if(e.key==='F3'||e.key==='`'){this.debugAxes=!this.debugAxes;flashNotice(this.debugAxes?'مختصات فعال شد':'مختصات غیرفعال شد')}})}
+  resize(){const d=1,w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}this.gl.viewport(0,0,w,h);this.camera.resize(w,h)}
 
   update(dt){
     const m=this.input.mouse();
@@ -1077,6 +1078,7 @@ class Game{
     this.objects.draw(gl,this.meshProgram,this.meshLoc,this);
     if(this.camera.mode==='third'&&!this.player.dead)this.drawPlayer(gl);
     if(this.camera.mode==='first'&&!this.player.dead)this.drawFirstPersonArms(gl);
+    if(this.debugAxes)this.drawDebugAxes(gl);
   }
   part(gl,pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box'){
     gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,pos,scale,ry,rx,rz));
@@ -1247,10 +1249,24 @@ class Game{
     this.part(gl,B.hand,new V3(.06,.065,.075),this.camera.yaw,this.camera.pitch,0,skin);
   }
 
+  drawDebugAxes(gl){
+    const p=this.player.pos;
+    const L=3;const T=.035;
+    // X axis (red)
+    gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x+L/2,p.y-this.player.height/2+.02,p.z),new V3(L,T,T),0,0,0));
+    gl.uniform3f(this.meshLoc.color,1,.2,.2);this.playerBox.draw();
+    // Y axis (green)
+    gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x,p.y-this.player.height/2+2,p.z),new V3(T,4,T),0,0,0));
+    gl.uniform3f(this.meshLoc.color,.2,1,.2);this.playerBox.draw();
+    // Z axis (blue)
+    gl.uniformMatrix4fv(this.meshLoc.model,false,mat4YPR(this.tmpModel,new V3(p.x,p.y-this.player.height/2+.02,p.z+L/2),new V3(T,T,L),0,0,0));
+    gl.uniform3f(this.meshLoc.color,.2,.2,1);this.playerBox.draw();
+  }
   hud(){
     const hr=Math.floor(this.day.t),min=Math.floor((this.day.t-hr)*60);
     const hp=Math.ceil(this.player.health),st=Math.ceil(this.player.stamina);
-    statusLine.textContent=`${hp} HP  •  ${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}  •  ${this.camera.mode==='third'?'Third person':'First person'}`;
+    const coords=this.debugAxes?`  •  X:${this.player.pos.x.toFixed(1)} Z:${this.player.pos.z.toFixed(1)} Y:${this.player.pos.y.toFixed(1)}`:'';
+    statusLine.textContent=`${hp} HP  •  ${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}  •  ${this.camera.mode==='third'?'Third person':'First person'}${coords}`;
     healthBar.style.transform=`scaleX(${this.player.health/this.player.maxHealth})`;
     staminaBar.style.transform=`scaleX(${this.player.stamina/this.player.maxStamina})`;
     if(healthVal)healthVal.textContent=hp;
@@ -1281,7 +1297,7 @@ try{
   const vb=document.getElementById('verBanner');
   vb.classList.add('show');
   setTimeout(()=>vb.classList.remove('show'),6000);
-  flashNotice('نسخه ۲۲ — ۶ باگ اصلاح شد');
+  flashNotice('نسخه ۲۳ — مختصات + بهینه‌سازی FPS');
 }catch(err){
   fail((err&&err.stack)||String(err));
 }

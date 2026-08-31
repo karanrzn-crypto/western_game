@@ -96,7 +96,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
       <canvas id="game" />
 
       <div id="verBanner">
-        شهر وسترن — نسخه ۲۲
+        شهر وسترن — نسخه ۲۳
       </div>
 
       <div id="doorHint">
@@ -106,7 +106,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
       <div id="hud">
         <div id="status" className="card">
           <div id="title">
-            WESTERN FRONTIER // PART 3 — TOWN v22
+            WESTERN FRONTIER // PART 3 — TOWN v23
           </div>
           <div id="statusLine">Starting world…</div>
         </div>
@@ -131,14 +131,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
         </div>
 
         <div id="mode" className="card">
-          v22 • THIRD PERSON • LMB/RMB + DRAG CAMERA • V =
+          v23 • THIRD PERSON • LMB/RMB + DRAG CAMERA • V =
           FIRST PERSON
         </div>
 
         <div id="help" className="card">
           <b>W A S D</b> walk | <b>Shift</b> sprint | <b>Space</b> jump{" "}
-          | <b>C</b> sneak | <b>E</b> push door | <b>Right Mouse</b>{" "}
-          camera | <b>V</b> view | <b>R</b> respawn
+          | <b>C</b> sneak | <b>E</b> push door | <b>F3</b> coords | <b>V</b> view | <b>R</b> respawn
         </div>
 
         <div id="crosshair">
