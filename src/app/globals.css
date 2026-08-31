@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  --glass: rgba(15,17,18,.6);
+  --line: rgba(255,255,255,.15);
+  --ink: #f3ead7;
+  --muted: #c9bfae;
+  --gold: #e4b66d;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b1015;
+}
