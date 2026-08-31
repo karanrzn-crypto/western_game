@@ -208,7 +208,7 @@ class WorldObjects{
     }
     // BANK pediment (triangular front crown) — baked once, drawn via pgl()
     this.pediment=gableMeshBaked(gl,BANK.w/2-1.1,BANK.pedH,.5);
-    this.cols=[];this.camBoxes=[];this.doors=[];this.floors=[];
+    this.cols=[];this.camBoxes=[];this.doors=[];this.floors=[];this.pushables=[];
     this.tmpModel=mat4Identity();this._gl=null;this._loc=null;
     this.generate();
     this.generateBank();
@@ -248,6 +248,7 @@ class WorldObjects{
         this.cam(x1-WALL_T,sA,x1,sB,b.h);
         this.cam(x0,backZ-.15,x1,backZ+.15,b.h);
         if(TOWN[k].key&&this.gableRh[k])this.camGable(b,this.gableRh[k],b.h+.03);
+        else{this.cam(b.x-b.w/2-.1,b.z-b.d/2-.1,b.x+b.w/2+.1,b.z+b.d/2+.1,b.h+.2)}
         const d={x:b.x,z:frontZ,w:DOOR_GAP,h:DOOR_H,side:b.z<0?1:-1,open:0,target:0,pushing:false,pushT:0,speed:DOOR_SPEED,swing:0,key:b.key};
         d.col={x0:gapL,x1:gapR,z0:frontZ-.09,z1:frontZ+.09,door:true,off:false};
         d.inside={x0:x0+WALL_T,z0:z0+WALL_T/2,x1:x1-WALL_T,z1:z1-WALL_T/2};
@@ -334,12 +335,15 @@ class WorldObjects{
     const cZ=B.z-1.45;                                       // teller counter
     this.boxCol(x0+1.05,cZ-.33,x1-2.45,cZ+.33);
     this.cam(x0+.95,cZ-.42,x1-2.35,cZ+.42,gy+2.9);
-    this.boxCol(B.x+4.05,B.z,B.x+5.75,B.z+.9);               // manager desk
-    this.dot(B.x+4.9,B.z+1.4,.3);                            // manager chair
+    this.boxCol(B.x+3.2,B.z+3.2,B.x+5.5,B.z+4.8);               // manager desk
+    this.boxCol(B.x+3.2,B.z+3.2,B.x+3.5,B.z+4.8);               // office partition wall
+    this.dot(B.x+4.35,B.z+4.0,.3);                            // manager chair
+    this.cam(B.x+3.2,B.z+3.1,B.x+3.6,B.z+4.9,gy+3.6);
     this.dot(x0+1.85,z0+2.25,.28);this.dot(x0+3.15,z0+2.25,.28);
     this.dot(x0+1.85,z0+3.45,.28);this.dot(x0+3.15,z0+3.45,.28);   // waiting chairs
     this.dot(x0+2.5,z0+2.85,.42);                            // waiting table
-    this.dot(B.x-3.5,B.z-.15,.2);this.dot(B.x+1.5,B.z-.15,.2);     // teller stools
+    this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,r:.2,building:'bank'});
+    this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,r:.2,building:'bank'});
     this.boxCol(x0+.45,vz1-.7,vx0-.15,vz1-.2);               // back-left cabinet
     this.boxCol(vx1+.15,vz1-.7,x1-WALL_T-.3,vz1-.2);         // back-right cabinet
     this.boxCol(vx0+VT,vz1-2.1,vx0+VT+.4,vz1-.35);           // vault shelves
@@ -382,12 +386,53 @@ class WorldObjects{
     for(const d of this.doors){
       if(!d.col.off&&d.open<DOOR_OPEN_REMOVE)out.push(d.col);
     }
+    for(const p of this.pushables)out.push({x:p.x,z:p.z,r:p.r});
     return out;
+  }
+  updatePushables(dt,player){
+    for(const p of this.pushables){
+      const dx=player.pos.x-p.x,dz=player.pos.z-p.z;
+      const d=Math.hypot(dx,dz);
+      const minD=player.radius+p.r;
+      if(d<minD&&d>1e-4){
+        const push=(minD-d)*.3;
+        p.x+=dx/d*push;
+        p.z+=dz/d*push;
+      }
+    }
+  }
+  resetPushables(buildingKey){
+    for(const p of this.pushables){
+      if(p.building===buildingKey){p.x=p.ox;p.z=p.oz}
+    }
+  }
+  playerInsideBuilding(player){
+    for(const b of Object.values(TOWN)){
+      if(!b.door)continue;
+      const x0=b.x-b.w/2,x1=b.x+b.w/2,z0=b.z-b.d/2,z1=b.z+b.d/2;
+      if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return b.key;
+    }
+    const B=BANK,x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
+    if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return 'bank';
+    return null;
   }
   pb(x,y,z,sx,sy,sz,c,ry=0,rx=0,rz=0){
     mat4YPR(this.tmpModel,new V3(x,y,z),new V3(sx*.5,sy*.5,sz*.5),ry,rx,rz);
     this._gl.uniformMatrix4fv(this._loc.model,false,this.tmpModel);
     this._gl.uniform3f(this._loc.color,c[0],c[1],c[2]);
+    this.box.draw();
+  }
+  pbHinge(hingeX,y,hingeZ,w,h,d,color,ry){
+    const m=this.tmpModel;
+    m.fill(0);
+    const cy=Math.cos(ry),sy=Math.sin(ry);
+    const sx=w/2,sy2=h/2,sz=d/2;
+    m[0]=cy*sx;  m[4]=0;      m[8]=-sy*sz;  m[12]=hingeX+cy*sx;
+    m[1]=0;       m[5]=sy2;    m[9]=0;       m[13]=y;
+    m[2]=sy*sx;  m[6]=0;      m[10]=cy*sz;  m[14]=hingeZ+sy*sx;
+    m[3]=0;       m[7]=0;      m[11]=0;      m[15]=1;
+    this._gl.uniformMatrix4fv(this._loc.model,false,m);
+    this._gl.uniform3f(this._loc.color,color[0],color[1],color[2]);
     this.box.draw();
   }
   pc(x,y,z,r,h,c){
@@ -431,15 +476,14 @@ class WorldObjects{
     const gy=this.g(d.x,d.z);
     const ang=d.swing*1.35;
     const hingeX=d.x-d.w/2;
+    const hingeZ=d.z;
     const ry=d.side*ang;
-    const cx=hingeX+Math.cos(ry)*(d.w/2);
-    const cz=d.z+Math.sin(ry)*(d.w/2)*d.side*-1;
     const leaf=d.vault?BANK_STEEL:C.dark;
-    this.pb(cx,gy+d.h/2+.02,cz,d.w*.96,d.h,.09,leaf,ry);
-    if(d.vault){ // heavy steel vault leaf: bands + gold hub (rotates with the door)
-      this.pb(cx,gy+.8,cz,d.w*.88,.15,.16,BANK_STEEL,ry);
-      this.pb(cx,gy+1.5,cz,d.w*.88,.15,.16,BANK_STEEL,ry);
-      this.pb(cx,gy+d.h/2,cz,.3,.3,.17,C.gold,ry);
+    this.pbHinge(hingeX,gy+d.h/2+.02,hingeZ,d.w*.96,d.h,.09,leaf,ry);
+    if(d.vault){
+      this.pbHinge(hingeX,gy+.8,hingeZ,d.w*.88,.15,.16,BANK_STEEL,ry);
+      this.pbHinge(hingeX,gy+1.5,hingeZ,d.w*.88,.15,.16,BANK_STEEL,ry);
+      this.pbHinge(hingeX,gy+d.h/2,hingeZ,.3,.3,.17,C.gold,ry);
     }
     this.pb(d.x-d.w/2-.06,gy+1.1,d.z,.13,2.3,.16,C.dark);
     this.pb(d.x+d.w/2+.06,gy+1.1,d.z,.13,2.3,.16,C.dark);
@@ -547,22 +591,22 @@ class WorldObjects{
     for(let bx=x0+1.35;bx<=x1-2.75;bx+=.8)this.pb(bx,gy+2.08,cZ+.22,.05,1.35,.05,BANK_STEEL);
     this.pb(cw,gy+2.2,cZ+.22,10.4,1.15,.04,BANK_GLASS);
     this.pb(cw,gy+2.82,cZ+.22,10.4,.1,.09,BANK_STEEL);
-    // manager desk + chair + paper
-    this.pb(B.x+4.9,gy+.39,B.z+.45,1.7,.78,.9,C.dark);
-    this.pb(B.x+4.9,gy+.84,B.z+.45,1.85,.09,1.0,C.wood2);
-    this.pb(B.x+4.6,gy+.9,B.z+.25,.32,.03,.22,C.pale);
-    this.bankChair(B.x+4.9,B.z+1.4,Math.PI);
+    // manager office partition wall
+    this.pb(B.x+3.35,gy+1.8,B.z+4.0,.28,3.6,B.d-3.0,C.stone);
+    // manager desk (moved to back-right office)
+    this.pb(B.x+4.35,gy+.39,B.z+4.0,1.7,.78,.9,C.dark);
+    this.pb(B.x+4.35,gy+.84,B.z+4.0,1.85,.09,1.0,C.wood2);
+    this.pb(B.x+4.05,gy+.9,B.z+3.8,.32,.03,.22,C.pale);
+    this.bankChair(B.x+4.35,B.z+4.8,Math.PI);
     // waiting area: rug, chairs, round table
     this.pb(x0+2.5,gy+.02,z0+2.85,2.6,.04,2.2,[.4,.13,.11]);
     this.bankChair(x0+1.85,z0+2.25,0);this.bankChair(x0+3.15,z0+2.25,0);
     this.bankChair(x0+1.85,z0+3.45,0);this.bankChair(x0+3.15,z0+3.45,0);
     this.pc(x0+2.5,gy+.57,z0+2.85,.42,.06,C.wood2);
     this.pc(x0+2.5,gy+.29,z0+2.85,.07,.58,C.dark);
-    // teller stools
-    this.pc(B.x-3.5,gy+.31,B.z-.15,.05,.62,C.dark);
-    this.pc(B.x-3.5,gy+.65,B.z-.15,.19,.08,C.wood2);
-    this.pc(B.x+1.5,gy+.31,B.z-.15,.05,.62,C.dark);
-    this.pc(B.x+1.5,gy+.65,B.z-.15,.19,.08,C.wood2);
+    // teller stools (pushable banker chairs)
+    this.drawBankerChair(this.pushables[0].x,gy,this.pushables[0].z,0);
+    this.drawBankerChair(this.pushables[1].x,gy,this.pushables[1].z,0);
     // wall cabinets flanking the vault at the back
     const V=B.vault,VT=.25;
     const vx0=B.x+V.x0,vx1=B.x+V.x1,vz0=B.z+V.z0,vz1=z1-WALL_T;
@@ -602,8 +646,9 @@ class WorldObjects{
     this.pb(cx,cy-h/2-.055,cz,w+.22,.11,.15,C.pale,ry);
     this.pb(cx-w/2-.055,cy,cz,.11,h+.22,.13,C.pale,ry);
     this.pb(cx+w/2+.055,cy,cz,.11,h+.22,.13,C.pale,ry);
-    this.pb(cx-w/4,cy,cz,.06,h-.1,.09,C.pale,ry);
-    this.pb(cx+w/4,cy,cz,.06,h-.1,.09,C.pale,ry);
+    const bx=Math.cos(ry),bz=Math.sin(ry);
+    this.pb(cx-bx*w/4,cy,cz-bz*w/4,.06,h-.1,.09,C.pale,ry);
+    this.pb(cx+bx*w/4,cy,cz+bz*w/4,.06,h-.1,.09,C.pale,ry);
     this.pb(cx,cy,cz,w-.1,.06,.09,C.pale,ry);
   }
   bankChair(x,z,ry){
@@ -613,6 +658,21 @@ class WorldObjects{
     p=P(0,-.24);this.pb(p[0],g+.82,p[1],.5,.55,.07,C.wood2,ry);
     p=P(-.21,.02);this.pb(p[0],g+.27,p[1],.06,.5,.42,C.dark,ry);
     p=P(.21,.02);this.pb(p[0],g+.27,p[1],.06,.5,.42,C.dark,ry);
+  }
+  drawBankerChair(x,gy,z,ry){
+    const hw=.22,hd=.11,seatH=.50,backH=.90,legH=.48,legR=.025;
+    const wood=C.wood2,dk=C.dark;
+    this.pb(x,gy+seatH,z,hw,.04,hd,wood,ry);
+    this.pb(x,gy+(seatH+backH)/2,z-hd/2+.03,hw-.04,backH-seatH,.035,dk,ry);
+    const lx=hw-.05,lz=hd-.05;
+    this.pb(x-lx,gy+legH/2,z-lz,legR,legH,legR,dk);
+    this.pb(x+lx,gy+legH/2,z-lz,legR,legH,legR,dk);
+    this.pb(x-lx,gy+legH/2,z+lz,legR,legH,legR,dk);
+    this.pb(x+lx,gy+legH/2,z+lz,legR,legH,legR,dk);
+    this.pb(x,gy+.12,z,lx*2-.04,.03,legR,dk);
+    this.pb(x,gy+.12,z,legR,.03,lz*2-.04,dk);
+    this.pb(x,gy+legH-.06,z,lx*2-.04,.03,legR,dk);
+    this.pb(x,gy+legH-.06,z,legR,.03,lz*2-.04,dk);
   }
   draw(gl,prog,loc){
     this._gl=gl;this._loc=loc;
@@ -926,6 +986,10 @@ class Game{
     if(this.input.once('r'))this.player.reset();
     this.day.update(dt);
     this.objects.updateDoors(dt,this.player);
+    this.objects.updatePushables(dt,this.player);
+    const inside=this.objects.playerInsideBuilding(this.player);
+    if(!inside&&this._lastInside){this.objects.resetPushables(this._lastInside)}
+    this._lastInside=inside;
     const near=this.objects.nearestDoor(this.player);
     doorHint.style.display=near&&!near.door.pushing&&near.door.open<.3?'block':'none';
     if(this.input.once('e')){
@@ -1127,15 +1191,15 @@ class Game{
   drawFirstPersonArms(gl){
     const t=this.player.animTime,p=this.camera.position,f=this.camera.forward,r=this.camera.right,u=this.camera.up;
     const shirt=[.42,.28,.16],skin=[.62,.43,.27];
-    const sway=Math.sin(t*6)*this.player.run*.02;
-    const walkBob=(this.player.state==='Walk'||this.player.state==='Run'||this.player.state==='Sprint')?Math.abs(Math.sin(this.player.walkPhase||0))*.018:0;
-    const drop=this.player.crouching?-.26:-.19;
-    const mk=side=>({hand:p.clone().add(r.clone().mul(.2*side)).add(u.clone().mul(drop-walkBob+sway*side)).add(f.clone().mul(.38)),
-      elbow:p.clone().add(r.clone().mul(.26*side)).add(u.clone().mul(drop-.16)).add(f.clone().mul(.08))});
+    const sway=Math.sin(t*6)*this.player.run*.015;
+    const walkBob=(this.player.state==='Walk'||this.player.state==='Run'||this.player.state==='Sprint')?Math.abs(Math.sin(this.player.walkPhase||0))*.012:0;
+    const drop=this.player.crouching?-.30:-.22;
+    const mk=side=>({hand:p.clone().add(r.clone().mul(.16*side)).add(u.clone().mul(drop-walkBob+sway*side)).add(f.clone().mul(.48)),
+      elbow:p.clone().add(r.clone().mul(.20*side)).add(u.clone().mul(drop-.20)).add(f.clone().mul(.12))});
     const A=mk(-1),B=mk(1);
-    this.worldSeg(gl,A.elbow,A.hand,.085,shirt);this.worldSeg(gl,B.elbow,B.hand,.085,shirt);
-    this.part(gl,A.hand,new V3(.10,.11,.13),this.camera.yaw,this.camera.pitch,0,skin);
-    this.part(gl,B.hand,new V3(.10,.11,.13),this.camera.yaw,this.camera.pitch,0,skin);
+    this.worldSeg(gl,A.elbow,A.hand,.05,shirt);this.worldSeg(gl,B.elbow,B.hand,.05,shirt);
+    this.part(gl,A.hand,new V3(.06,.065,.075),this.camera.yaw,this.camera.pitch,0,skin);
+    this.part(gl,B.hand,new V3(.06,.065,.075),this.camera.yaw,this.camera.pitch,0,skin);
   }
 
   hud(){
