@@ -106,6 +106,11 @@ self.__SERVER_FILES_MANIFEST={
       }
     },
     "outputFileTracingRoot": "/home/z/my-project",
+    "allowedDevOrigins": [
+      "127.0.0.1",
+      "localhost",
+      "21.0.9.97"
+    ],
     "enablePrerenderSourceMaps": true,
     "cacheComponents": false,
     "cacheLife": {

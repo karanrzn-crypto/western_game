@@ -856,27 +856,6 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
                 fileName: "[project]/src/app/page.tsx",
                 lineNumber: 252,
                 columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("script", {
-                dangerouslySetInnerHTML: {
-                    __html: `
-(function(){
-  var bar=document.getElementById('loadingBarFill');
-  var overlay=document.getElementById('loadingOverlay');
-  if(!bar||!overlay)return;
-  var steps=[12,28,48,65,80,92,100];
-  var i=0;
-  var iv=setInterval(function(){
-    if(i>=steps.length){clearInterval(iv);setTimeout(function(){overlay.classList.add('hide')},400);return}
-    bar.style.width=steps[i]+'%';i++;
-  },220);
-})();
-          `
-                }
-            }, void 0, false, {
-                fileName: "[project]/src/app/page.tsx",
-                lineNumber: 260,
-                columnNumber: 7
             }, this)
         ]
     }, void 0, true, {

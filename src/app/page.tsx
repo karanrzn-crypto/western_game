@@ -256,24 +256,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
         </div>
       </div>
 
-      {/* ---- LOADING BAR SCRIPT ---- */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-(function(){
-  var bar=document.getElementById('loadingBarFill');
-  var overlay=document.getElementById('loadingOverlay');
-  if(!bar||!overlay)return;
-  var steps=[12,28,48,65,80,92,100];
-  var i=0;
-  var iv=setInterval(function(){
-    if(i>=steps.length){clearInterval(iv);setTimeout(function(){overlay.classList.add('hide')},400);return}
-    bar.style.width=steps[i]+'%';i++;
-  },220);
-})();
-          `,
-        }}
-      />
+
     </>
   );
 }

@@ -2053,7 +2053,17 @@ __turbopack_context__.s([
 // SEC-16 Player rendering + SEC-17 First-person arms
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/game/math.js [app-client] (ecmascript)");
 ;
-function drawPlayer(gl, player, meshLoc, tmpModel, playerBox1, playerCylinder1) {
+function _drawPart(gl, loc, m, pos, scale, ry = 0, rx = 0, rz = 0, color = [
+    1,
+    1,
+    1
+], kind = 'box', boxMesh, cylMesh) {
+    gl.uniformMatrix4fv(loc.model, false, (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mat4YPR"])(m, pos, scale, ry, rx, rz));
+    gl.uniform3f(loc.color, color[0], color[1], color[2]);
+    if (kind === 'cylinder') cylMesh.draw();
+    else boxMesh.draw();
+}
+function drawPlayer(gl, player, meshLoc, tmpModel, playerBox, playerCylinder) {
     const pl = player, p = pl.pos, t = pl.animTime, yaw = pl.yaw, siny = Math.sin(yaw), cosy = Math.cos(yaw);
     const right = new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](cosy, 0, -siny), fwd = new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](siny, 0, cosy);
     const modelBaseY = p.y - pl.standingHeight / 2 - .03;
@@ -2298,75 +2308,66 @@ function drawPlayer(gl, player, meshLoc, tmpModel, playerBox1, playerCylinder1) 
             z: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(sTorso.z, .14, reach * .5)
         };
     }
+    const _p = (pos, scale, ry = 0, rx = 0, rz = 0, color = [
+        1,
+        1,
+        1
+    ], kind = 'box')=>_drawPart(gl, meshLoc, tmpModel, pos, scale, ry, rx, rz, color, kind, playerBox, playerCylinder);
     const part = (a, b, w, c)=>{
         const dy = b.y - a.y, dz = b.z - a.z;
-        _part(gl, meshLoc, tmpModel, W((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](w, Math.hypot(dy, dz) / 2, w), yaw, Math.atan2(dz, dy), 0, c);
+        _p(W((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](w, Math.hypot(dy, dz) / 2, w), yaw, Math.atan2(dz, dy), 0, c);
     };
     part(sHipL, sKneeL, .115, pants);
     part(sKneeL, sFootL, .09, pants);
     part(sHipR, sKneeR, .115, pants);
     part(sKneeR, sFootR, .09, pants);
-    _part(gl, meshLoc, tmpModel, W(sFootL.x, sFootL.y - .02, sFootL.z + .06), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.115, .08, .19), yaw, Math.atan2(sFootL.z - sKneeL.z, sFootL.y - sKneeL.y), 0, bootC);
-    _part(gl, meshLoc, tmpModel, W(sFootR.x, sFootR.y - .02, sFootR.z + .06), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.115, .08, .19), yaw, Math.atan2(sFootR.z - sKneeR.z, sFootR.y - sKneeR.y), 0, bootC);
-    _part(gl, meshLoc, tmpModel, W((sHipR.x + sKneeR.x) / 2 + .088, (sHipR.y + sKneeR.y) / 2, (sHipR.z + sKneeR.z) / 2), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.075, .15, .085), yaw, Math.atan2(sKneeR.z - sHipR.z, sKneeR.y - sHipR.y), 0, darkB);
+    _p(W(sFootL.x, sFootL.y - .02, sFootL.z + .06), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.115, .08, .19), yaw, Math.atan2(sFootL.z - sKneeL.z, sFootL.y - sKneeL.y), 0, bootC);
+    _p(W(sFootR.x, sFootR.y - .02, sFootR.z + .06), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.115, .08, .19), yaw, Math.atan2(sFootR.z - sKneeR.z, sFootR.y - sKneeR.y), 0, bootC);
+    _p(W((sHipR.x + sKneeR.x) / 2 + .088, (sHipR.y + sKneeR.y) / 2, (sHipR.z + sKneeR.z) / 2), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.075, .15, .085), yaw, Math.atan2(sKneeR.z - sHipR.z, sKneeR.y - sHipR.y), 0, darkB);
     const rxT = leanStand + dp * .18;
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y + .10, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.46, .15, .235), yaw, rxT, 0, coat);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.30, .34, .20), yaw, rxT, 0, coat);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y - .02, sTorso.z + .006), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.235, .30, .207), yaw, rxT, 0, shirt);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y - .03, sTorso.z + .004), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.275, .27, .213), yaw, rxT, 0, vest);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y - .28, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.315, .05, .212), yaw, rxT, 0, darkB);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y - .28, sTorso.z + .108), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .062, .02), yaw, rxT, 0, buckle);
-    _part(gl, meshLoc, tmpModel, W(sTorso.x, sTorso.y + .14, sTorso.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.28, .065, .225), yaw, rxT, 0, scarf);
+    _p(W(sTorso.x, sTorso.y + .10, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.46, .15, .235), yaw, rxT, 0, coat);
+    _p(W(sTorso.x, sTorso.y, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.30, .34, .20), yaw, rxT, 0, coat);
+    _p(W(sTorso.x, sTorso.y - .02, sTorso.z + .006), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.235, .30, .207), yaw, rxT, 0, shirt);
+    _p(W(sTorso.x, sTorso.y - .03, sTorso.z + .004), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.275, .27, .213), yaw, rxT, 0, vest);
+    _p(W(sTorso.x, sTorso.y - .28, sTorso.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.315, .05, .212), yaw, rxT, 0, darkB);
+    _p(W(sTorso.x, sTorso.y - .28, sTorso.z + .108), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .062, .02), yaw, rxT, 0, buckle);
+    _p(W(sTorso.x, sTorso.y + .14, sTorso.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.28, .065, .225), yaw, rxT, 0, scarf);
     part(sShL, sElbL, .105, shirt);
     part(sElbL, sHandL, .088, shirt);
     part(sShR, sElbR, .105, shirt);
     part(sElbR, sHandR, .088, shirt);
-    const cuff = (e, hd)=>_part(gl, meshLoc, tmpModel, W((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.x, hd.x, .78), (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.y, hd.y, .78), (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.z, hd.z, .78)), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.094, .075, .094), yaw, 0, 0, skin);
+    const cuff = (e, hd)=>_p(W((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.x, hd.x, .78), (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.y, hd.y, .78), (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["lerp"])(e.z, hd.z, .78)), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.094, .075, .094), yaw, 0, 0, skin);
     cuff(sElbL, sHandL);
     cuff(sElbR, sHandR);
-    _part(gl, meshLoc, tmpModel, W(sHandL.x, sHandL.y - .01, sHandL.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .12, .12), yaw, 0, 0, skin);
-    _part(gl, meshLoc, tmpModel, W(sHandR.x, sHandR.y - .01, sHandR.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .12, .12), yaw, 0, 0, skin);
+    _p(W(sHandL.x, sHandL.y - .01, sHandL.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .12, .12), yaw, 0, 0, skin);
+    _p(W(sHandR.x, sHandR.y - .01, sHandR.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .12, .12), yaw, 0, 0, skin);
     const headRx = pl.crouching ? -.22 : 0;
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y, sHead.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.17, .17, .18), yaw, headRx, 0, skin, 'cylinder');
-    _part(gl, meshLoc, tmpModel, W(sHead.x - .05, sHead.y + .018, sHead.z + .078), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.036, .036, .018), yaw, headRx, 0, eyeW2);
-    _part(gl, meshLoc, tmpModel, W(sHead.x + .05, sHead.y + .018, sHead.z + .078), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.036, .036, .018), yaw, headRx, 0, eyeW2);
-    _part(gl, meshLoc, tmpModel, W(sHead.x - .05, sHead.y + .018, sHead.z + .087), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.018, .018, .012), yaw, headRx, 0, eyeDark);
-    _part(gl, meshLoc, tmpModel, W(sHead.x + .05, sHead.y + .018, sHead.z + .087), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.018, .018, .012), yaw, headRx, 0, eyeDark);
-    _part(gl, meshLoc, tmpModel, W(sHead.x - .052, sHead.y + .055, sHead.z + .076), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .016, .02), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x + .052, sHead.y + .055, sHead.z + .076), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .016, .02), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y - .012, sHead.z + .092), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.03, .05, .045), yaw, headRx, 0, skin);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y - .045, sHead.z + .1), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.038, .026, .032), yaw, headRx, 0, skin);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y - .063, sHead.z + .088), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .026, .03), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y - .079, sHead.z + .086), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.05, .01, .014), yaw, headRx, 0, lipC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x - .092, sHead.y - .005, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.028, .05, .036), yaw, headRx, -.15, skin);
-    _part(gl, meshLoc, tmpModel, W(sHead.x + .092, sHead.y - .005, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.028, .05, .036), yaw, headRx, .15, skin);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y - .005, sHead.z - .07), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.15, .19, .06), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y + .072, sHead.z + .066), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.12, .022, .03), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x - .086, sHead.y - .05, sHead.z + .015), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.024, .10, .06), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x + .086, sHead.y - .05, sHead.z + .015), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.024, .10, .06), yaw, headRx, 0, hairC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y + .10, sHead.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.33, .04, .27), yaw, headRx, 0, hatC);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y + .132, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.205, .035, .16), yaw, headRx, 0, [
+    _p(W(sHead.x, sHead.y, sHead.z), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.17, .17, .18), yaw, headRx, 0, skin, 'cylinder');
+    _p(W(sHead.x - .05, sHead.y + .018, sHead.z + .078), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.036, .036, .018), yaw, headRx, 0, eyeW2);
+    _p(W(sHead.x + .05, sHead.y + .018, sHead.z + .078), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.036, .036, .018), yaw, headRx, 0, eyeW2);
+    _p(W(sHead.x - .05, sHead.y + .018, sHead.z + .087), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.018, .018, .012), yaw, headRx, 0, eyeDark);
+    _p(W(sHead.x + .05, sHead.y + .018, sHead.z + .087), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.018, .018, .012), yaw, headRx, 0, eyeDark);
+    _p(W(sHead.x - .052, sHead.y + .055, sHead.z + .076), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .016, .02), yaw, headRx, 0, hairC);
+    _p(W(sHead.x + .052, sHead.y + .055, sHead.z + .076), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.055, .016, .02), yaw, headRx, 0, hairC);
+    _p(W(sHead.x, sHead.y - .012, sHead.z + .092), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.03, .05, .045), yaw, headRx, 0, skin);
+    _p(W(sHead.x, sHead.y - .045, sHead.z + .1), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.038, .026, .032), yaw, headRx, 0, skin);
+    _p(W(sHead.x, sHead.y - .063, sHead.z + .088), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.10, .026, .03), yaw, headRx, 0, hairC);
+    _p(W(sHead.x, sHead.y - .079, sHead.z + .086), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.05, .01, .014), yaw, headRx, 0, lipC);
+    _p(W(sHead.x - .092, sHead.y - .005, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.028, .05, .036), yaw, headRx, -.15, skin);
+    _p(W(sHead.x + .092, sHead.y - .005, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.028, .05, .036), yaw, headRx, .15, skin);
+    _p(W(sHead.x, sHead.y - .005, sHead.z - .07), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.15, .19, .06), yaw, headRx, 0, hairC);
+    _p(W(sHead.x, sHead.y + .072, sHead.z + .066), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.12, .022, .03), yaw, headRx, 0, hairC);
+    _p(W(sHead.x - .086, sHead.y - .05, sHead.z + .015), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.024, .10, .06), yaw, headRx, 0, hairC);
+    _p(W(sHead.x + .086, sHead.y - .05, sHead.z + .015), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.024, .10, .06), yaw, headRx, 0, hairC);
+    _p(W(sHead.x, sHead.y + .10, sHead.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.33, .04, .27), yaw, headRx, 0, hatC);
+    _p(W(sHead.x, sHead.y + .132, sHead.z + .005), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.205, .035, .16), yaw, headRx, 0, [
         .15,
         .09,
         .045
     ]);
-    _part(gl, meshLoc, tmpModel, W(sHead.x, sHead.y + .205, sHead.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.19, .14, .15), yaw, headRx, 0, hatC, 'cylinder');
+    _p(W(sHead.x, sHead.y + .205, sHead.z + .01), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.19, .14, .15), yaw, headRx, 0, hatC, 'cylinder');
 }
-function _part(gl, loc1, m, pos, scale, ry = 0, rx = 0, rz = 0, color = [
-    1,
-    1,
-    1
-], kind = 'box') {
-    gl.uniformMatrix4fv(loc1.model, false, (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mat4YPR"])(m, pos, scale, ry, rx, rz));
-    gl.uniform3f(loc1.color, color[0], color[1], color[2]);
-    if (kind === 'cylinder') playerCylinder.draw();
-    else playerBox.draw();
-}
-function _worldSeg(gl, loc1, m, a, b, w, c, playerBox1, playerCylinder1) {
-    const dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z, len = Math.hypot(dx, dy, dz) || .001;
-    _part(gl, loc1, m, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"]((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2), new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](w, len / 2, w), Math.atan2(dx, dz), Math.atan2(Math.hypot(dx, dz), dy), 0, c);
-}
-function drawFirstPersonArms(gl, player, camera, meshLoc, tmpModel, playerBox1, playerCylinder1) {
+function drawFirstPersonArms(gl, player, camera, meshLoc, tmpModel, playerBox, playerCylinder) {
     const t = player.animTime, p = camera.position, f = camera.forward, r = camera.right, u = camera.up;
     const shirt = [
         .42,
@@ -2385,10 +2386,15 @@ function drawFirstPersonArms(gl, player, camera, meshLoc, tmpModel, playerBox1, 
             elbow: p.clone().add(r.clone().mul(.20 * side)).add(u.clone().mul(drop - .20)).add(f.clone().mul(.12))
         });
     const A = mk(-1), B = mk(1);
-    _worldSeg(gl, loc, tmpModel, A.elbow, A.hand, .05, shirt, playerBox1, playerCylinder1);
-    _worldSeg(gl, loc, tmpModel, B.elbow, B.hand, .05, shirt, playerBox1, playerCylinder1);
-    _part(gl, loc, tmpModel, A.hand, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.06, .065, .075), camera.yaw, camera.pitch, 0, skin);
-    _part(gl, loc, tmpModel, B.hand, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.06, .065, .075), camera.yaw, camera.pitch, 0, skin);
+    const _p = (pos, scale, ry = 0, rx = 0, rz = 0, color = [
+        1,
+        1,
+        1
+    ], kind = 'box')=>_drawPart(gl, meshLoc, tmpModel, pos, scale, ry, rx, rz, color, kind, playerBox, playerCylinder);
+    _p(A.elbow, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.05, Math.hypot(A.hand.y - A.elbow.y, A.hand.x - A.elbow.x, A.hand.z - A.elbow.z) / 2, .05), Math.atan2(A.hand.x - A.elbow.x, A.hand.z - A.elbow.z), Math.atan2(Math.hypot(A.hand.x - A.elbow.x, A.hand.z - A.elbow.z), A.hand.y - A.elbow.y), 0, shirt);
+    _p(B.elbow, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.05, Math.hypot(B.hand.y - B.elbow.y, B.hand.x - B.elbow.x, B.hand.z - B.elbow.z) / 2, .05), Math.atan2(B.hand.x - B.elbow.x, B.hand.z - B.elbow.z), Math.atan2(Math.hypot(B.hand.x - B.elbow.x, B.hand.z - B.elbow.z), B.hand.y - B.elbow.y), 0, shirt);
+    _p(A.hand, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.06, .065, .075), camera.yaw, camera.pitch, 0, skin);
+    _p(B.hand, new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["V3"](.06, .065, .075), camera.yaw, camera.pitch, 0, skin);
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -3647,7 +3653,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$engine$2e$js_
 ;
 function initWesternFrontier() {
     'use strict';
-    const canvas = document.getElementById('game'), statusLine = document.getElementById('statusLine'), notice = document.getElementById('notice'), errorEl = document.getElementById('error'), errorText = document.getElementById('errorText'), healthBar = document.getElementById('healthBar'), staminaBar = document.getElementById('staminaBar'), stateLine = document.getElementById('stateLine'), deathFade = document.getElementById('deathFade'), doorHint = document.getElementById('doorHint'), healthVal = document.getElementById('healthVal'), staminaVal = document.getElementById('staminaVal'), verBanner = document.getElementById('verBanner');
+    const canvas = document.getElementById('game'), statusLine = document.getElementById('statusLine'), notice = document.getElementById('notice'), errorEl = document.getElementById('error'), errorText = document.getElementById('errorText'), healthBar = document.getElementById('healthBar'), staminaBar = document.getElementById('staminaBar'), stateLine = document.getElementById('stateLine'), deathFade = document.getElementById('deathFade'), doorHint = document.getElementById('doorHint'), healthVal = document.getElementById('healthVal'), staminaVal = document.getElementById('staminaVal'), verBanner = document.getElementById('verBanner'), mode = document.getElementById('mode'), debugOverlay = document.getElementById('debugOverlay');
     function fail(msg) {
         errorEl.style.display = 'grid';
         errorText.textContent = String(msg);
@@ -3658,6 +3664,30 @@ function initWesternFrontier() {
         notice.classList.add('show');
         clearTimeout(flashNotice.t);
         flashNotice.t = setTimeout(()=>notice.classList.remove('show'), 2200);
+    }
+    // Loading bar animation (client-only, after hydration)
+    const loadBar = document.getElementById('loadingBarFill');
+    const loadOverlay = document.getElementById('loadingOverlay');
+    if (loadBar && loadOverlay) {
+        const steps = [
+            12,
+            28,
+            48,
+            65,
+            80,
+            92,
+            100
+        ];
+        let i = 0;
+        const iv = setInterval(()=>{
+            if (i >= steps.length) {
+                clearInterval(iv);
+                setTimeout(()=>loadOverlay.classList.add('hide'), 400);
+                return;
+            }
+            loadBar.style.width = steps[i] + '%';
+            i++;
+        }, 220);
     }
     const game = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$engine$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createGame"])({
         canvas,
@@ -3673,7 +3703,10 @@ function initWesternFrontier() {
         healthVal,
         staminaVal,
         verBanner,
-        flashNotice
+        mode,
+        debugOverlay,
+        flashNotice,
+        fail
     });
     window.__WESTERN_FRONTIER__ = game;
 }
@@ -3943,7 +3976,7 @@ class WorldObjects {
     }
     drawProps() {
         const ctx = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$draw$2d$context$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createDrawContext"])(this, this._gl, this._loc);
-        _drawProps(ctx);
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$town$2d$buildings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawProps"])(ctx);
     }
     drawBank() {
         const ctx = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$draw$2d$context$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createDrawContext"])(this, this._gl, this._loc);
@@ -3964,7 +3997,7 @@ class WorldObjects {
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$town$2d$buildings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawChurch"])(ctx);
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$town$2d$buildings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawStable"])(ctx);
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$bank$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawBank"])(ctx);
-        _drawProps(ctx);
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$town$2d$buildings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawProps"])(ctx);
         for (const d of this.doors){
             if (d.barred) continue;
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$doors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["drawDoor"])(ctx, d);

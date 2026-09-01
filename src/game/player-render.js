@@ -1,6 +1,12 @@
 // SEC-16 Player rendering + SEC-17 First-person arms
 import {V3,clamp,lerp,smooth,mat4YPR} from './math.js';
 
+function _drawPart(gl,loc,m,pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box',boxMesh,cylMesh){
+  gl.uniformMatrix4fv(loc.model,false,mat4YPR(m,pos,scale,ry,rx,rz));
+  gl.uniform3f(loc.color,color[0],color[1],color[2]);
+  if(kind==='cylinder')cylMesh.draw();else boxMesh.draw();
+}
+
 export function drawPlayer(gl,player,meshLoc,tmpModel,playerBox,playerCylinder){
   const pl=player,p=pl.pos,t=pl.animTime,yaw=pl.yaw,siny=Math.sin(yaw),cosy=Math.cos(yaw);
   const right=new V3(cosy,0,-siny),fwd=new V3(siny,0,cosy);
@@ -56,53 +62,47 @@ export function drawPlayer(gl,player,meshLoc,tmpModel,playerBox,playerCylinder){
     sElbR={x:lerp(sElbR.x,.21,reach),y:lerp(sElbR.y,1.34,reach*.8),z:lerp(sElbR.z,.42,reach)};
     sTorso={x:sTorso.x,y:sTorso.y,z:lerp(sTorso.z,.14,reach*.5)};
   }
-  const part=(a,b,w,c)=>{const dy=b.y-a.y,dz=b.z-a.z;_part(gl,meshLoc,tmpModel,W((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2),new V3(w,Math.hypot(dy,dz)/2,w),yaw,Math.atan2(dz,dy),0,c)};
+  const _p=(pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box')=>_drawPart(gl,meshLoc,tmpModel,pos,scale,ry,rx,rz,color,kind,playerBox,playerCylinder);
+  const part=(a,b,w,c)=>{const dy=b.y-a.y,dz=b.z-a.z;_p(W((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2),new V3(w,Math.hypot(dy,dz)/2,w),yaw,Math.atan2(dz,dy),0,c)};
   part(sHipL,sKneeL,.115,pants);part(sKneeL,sFootL,.09,pants);part(sHipR,sKneeR,.115,pants);part(sKneeR,sFootR,.09,pants);
-  _part(gl,meshLoc,tmpModel,W(sFootL.x,sFootL.y-.02,sFootL.z+.06),new V3(.115,.08,.19),yaw,Math.atan2(sFootL.z-sKneeL.z,sFootL.y-sKneeL.y),0,bootC);
-  _part(gl,meshLoc,tmpModel,W(sFootR.x,sFootR.y-.02,sFootR.z+.06),new V3(.115,.08,.19),yaw,Math.atan2(sFootR.z-sKneeR.z,sFootR.y-sKneeR.y),0,bootC);
-  _part(gl,meshLoc,tmpModel,W((sHipR.x+sKneeR.x)/2+.088,(sHipR.y+sKneeR.y)/2,(sHipR.z+sKneeR.z)/2),new V3(.075,.15,.085),yaw,Math.atan2(sKneeR.z-sHipR.z,sKneeR.y-sHipR.y),0,darkB);
+  _p(W(sFootL.x,sFootL.y-.02,sFootL.z+.06),new V3(.115,.08,.19),yaw,Math.atan2(sFootL.z-sKneeL.z,sFootL.y-sKneeL.y),0,bootC);
+  _p(W(sFootR.x,sFootR.y-.02,sFootR.z+.06),new V3(.115,.08,.19),yaw,Math.atan2(sFootR.z-sKneeR.z,sFootR.y-sKneeR.y),0,bootC);
+  _p(W((sHipR.x+sKneeR.x)/2+.088,(sHipR.y+sKneeR.y)/2,(sHipR.z+sKneeR.z)/2),new V3(.075,.15,.085),yaw,Math.atan2(sKneeR.z-sHipR.z,sKneeR.y-sHipR.y),0,darkB);
   const rxT=leanStand+(dp*.18);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y+.10,sTorso.z),new V3(.46,.15,.235),yaw,rxT,0,coat);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y,sTorso.z),new V3(.30,.34,.20),yaw,rxT,0,coat);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y-.02,sTorso.z+.006),new V3(.235,.30,.207),yaw,rxT,0,shirt);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y-.03,sTorso.z+.004),new V3(.275,.27,.213),yaw,rxT,0,vest);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y-.28,sTorso.z),new V3(.315,.05,.212),yaw,rxT,0,darkB);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y-.28,sTorso.z+.108),new V3(.055,.062,.02),yaw,rxT,0,buckle);
-  _part(gl,meshLoc,tmpModel,W(sTorso.x,sTorso.y+.14,sTorso.z+.01),new V3(.28,.065,.225),yaw,rxT,0,scarf);
+  _p(W(sTorso.x,sTorso.y+.10,sTorso.z),new V3(.46,.15,.235),yaw,rxT,0,coat);
+  _p(W(sTorso.x,sTorso.y,sTorso.z),new V3(.30,.34,.20),yaw,rxT,0,coat);
+  _p(W(sTorso.x,sTorso.y-.02,sTorso.z+.006),new V3(.235,.30,.207),yaw,rxT,0,shirt);
+  _p(W(sTorso.x,sTorso.y-.03,sTorso.z+.004),new V3(.275,.27,.213),yaw,rxT,0,vest);
+  _p(W(sTorso.x,sTorso.y-.28,sTorso.z),new V3(.315,.05,.212),yaw,rxT,0,darkB);
+  _p(W(sTorso.x,sTorso.y-.28,sTorso.z+.108),new V3(.055,.062,.02),yaw,rxT,0,buckle);
+  _p(W(sTorso.x,sTorso.y+.14,sTorso.z+.01),new V3(.28,.065,.225),yaw,rxT,0,scarf);
   part(sShL,sElbL,.105,shirt);part(sElbL,sHandL,.088,shirt);part(sShR,sElbR,.105,shirt);part(sElbR,sHandR,.088,shirt);
-  const cuff=(e,hd)=>_part(gl,meshLoc,tmpModel,W(lerp(e.x,hd.x,.78),lerp(e.y,hd.y,.78),lerp(e.z,hd.z,.78)),new V3(.094,.075,.094),yaw,0,0,skin);
+  const cuff=(e,hd)=>_p(W(lerp(e.x,hd.x,.78),lerp(e.y,hd.y,.78),lerp(e.z,hd.z,.78)),new V3(.094,.075,.094),yaw,0,0,skin);
   cuff(sElbL,sHandL);cuff(sElbR,sHandR);
-  _part(gl,meshLoc,tmpModel,W(sHandL.x,sHandL.y-.01,sHandL.z),new V3(.10,.12,.12),yaw,0,0,skin);
-  _part(gl,meshLoc,tmpModel,W(sHandR.x,sHandR.y-.01,sHandR.z),new V3(.10,.12,.12),yaw,0,0,skin);
+  _p(W(sHandL.x,sHandL.y-.01,sHandL.z),new V3(.10,.12,.12),yaw,0,0,skin);
+  _p(W(sHandR.x,sHandR.y-.01,sHandR.z),new V3(.10,.12,.12),yaw,0,0,skin);
   const headRx=pl.crouching?-.22:0;
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y,sHead.z),new V3(.17,.17,.18),yaw,headRx,0,skin,'cylinder');
-  _part(gl,meshLoc,tmpModel,W(sHead.x-.05,sHead.y+.018,sHead.z+.078),new V3(.036,.036,.018),yaw,headRx,0,eyeW2);
-  _part(gl,meshLoc,tmpModel,W(sHead.x+.05,sHead.y+.018,sHead.z+.078),new V3(.036,.036,.018),yaw,headRx,0,eyeW2);
-  _part(gl,meshLoc,tmpModel,W(sHead.x-.05,sHead.y+.018,sHead.z+.087),new V3(.018,.018,.012),yaw,headRx,0,eyeDark);
-  _part(gl,meshLoc,tmpModel,W(sHead.x+.05,sHead.y+.018,sHead.z+.087),new V3(.018,.018,.012),yaw,headRx,0,eyeDark);
-  _part(gl,meshLoc,tmpModel,W(sHead.x-.052,sHead.y+.055,sHead.z+.076),new V3(.055,.016,.02),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x+.052,sHead.y+.055,sHead.z+.076),new V3(.055,.016,.02),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y-.012,sHead.z+.092),new V3(.03,.05,.045),yaw,headRx,0,skin);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y-.045,sHead.z+.1),new V3(.038,.026,.032),yaw,headRx,0,skin);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y-.063,sHead.z+.088),new V3(.10,.026,.03),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y-.079,sHead.z+.086),new V3(.05,.01,.014),yaw,headRx,0,lipC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x-.092,sHead.y-.005,sHead.z+.005),new V3(.028,.05,.036),yaw,headRx,-.15,skin);
-  _part(gl,meshLoc,tmpModel,W(sHead.x+.092,sHead.y-.005,sHead.z+.005),new V3(.028,.05,.036),yaw,headRx,.15,skin);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y-.005,sHead.z-.07),new V3(.15,.19,.06),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y+.072,sHead.z+.066),new V3(.12,.022,.03),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x-.086,sHead.y-.05,sHead.z+.015),new V3(.024,.10,.06),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x+.086,sHead.y-.05,sHead.z+.015),new V3(.024,.10,.06),yaw,headRx,0,hairC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y+.10,sHead.z+.01),new V3(.33,.04,.27),yaw,headRx,0,hatC);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y+.132,sHead.z+.005),new V3(.205,.035,.16),yaw,headRx,0,[.15,.09,.045]);
-  _part(gl,meshLoc,tmpModel,W(sHead.x,sHead.y+.205,sHead.z+.01),new V3(.19,.14,.15),yaw,headRx,0,hatC,'cylinder');
+  _p(W(sHead.x,sHead.y,sHead.z),new V3(.17,.17,.18),yaw,headRx,0,skin,'cylinder');
+  _p(W(sHead.x-.05,sHead.y+.018,sHead.z+.078),new V3(.036,.036,.018),yaw,headRx,0,eyeW2);
+  _p(W(sHead.x+.05,sHead.y+.018,sHead.z+.078),new V3(.036,.036,.018),yaw,headRx,0,eyeW2);
+  _p(W(sHead.x-.05,sHead.y+.018,sHead.z+.087),new V3(.018,.018,.012),yaw,headRx,0,eyeDark);
+  _p(W(sHead.x+.05,sHead.y+.018,sHead.z+.087),new V3(.018,.018,.012),yaw,headRx,0,eyeDark);
+  _p(W(sHead.x-.052,sHead.y+.055,sHead.z+.076),new V3(.055,.016,.02),yaw,headRx,0,hairC);
+  _p(W(sHead.x+.052,sHead.y+.055,sHead.z+.076),new V3(.055,.016,.02),yaw,headRx,0,hairC);
+  _p(W(sHead.x,sHead.y-.012,sHead.z+.092),new V3(.03,.05,.045),yaw,headRx,0,skin);
+  _p(W(sHead.x,sHead.y-.045,sHead.z+.1),new V3(.038,.026,.032),yaw,headRx,0,skin);
+  _p(W(sHead.x,sHead.y-.063,sHead.z+.088),new V3(.10,.026,.03),yaw,headRx,0,hairC);
+  _p(W(sHead.x,sHead.y-.079,sHead.z+.086),new V3(.05,.01,.014),yaw,headRx,0,lipC);
+  _p(W(sHead.x-.092,sHead.y-.005,sHead.z+.005),new V3(.028,.05,.036),yaw,headRx,-.15,skin);
+  _p(W(sHead.x+.092,sHead.y-.005,sHead.z+.005),new V3(.028,.05,.036),yaw,headRx,.15,skin);
+  _p(W(sHead.x,sHead.y-.005,sHead.z-.07),new V3(.15,.19,.06),yaw,headRx,0,hairC);
+  _p(W(sHead.x,sHead.y+.072,sHead.z+.066),new V3(.12,.022,.03),yaw,headRx,0,hairC);
+  _p(W(sHead.x-.086,sHead.y-.05,sHead.z+.015),new V3(.024,.10,.06),yaw,headRx,0,hairC);
+  _p(W(sHead.x+.086,sHead.y-.05,sHead.z+.015),new V3(.024,.10,.06),yaw,headRx,0,hairC);
+  _p(W(sHead.x,sHead.y+.10,sHead.z+.01),new V3(.33,.04,.27),yaw,headRx,0,hatC);
+  _p(W(sHead.x,sHead.y+.132,sHead.z+.005),new V3(.205,.035,.16),yaw,headRx,0,[.15,.09,.045]);
+  _p(W(sHead.x,sHead.y+.205,sHead.z+.01),new V3(.19,.14,.15),yaw,headRx,0,hatC,'cylinder');
 }
-
-function _part(gl,loc,m,pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box'){
-  gl.uniformMatrix4fv(loc.model,false,mat4YPR(m,pos,scale,ry,rx,rz));
-  gl.uniform3f(loc.color,color[0],color[1],color[2]);
-  if(kind==='cylinder')playerCylinder.draw();else playerBox.draw();
-}
-function _worldSeg(gl,loc,m,a,b,w,c,playerBox,playerCylinder){const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,len=Math.hypot(dx,dy,dz)||.001;_part(gl,loc,m,new V3((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2),new V3(w,len/2,w),Math.atan2(dx,dz),Math.atan2(Math.hypot(dx,dz),dy),0,c)}
 
 export function drawFirstPersonArms(gl,player,camera,meshLoc,tmpModel,playerBox,playerCylinder){
   const t=player.animTime,p=camera.position,f=camera.forward,r=camera.right,u=camera.up;
@@ -113,7 +113,9 @@ export function drawFirstPersonArms(gl,player,camera,meshLoc,tmpModel,playerBox,
   const mk=side=>({hand:p.clone().add(r.clone().mul(.16*side)).add(u.clone().mul(drop-walkBob+sway*side)).add(f.clone().mul(.48)),
     elbow:p.clone().add(r.clone().mul(.20*side)).add(u.clone().mul(drop-.20)).add(f.clone().mul(.12))});
   const A=mk(-1),B=mk(1);
-  _worldSeg(gl,loc,tmpModel,A.elbow,A.hand,.05,shirt,playerBox,playerCylinder);_worldSeg(gl,loc,tmpModel,B.elbow,B.hand,.05,shirt,playerBox,playerCylinder);
-  _part(gl,loc,tmpModel,A.hand,new V3(.06,.065,.075),camera.yaw,camera.pitch,0,skin);
-  _part(gl,loc,tmpModel,B.hand,new V3(.06,.065,.075),camera.yaw,camera.pitch,0,skin);
+  const _p=(pos,scale,ry=0,rx=0,rz=0,color=[1,1,1],kind='box')=>_drawPart(gl,meshLoc,tmpModel,pos,scale,ry,rx,rz,color,kind,playerBox,playerCylinder);
+  _p(A.elbow,new V3(.05,Math.hypot(A.hand.y-A.elbow.y,A.hand.x-A.elbow.x,A.hand.z-A.elbow.z)/2,.05),Math.atan2(A.hand.x-A.elbow.x,A.hand.z-A.elbow.z),Math.atan2(Math.hypot(A.hand.x-A.elbow.x,A.hand.z-A.elbow.z),A.hand.y-A.elbow.y),0,shirt);
+  _p(B.elbow,new V3(.05,Math.hypot(B.hand.y-B.elbow.y,B.hand.x-B.elbow.x,B.hand.z-B.elbow.z)/2,.05),Math.atan2(B.hand.x-B.elbow.x,B.hand.z-B.elbow.z),Math.atan2(Math.hypot(B.hand.x-B.elbow.x,B.hand.z-B.elbow.z),B.hand.y-B.elbow.y),0,shirt);
+  _p(A.hand,new V3(.06,.065,.075),camera.yaw,camera.pitch,0,skin);
+  _p(B.hand,new V3(.06,.065,.075),camera.yaw,camera.pitch,0,skin);
 }
