@@ -344,7 +344,7 @@ class WorldObjects{
     this.dot(vx1-VT-0.325,26.5,.45);                          // vault gold table
     // manager office colliders
     this.dot(10.3,27.5,.3);                                  // manager chair
-    this.boxCol(10.4,27.1,11.2,27.9);                       // manager desk
+    this.boxCol(10.45,27.05,11.15,27.95);                      // manager desk
     // manager office cabinet collider — against right wall, z=26.6
     this.boxCol(x1-WALL_T-0.55,26.6-0.5,x1-WALL_T,26.6+0.5);
   }
@@ -616,11 +616,11 @@ class WorldObjects{
     // manager desk area — chair against west, desk in front, moved north to clear doorway
     this.bankChair(10.3,27.5,Math.PI/2);
     const dkX=10.8,dkZ=27.5;
-    this.pb(dkX,gy+.72,dkZ, .8,.05,.8, C.wood2);             // desk top
-    this.pb(dkX-.33,gy+.34,dkZ-.33, .06,.68,.06, C.dark);     // leg FL
-    this.pb(dkX+.33,gy+.34,dkZ-.33, .06,.68,.06, C.dark);     // leg FR
-    this.pb(dkX-.33,gy+.34,dkZ+.33, .06,.68,.06, C.dark);     // leg BL
-    this.pb(dkX+.33,gy+.34,dkZ+.33, .06,.68,.06, C.dark);     // leg BR
+    this.pb(dkX,gy+.72,dkZ, .7,.05,.9, C.wood2);             // desk top
+    this.pb(dkX-.28,gy+.34,dkZ-.38, .06,.68,.06, C.dark);     // leg FL
+    this.pb(dkX+.28,gy+.34,dkZ-.38, .06,.68,.06, C.dark);     // leg FR
+    this.pb(dkX-.28,gy+.34,dkZ+.38, .06,.68,.06, C.dark);     // leg BL
+    this.pb(dkX+.28,gy+.34,dkZ+.38, .06,.68,.06, C.dark);     // leg BR
     // waiting area: rug, chairs, round table
     this.pb(x0+2.5,gy+.02,z0+2.85,2.6,.04,2.2,[.4,.13,.11]);
     this.bankChair(x0+1.85,z0+2.25,0);this.bankChair(x0+3.15,z0+2.25,0);
