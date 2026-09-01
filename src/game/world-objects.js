@@ -6,7 +6,7 @@ import {createDrawContext} from './draw-context.js';
 import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors as _updateDoors,drawDoor as _drawDoor} from './doors.js';
 import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _drawStable,bldWithDoor as _bldWithDoor,drawProps as _drawProps} from './town-buildings.js';
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
-import {generateSheriff as _generateSheriff,drawSheriff as _drawSheriff} from './sheriff.js';
+import {generateSheriff as _generateSheriff,drawSheriff as _drawSheriff,shPlan as _shPlan} from './sheriff.js';
 
 export class WorldObjects{
   constructor(gl,terrain){
@@ -93,6 +93,7 @@ export class WorldObjects{
     }
   }
   playerInsideBuilding(player){
+    // ---- Rectangular buildings (saloon, store, bank) — bounding box OK ----
     for(const b of Object.values(TOWN)){
       if(!b.door)continue;
       const x0=b.x-b.w/2,x1=b.x+b.w/2,z0=b.z-b.d/2,z1=b.z+b.d/2;
@@ -100,9 +101,68 @@ export class WorldObjects{
     }
     const B=BANK,x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
     if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return 'bank';
-    const SH=SHERIFF;
-    const shx0=SH.x-SH.w/2, shx1=SH.x+SH.w/2, shz0=SH.z-SH.d/2, shz1=SH.z+SH.d/2;
-    if(player.pos.x>shx0&&player.pos.x<shx1&&player.pos.z>shz0&&player.pos.z<shz1)return 'sheriff';
+
+    // ---- SHERIFF: F-shaped — must test each interior region separately.
+    // A simple rectangular bounding box would include the open notch (sky
+    // courtyard) and the exterior strip east of the spine, which are NOT
+    // inside the building. We test the actual interior rectangles of the plan.
+    return this._sheriffInside(player.pos.x, player.pos.z);
+  }
+  // Returns 'sheriff' if the given world (x,z) is inside any interior region
+  // of the F-shaped Sheriff building, otherwise null. Shared with
+  // interiorCeilingY so both methods use the exact same region test.
+  _sheriffInside(px,pz){
+    const P=_shPlan();
+    const S=P.S, WT=P.WT;
+    const m=WT*.5;
+    const armCells=(aNorthZ,aSouthZ,aEastX)=>{
+      const corrZ0=aNorthZ+WT, corrZ1=corrZ0+S.corrD, partZ=corrZ1;
+      const cellZ0=partZ+WT, cellZ1=aSouthZ-WT;
+      const ix0=P.spR+WT, ix1=aEastX-WT;
+      const avail=ix1-ix0, nc=S.cellN;
+      const cw=(avail-(nc-1)*WT)/nc;
+      const cells=[]; let cx=ix0;
+      for(let i=0;i<nc;i++){const cl=cx;cells.push({x0:cl,x1:cl+cw,z0:cellZ0,z1:cellZ1});cx=cl+cw+WT;}
+      return {corrZ0,corrZ1,cells};
+    };
+    const topArm=armCells(P.topN, P.notchN, P.topR);
+    const midArm=armCells(P.midN, P.tailN, P.midR);
+    // 1) Office
+    if(px>P.spL-m && px<P.spR+m && pz>P.tailN-m && pz<P.frontZ+m) return 'sheriff';
+    // 2) Spine passage
+    if(px>P.spL-m && px<P.spR+m && pz>P.backZ-m && pz<P.tailN+m) return 'sheriff';
+    // 3) Top arm corridor
+    if(px>P.spR-m && px<P.topR+m && pz>topArm.corrZ0-m && pz<topArm.corrZ1+m) return 'sheriff';
+    // 4) Top arm cells
+    for(const c of topArm.cells){
+      if(px>c.x0-m && px<c.x1+m && pz>c.z0-m && pz<c.z1+m) return 'sheriff';
+    }
+    // 5) Mid arm corridor
+    if(px>P.spR-m && px<P.midR+m && pz>midArm.corrZ0-m && pz<midArm.corrZ1+m) return 'sheriff';
+    // 6) Mid arm cells
+    for(const c of midArm.cells){
+      if(px>c.x0-m && px<c.x1+m && pz>c.z0-m && pz<c.z1+m) return 'sheriff';
+    }
+    return null;
+  }
+  // Returns the ceiling height (world Y) of the interior region that contains
+  // (x,z), or null if (x,z) is not inside any building. This is used by the
+  // camera clamp so the third-person camera can never rise above the ceiling
+  // and peek over the walls into the outside.
+  interiorCeilingY(x,z,key){
+    const gy=this.g(x,z);
+    if(key==='sheriff'){
+      const P=_shPlan();
+      const ceilingY=gy+P.S.h-.15; // just below the ceiling beams
+      return ceilingY;
+    }
+    if(key==='bank'){
+      return gy+BANK.h-.15;
+    }
+    if(key==='saloon'||key==='store'){
+      const b=TOWN[key];
+      return gy+b.h-.15;
+    }
     return null;
   }
   pb(x,y,z,sx,sy,sz,c,ry=0,rx=0,rz=0){

@@ -41,14 +41,29 @@ export function drawDoor(ctx,d){
   const hingeX=d.x-d.w/2;
   const hingeZ=d.z;
   const ry=d.side*ang;
-  const leaf=d.vault?BANK_STEEL:C.dark;
+  // Door leaf colour: vault → steel, interior wood door → wood, otherwise dark
+  const leaf=d.vault?BANK_STEEL:(d.key==='sheriff_interior'?C.wood:C.dark);
   ctx.pbHinge(hingeX,gy+d.h/2+.02,hingeZ,d.w*.96,d.h,.09,leaf,ry);
   if(d.vault){
     ctx.pbHinge(hingeX,gy+.8,hingeZ,d.w*.88,.15,.16,BANK_STEEL,ry);
     ctx.pbHinge(hingeX,gy+1.5,hingeZ,d.w*.88,.15,.16,BANK_STEEL,ry);
     ctx.pbHinge(hingeX,gy+d.h/2,hingeZ,.3,.3,.17,C.gold,ry);
   }
-  ctx.pb(d.x-d.w/2-.06,gy+1.1,d.z,.13,2.3,.16,C.dark);
-  ctx.pb(d.x+d.w/2+.06,gy+1.1,d.z,.13,2.3,.16,C.dark);
-  ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,C.dark);
+  // Frame: side posts + lintel (slightly larger than the opening so the door
+  // sits inside the wall opening, never floating in front of it).
+  const frameColor=d.key==='sheriff_interior'?C.wood:C.dark;
+  ctx.pb(d.x-d.w/2-.06,gy+1.1,d.z,.13,2.3,.16,frameColor);
+  ctx.pb(d.x+d.w/2+.06,gy+1.1,d.z,.13,2.3,.16,frameColor);
+  ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
+  // For the interior wood door, add plank seams on the closed leaf so it
+  // reads clearly as a wooden door. The seams are drawn along the un-rotated
+  // leaf axis (close enough at the low max swing of ~1.35 rad; the visual
+  // error is tiny). We only draw these when the door is mostly closed so the
+  // seams stay attached to the visible leaf.
+  if(d.key==='sheriff_interior' && d.open<.4){
+    for(let pi=1; pi<=3; pi++){
+      const px=d.x-d.w/2+pi*d.w/4;
+      ctx.pb(px, gy+d.h/2+.02, d.z, .025, d.h*.86, .10, C.dark);
+    }
+  }
 }

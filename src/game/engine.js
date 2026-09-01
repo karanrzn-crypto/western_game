@@ -158,6 +158,37 @@ export function createGame(dom){
         cam.position.set(t.x+dir.x*cam.currentDistance,t.y+dir.y*cam.currentDistance,t.z+dir.z*cam.currentDistance);
         if(cam.position.y<gy)cam.position.y=gy;
       }
+      // ---- INTERIOR CAMERA CLAMP (v29) ----
+      // When the player is inside a building, the third-person camera must
+      // NEVER see outside through the walls/roof. The camBoxes above already
+      // stop the camera from clipping INTO walls, but a camera positioned
+      // inside an interior can still aim through a window gap or over a low
+      // parapet and see the sky. As a hard guarantee, when the player is
+      // inside the Sheriff building (or any building), we clamp the camera
+      // position to the interior volume of that building so it physically
+      // cannot leave the room the player is standing in.
+      const inside=this.objects.playerInsideBuilding(this.player);
+      if(inside){
+        // The camera target stays at the player's head/shoulders; pull the
+        // camera closer to the target so it stays inside the same room.
+        // First, find the interior ceiling height at the player's location
+        // so the camera can never rise above it (which would let it see over
+        // the walls into the outside).
+        const ceilingY=this.objects.interiorCeilingY(this.player.pos.x,this.player.pos.z,inside);
+        if(ceilingY!==null && cam.position.y>ceilingY-CAM_MARGIN){
+          cam.position.y=ceilingY-CAM_MARGIN;
+        }
+        // Second, if the camera is still flagged as blocked (e.g. it ended
+        // up exactly on a wall after the y-clamp), pull it further in toward
+        // the player target so it definitely sits inside the room.
+        let g2=0;
+        while(g2++<6 && this.camBlocked(cam.position.x,cam.position.y,cam.position.z,boxes)){
+          cam.currentDistance=Math.max(.6,cam.currentDistance*.8);
+          cam.position.set(t.x+dir.x*cam.currentDistance,t.y+dir.y*cam.currentDistance,t.z+dir.z*cam.currentDistance);
+          if(ceilingY!==null && cam.position.y>ceilingY-CAM_MARGIN) cam.position.y=ceilingY-CAM_MARGIN;
+          if(cam.position.y<gy)cam.position.y=gy;
+        }
+      }
     }
     segBox(t,c,b){
       const dx=c.x-t.x,dy=c.y-t.y,dz=c.z-t.z;
