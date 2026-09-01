@@ -341,10 +341,10 @@ class WorldObjects{
     this.pushables.push({x:B.x-3.5,z:B.z-.15,ox:B.x-3.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     this.pushables.push({x:B.x+1.5,z:B.z-.15,ox:B.x+1.5,oz:B.z-.15,ory:Math.PI,ry:Math.PI,vx:0,vz:0,r:.30,building:'bank'});
     // vault interior colliders
-    this.dot(8.9,26.5,.55);                                 // vault gold table
+    this.dot(vx1-VT-0.325,26.5,.45);                          // vault gold table
     // manager office colliders
-    this.dot(10.3,26.0,.3);                                  // manager chair
-    this.boxCol(10.8,25.7,11.8,26.3);                         // manager desk
+    this.dot(10.3,27.5,.3);                                  // manager chair
+    this.boxCol(10.45,27.0,11.05,28.0);                       // manager desk
     // manager office cabinet collider — against right wall, z=26.6
     this.boxCol(x1-WALL_T-0.55,26.6-0.5,x1-WALL_T,26.6+0.5);
   }
@@ -613,14 +613,14 @@ class WorldObjects{
     this.pb((offX0+offGapL)/2,gy+1.8,offZ,offGapL-offX0,3.6,WALL_T,C.stone);
     this.pb((offGapR+offX1)/2,gy+1.8,offZ,offX1-offGapR,3.6,WALL_T,C.stone);
     this.pb(offDoorX,gy+(DOOR_H+3.6)/2,offZ,DOOR_GAP+.06,3.6-DOOR_H,WALL_T,C.stone);
-    // manager desk area — chair against west, desk in front
-    this.bankChair(10.3,26.0,Math.PI/2);
-    const dkX=11.3,dkZ=26.0;
-    this.pb(dkX,gy+.72,dkZ, 1.0,.05,.6, C.wood2);            // desk top
-    this.pb(dkX-.42,gy+.34,dkZ-.22, .06,.68,.06, C.dark);     // leg FL
-    this.pb(dkX+.42,gy+.34,dkZ-.22, .06,.68,.06, C.dark);     // leg FR
-    this.pb(dkX-.42,gy+.34,dkZ+.22, .06,.68,.06, C.dark);     // leg BL
-    this.pb(dkX+.42,gy+.34,dkZ+.22, .06,.68,.06, C.dark);     // leg BR
+    // manager desk area — chair against west, desk in front, moved north to clear doorway
+    this.bankChair(10.3,27.5,Math.PI/2);
+    const dkX=10.75,dkZ=27.5;
+    this.pb(dkX,gy+.72,dkZ, .6,.05,1.0, C.wood2);            // desk top (rotated 90°)
+    this.pb(dkX-.22,gy+.34,dkZ-.42, .06,.68,.06, C.dark);     // leg FL
+    this.pb(dkX+.22,gy+.34,dkZ-.42, .06,.68,.06, C.dark);     // leg FR
+    this.pb(dkX-.22,gy+.34,dkZ+.42, .06,.68,.06, C.dark);     // leg BL
+    this.pb(dkX+.22,gy+.34,dkZ+.42, .06,.68,.06, C.dark);     // leg BR
     // waiting area: rug, chairs, round table
     this.pb(x0+2.5,gy+.02,z0+2.85,2.6,.04,2.2,[.4,.13,.11]);
     this.bankChair(x0+1.85,z0+2.25,0);this.bankChair(x0+3.15,z0+2.25,0);
@@ -647,14 +647,14 @@ class WorldObjects{
       this.pb(bx,by,vz1-0.06, 0.48,0.34,0.10, BANK_STEEL);
       this.pb(bx,by,vz1-0.12, 0.03,0.08,0.03, C.dark);
     }}
-    // vault table with gold (replaced crates — center-right area)
-    const vtX=8.9,vtZ=26.5;
-    this.pb(vtX,gy+.72,vtZ, 1.1,.05,.65, C.wood2);          // table top
-    this.pb(vtX-.48,gy+.34,vtZ-.25, .06,.68,.06, C.dark);     // leg FL
-    this.pb(vtX+.48,gy+.34,vtZ-.25, .06,.68,.06, C.dark);     // leg FR
-    this.pb(vtX-.48,gy+.34,vtZ+.25, .06,.68,.06, C.dark);     // leg BL
-    this.pb(vtX+.48,gy+.34,vtZ+.25, .06,.68,.06, C.dark);     // leg BR
-    for(let i=0;i<6;i++){this.pb(vtX-.35+i*0.14, gy+.78, vtZ, 0.10,0.06,0.10, C.gold)} // gold on table
+    // vault table with gold — rotated 90°, flush against east wall
+    const vtX=vx1-VT-0.325,vtZ=26.5;
+    this.pb(vtX,gy+.72,vtZ, .65,.05,1.1, C.wood2);           // table top (rotated)
+    this.pb(vtX-.25,gy+.34,vtZ-.48, .06,.68,.06, C.dark);     // leg FL
+    this.pb(vtX+.25,gy+.34,vtZ-.48, .06,.68,.06, C.dark);     // leg FR
+    this.pb(vtX-.25,gy+.34,vtZ+.48, .06,.68,.06, C.dark);     // leg BL
+    this.pb(vtX+.25,gy+.34,vtZ+.48, .06,.68,.06, C.dark);     // leg BR
+    for(let i=0;i<6;i++){this.pb(vtX, gy+.78, vtZ-.35+i*0.14, 0.16,0.06,0.08, C.gold)} // rectangular gold bars on table
     // gold/money stacks (on floor, left of center)
     for(let i=0;i<5;i++){this.pb(dpx0+0.1+i*0.22, gy+0.14, vz1-0.5, 0.18,0.12,0.28, C.gold)}
     // extra gold near safe deposit boxes
@@ -1344,8 +1344,8 @@ class Game{
     a('Bank Office Door',bkDoorX,2.6,bkOffZ);
     a('Bank Vault Door',vdx,2.6,vz0+VT/2);
     a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
-    a('Bank Manager Chair',10.3,1.4,26.0);
-    a('Bank Manager Desk',11.3,0.8,26.0);
+    a('Bank Manager Chair',10.3,1.4,27.5);
+    a('Bank Manager Desk',10.75,0.8,27.5);
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
     a('Bank Manager Cabinet',x1-WALL_T-0.275,1.6,26.6);
     for(let i=0;i<this.objects.pushables.length;i++){
