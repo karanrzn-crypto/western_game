@@ -1,6 +1,6 @@
 // WorldObjects — collision, door, and rendering state for the town
-import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
-import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+import {mat4Identity,clamp,lerp,smooth,mat4YPR,V3} from './math.js';
+import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,DOOR_OPEN_REMOVE,C,BANK,SHERIFF,SH_PARKET} from './config.js';
 import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
 import {createDrawContext} from './draw-context.js';
 import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors as _updateDoors,drawDoor as _drawDoor} from './doors.js';

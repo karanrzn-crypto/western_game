@@ -1,16 +1,10 @@
 ▲ Next.js 16.3.4 (Turbopack)
 - Local:         http://localhost:3000
-- Network:       http://21.0.7.142:3000
+- Network:       http://21.0.9.97:3000
 - Environments: .env
-✓ Ready in 352ms
-✓ Running next.config.ts took 42ms
-Attention: Next.js now collects completely anonymous telemetry regarding usage.
-This information is used to shape Next.js' roadmap and prioritize features.
-You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-https://nextjs.org/telemetry
+✓ Ready in 286ms
+✓ Running next.config.ts took 30ms
 
-
-○ Compiling / ...
 ⨯ ./src/game/world-objects.js:3:63
 Error: the name `C` is defined multiple times
   [90m1 |[0m ...[90m collision, door, and rendering state for the town[0m
@@ -99,7 +93,7 @@ Import traces:
     ./src/app/page.tsx [Server Component]
 
 
- GET / 500 in 5.1s (next.js: 4.9s, application-code: 116ms)
+ GET / 500 in 1545ms (next.js: 1431ms, application-code: 114ms)
 ⨯ ./src/game/world-objects.js:3:63
 Error: the name `C` is defined multiple times
   [90m1 |[0m ...[90m collision, door, and rendering state for the town[0m
@@ -188,7 +182,7 @@ Import traces:
     ./src/app/page.tsx [Server Component]
 
 
- GET / 500 in 16ms (next.js: 7ms, application-code: 8ms)
+ GET / 500 in 15ms (next.js: 9ms, application-code: 6ms)
 ⨯ ./src/game/world-objects.js:3:63
 Error: the name `C` is defined multiple times
   [90m1 |[0m ...[90m collision, door, and rendering state for the town[0m
@@ -277,4 +271,457 @@ Import traces:
     ./src/app/page.tsx [Server Component]
 
 
- GET / 500 in 13ms (next.js: 6ms, application-code: 7ms)
+ GET / 500 in 27ms (next.js: 18ms, application-code: 10ms)
+⚠ Blocked cross-origin request to Next.js dev resource /__nextjs_original-stack-frames from "preview-chat-fe464c6a-48cf-4b15-a493-3fd7fabe3319.space-z.ai".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['preview-chat-fe464c6a-48cf-4b15-a493-3fd7fabe3319.space-z.ai'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[browser] Uncaught Error: ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/game/world-objects.js:3:63)
+    at <unknown> (Error: (./src/game/world-objects.js:3:63)
+⚠ Blocked cross-origin request to Next.js dev resource /__nextjs_font/geist-mono-latin.woff2 from "preview-chat-fe464c6a-48cf-4b15-a493-3fd7fabe3319.space-z.ai".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['preview-chat-fe464c6a-48cf-4b15-a493-3fd7fabe3319.space-z.ai'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[browser] ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-client] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-ssr] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-client] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-ssr] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-client] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-ssr] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-client] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-ssr] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:3:63
+Error: the name `C` is defined multiple times
+  1 | ... collision, door, and rendering state for the town
+  2 | ...ty,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+> 3 | ...GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+    |                                                ^
+  4 | ...linderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | ...Context} from './draw-context.js';
+  6 | ...r as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors ...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-client] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[browser] ./src/game/world-objects.js:2:1
+Error: Export DOOR_OPEN_REMOVE doesn't exist in target module
+  1 | // WorldObjects — collision, door, and rendering state for the town
+> 2 | import {mat4Identity,clamp,lerp,smooth,DOOR_OPEN_REMOVE,mat4YPR,V3} from './math.js';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C,BANK,SHERIFF,C,SH_PARKET} from './config.js';
+  4 | import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
+  5 | import {createDrawContext} from './draw-context.js';
+
+The export DOOR_OPEN_REMOVE was not found in module [project]/src/game/math.js [app-ssr] (ecmascript).
+Did you mean to import mat4Perspective?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/game/world-objects.js [Client Component Browser]
+    ./src/game/engine.js [Client Component Browser]
+    ./src/game/western-frontier.js [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/game/world-objects.js [Client Component SSR]
+    ./src/game/engine.js [Client Component SSR]
+    ./src/game/western-frontier.js [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+✓ Compiled in 177ms

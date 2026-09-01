@@ -3742,7 +3742,7 @@ class WorldObjects {
     colliders() {
         const out = this.cols.slice();
         for (const d of this.doors){
-            if (!d.col.off && d.open < __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$math$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DOOR_OPEN_REMOVE"]) out.push(d.col);
+            if (!d.col.off && d.open < __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$game$2f$config$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DOOR_OPEN_REMOVE"]) out.push(d.col);
         }
         for (const p of this.pushables)out.push({
             x: p.x,
