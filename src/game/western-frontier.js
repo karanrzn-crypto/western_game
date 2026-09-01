@@ -873,7 +873,7 @@ class WorldObjects{
     // Concavity south face: z=-9.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, c2z0, cellX1-corrX1, H, WALL_T, stn);
     // Concavity east face: x=1.5, z: -9.5 to -10.5
-    this.pb(corrX1, (c2z0+gapZ0)/2, (c2z0+gapZ0)/2, WALL_T, H, S.gapD, stn);
+    this.pb(corrX1, cy, (c2z0+gapZ0)/2, WALL_T, H, S.gapD, stn);
     // Concavity north face: z=-10.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, gapZ0, cellX1-corrX1, H, WALL_T, stn);
     // Cell 1 east wall: x=7.5, z: -10.5 to -12.5
@@ -881,7 +881,7 @@ class WorldObjects{
     // North back wall: z=-12.5, x: -4.5 to 7.5
     this.pb((sx0+cellX1)/2, gy+H/2, backZ, cellX1-sx0, H, WALL_T, stn);
     // West wall: x=-4.5, z: -12.5 to -4.5
-    this.pb(sx0, (backZ+frontZ)/2, WALL_T, H, frontZ-backZ, stn);
+    this.pb(sx0, cy, (backZ+frontZ)/2, WALL_T, H, frontZ-backZ, stn);
     // Trim along base
     this.pb(S.x, gy+.005, (frontZ+backZ)/2, S.w+.06, .01, S.d+.06, dk);
 
@@ -893,13 +893,13 @@ class WorldObjects{
     if(S.h>DOOR_H+.2) this.pb(offDoorX, gy+(DOOR_H+S.h)/2, offZ, S.doorW+.06, S.h-DOOR_H, WALL_T, stn);
     // Corridor/cell 2 wall at x=corrX1 (with door gap)
     const c2dgZ0=c2DoorZ-.9, c2dgZ1=c2DoorZ+.9;
-    this.pb(corrX1, (offZ+c2dgZ0)/2, WALL_T, H, offZ-c2dgZ0, stn);
-    this.pb(corrX1, (c2dgZ1+c2z0)/2, WALL_T, H, c2z0-c2dgZ1, stn);
+    this.pb(corrX1, cy, (offZ+c2dgZ0)/2, WALL_T, H, offZ-c2dgZ0, stn);
+    this.pb(corrX1, cy, (c2dgZ1+c2z0)/2, WALL_T, H, c2z0-c2dgZ1, stn);
     if(S.h>DOOR_H+.2) this.pb(corrX1, gy+(DOOR_H+S.h)/2, c2DoorZ, WALL_T, S.h-DOOR_H, 1.8, stn);
     // Corridor/cell 1 wall at x=corrX1 (with door gap)
     const c1dgZ0=c1DoorZ-.9, c1dgZ1=c1DoorZ+.9;
-    this.pb(corrX1, (gapZ0+c1dgZ0)/2, WALL_T, H, gapZ0-c1dgZ0, stn);
-    this.pb(corrX1, (c1dgZ1+backZ)/2, WALL_T, H, backZ-c1dgZ1, stn);
+    this.pb(corrX1, cy, (gapZ0+c1dgZ0)/2, WALL_T, H, gapZ0-c1dgZ0, stn);
+    this.pb(corrX1, cy, (c1dgZ1+backZ)/2, WALL_T, H, backZ-c1dgZ1, stn);
     if(S.h>DOOR_H+.2) this.pb(corrX1, gy+(DOOR_H+S.h)/2, c1DoorZ, WALL_T, S.h-DOOR_H, 1.8, stn);
 
     // ========== FLAT ROOF (F-shape, 5 slabs) ==========
