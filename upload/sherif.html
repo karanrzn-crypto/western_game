@@ -1,0 +1,249 @@
+/**
+ * ============================================================
+ * ساختمان شریف (Sheriff Building) — نسخه‌ی F-شکل
+ * ============================================================
+ * ایده: اسکلت کلی ساختمان مثل حرف انگلیسی "F" است.
+ *   - بدنه‌ی عمودی سمت چپ = دفتر شریف (ورودی، میز، قفسه اسلحه)
+ *   - دو بازوی افقی (دندانه‌های F) = دو ردیف سلول زندان
+ *     - دندانه‌ی بالایی: بلندتر و با ۳ سلول
+ *     - دندانه‌ی میانی: کوتاه‌تر و با ۳ سلول (قابل تنظیم)
+ *   - راهروی نگهبانی جلوی سلول‌ها، بین بدنه و ردیف سلول‌ها
+ *
+ * این فایل مستقل و بدون وابستگی است (خالص JS/ES Module).
+ * هم با Canvas خام کار می‌کند، هم به‌راحتی در Phaser 3 قابل استفاده است.
+ *
+ * --------------------------------------------------------------
+ * استفاده‌ی مستقل با Canvas:
+ *
+ *   import { generateSharifBuilding, renderSharifBuilding } from './sharif-building.js';
+ *   const map = generateSharifBuilding();
+ *   const ctx = canvas.getContext('2d');
+ *   renderSharifBuilding(ctx, map, offsetX, offsetY);
+ *
+ * --------------------------------------------------------------
+ * استفاده در Phaser 3 (به‌جای اسپرایت‌های رنگی، از تایل‌ست خودتون استفاده کنید):
+ *
+ *   import { generateSharifBuilding, TILE } from './sharif-building.js';
+ *   const map = generateSharifBuilding();
+ *   const tilemap = this.make.tilemap({
+ *     data: map.grid, tileWidth: map.tileSize, tileHeight: map.tileSize
+ *   });
+ *   const tileset = tilemap.addTilesetImage('sharifTiles', 'sharifTilesKey', map.tileSize, map.tileSize);
+ *   const layer = tilemap.createLayer(0, tileset, worldX, worldY);
+ *   layer.setCollision([TILE.WALL, TILE.BARS, TILE.RACK, TILE.DESK]);
+ *
+ *   // برای جایگزینی عدد تایل‌ها با ایندکس تصاویر تایل‌ست خودتون، از mapTileIndices استفاده کنید:
+ *   const remapped = mapTileIndices(map.grid, {
+ *     [TILE.WALL]: 12, [TILE.FLOOR]: 3, [TILE.DOOR]: 20, [TILE.BARS]: 25,
+ *     [TILE.WINDOW]: 8, [TILE.DESK]: 30, [TILE.RACK]: 31, [TILE.CORRIDOR]: 4,
+ *   });
+ *
+ * --------------------------------------------------------------
+ * منطق بازی (بازداشت/آزادی زندانی):
+ *   map.cells یک آرایه است، هر عضو: { id, x, y, width, height, doorTile }
+ *   doorTile مختصات ردیف میله‌ی جلوی همون سلول رو میده تا بشه در بازی
+ *   اون تایل رو موقع "باز کردن سلول" از BARS به FLOOR تغییر داد (یا برعکس).
+ * ============================================================
+ */
+
+export const TILE = {
+  EMPTY: 0,     // فضای بیرون ساختمان (چیزی رسم نمی‌شود)
+  WALL: 1,      // دیوار — مانع عبور
+  FLOOR: 2,     // کف قابل عبور
+  DOOR: 3,      // درب ورودی اصلی — قابل باز/بسته شدن
+  BARS: 4,      // میله‌ی جلوی سلول — مانع عبور تا وقتی باز نشده
+  WINDOW: 5,    // پنجره روی دیوار بیرونی (فقط تزئینی)
+  DESK: 6,      // میز شریف
+  RACK: 7,      // قفسه‌ی اسلحه
+  CORRIDOR: 8,  // راهروی نگهبانی جلوی سلول‌ها
+};
+
+/**
+ * نقشه‌ی ساختمان شریف رو به شکل حرف F می‌سازه.
+ * @param {object} options - همه‌ی پارامترها اختیاری و قابل تنظیم هستند.
+ */
+export function generateSharifBuilding(options = {}) {
+  const {
+    tileSize      = 32,  // اندازه‌ی هر تایل به پیکسل
+    spineWidth    = 5,   // عرض بدنه‌ی عمودی F (دفتر شریف)
+    armLengthTop  = 17,  // طول دندانه‌ی بالایی (بلندترین بازو)
+    armLengthMid  = 12,  // طول دندانه‌ی میانی (کوتاه‌تر از بالایی)
+    armThickness  = 8,   // ضخامت (ارتفاع) هر بازو، شامل دیوار+راهرو+سلول
+    notchGap      = 4,   // فاصله‌ی خالیِ تورفتگی بین دو بازو (مشخصه‌ی حرف F)
+    tailLength    = 8,   // ادامه‌ی بدنه‌ی عمودی زیر بازوی میانی تا کف ساختمان
+    cellsPerArm   = 3,   // تعداد سلول در هر بازو
+  } = options;
+
+  const height = armThickness + notchGap + armThickness + tailLength;
+  const width  = spineWidth + Math.max(armLengthTop, armLengthMid);
+
+  const grid = Array.from({ length: height }, () => Array(width).fill(TILE.EMPTY));
+  const cells = [];
+
+  // ---------- بدنه‌ی عمودی: دفتر شریف ----------
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < spineWidth; x++) {
+      const isEdge = x === 0 || x === spineWidth - 1 || y === 0 || y === height - 1;
+      grid[y][x] = isEdge ? TILE.WALL : TILE.FLOOR;
+    }
+  }
+  const doorCol = Math.floor(spineWidth / 2);
+  grid[height - 1][doorCol] = TILE.DOOR;       // درب ورودی، وسط ضلع پایینی
+  grid[height - 3][doorCol] = TILE.DESK;       // میز شریف نزدیک ورودی
+  if (doorCol + 1 < spineWidth - 1) {
+    grid[height - 3][doorCol + 1] = TILE.RACK; // قفسه اسلحه کنار میز
+  }
+
+  // ---------- تابع کمکی: ساخت یک بازو (دندانه‌ی F) پر از سلول ----------
+  function buildArm(rowStart, armLength, armId) {
+    const rowEnd = rowStart + armThickness;
+    const colStart = spineWidth;
+    const colEnd = spineWidth + armLength;
+
+    // دیوارهای بیرونی بازو
+    for (let y = rowStart; y < rowEnd; y++) {
+      for (let x = colStart; x < colEnd; x++) {
+        const isTopWall = y === rowStart;
+        const isBottomWall = y === rowEnd - 1;
+        const isRightWall = x === colEnd - 1;
+        grid[y][x] = (isTopWall || isBottomWall || isRightWall) ? TILE.WALL : TILE.FLOOR;
+      }
+    }
+
+    // راهروی نگهبانی، چسبیده به بدنه
+    const corridorRow = rowStart + 1;
+    for (let x = colStart; x < colEnd; x++) {
+      grid[corridorRow][x] = TILE.CORRIDOR;
+    }
+
+    // چند پنجره روی دیوار بیرونی بازو برای نور طبیعی
+    for (let x = colStart + 2; x < colEnd - 1; x += 4) {
+      grid[rowStart][x] = TILE.WINDOW;
+    }
+
+    // تقسیم بقیه‌ی فضا به N سلول در طول بازو
+    const cellTop = rowStart + 2;      // ردیف میله‌ها (جلوی سلول)
+    const cellBottom = rowEnd - 2;     // آخرین ردیفِ کفِ سلول
+    const usableWidth = armLength - 1; // بدون دیوار انتهایی راست
+    const cellWidth = Math.floor((usableWidth - (cellsPerArm - 1)) / cellsPerArm);
+
+    let cx = colStart + 1;
+    for (let i = 0; i < cellsPerArm; i++) {
+      const cellLeft = cx;
+      const cellRight = cellLeft + cellWidth;
+
+      // میله‌های جلوی سلول، رو به راهرو
+      for (let x = cellLeft; x < cellRight; x++) {
+        grid[cellTop][x] = TILE.BARS;
+      }
+      // کفِ داخل سلول
+      for (let y = cellTop + 1; y <= cellBottom; y++) {
+        for (let x = cellLeft; x < cellRight; x++) {
+          grid[y][x] = TILE.FLOOR;
+        }
+      }
+      // دیوار جداکننده با سلول بعدی
+      if (i < cellsPerArm - 1) {
+        for (let y = cellTop; y <= cellBottom; y++) {
+          grid[y][cellRight] = TILE.WALL;
+        }
+      }
+
+      cells.push({
+        id: `${armId}-cell-${i + 1}`,
+        x: cellLeft,
+        y: cellTop + 1,
+        width: cellWidth,
+        height: cellBottom - cellTop,
+        doorTile: { x: cellLeft, y: cellTop, width: cellWidth }, // برای باز/بسته کردن میله در منطق بازی
+      });
+
+      cx = cellRight + 1;
+    }
+  }
+
+  // دندانه‌ی بالایی (بلندتر)
+  buildArm(0, armLengthTop, 'top');
+  // دندانه‌ی میانی (کوتاه‌تر)، بعد از فاصله‌ی تورفتگی
+  buildArm(armThickness + notchGap, armLengthMid, 'mid');
+
+  return { grid, width, height, tileSize, cells };
+}
+
+/**
+ * جایگزین کردن اعداد تایل داخلی با ایندکس‌های تایل‌ست واقعیِ بازی شما.
+ * مفید برای وصل کردن به Phaser tilemap با اسپرایت‌شیت خودتون.
+ */
+export function mapTileIndices(grid, indexMap) {
+  return grid.map(row => row.map(tile => (indexMap[tile] ?? tile)));
+}
+
+/**
+ * لیست تایل‌هایی که باید collision داشته باشن (برای Phaser: layer.setCollision(...)).
+ */
+export function getCollisionTiles() {
+  return [TILE.WALL, TILE.BARS, TILE.DESK, TILE.RACK];
+}
+
+// ------------------------------------------------------------
+// رندر ساده روی Canvas خام (بدون نیاز به هیچ اسپرایتی، فقط برای تست/پیش‌نمایش سریع)
+// ------------------------------------------------------------
+const TILE_COLORS = {
+  [TILE.WALL]: '#4a3728',
+  [TILE.FLOOR]: '#c2a876',
+  [TILE.DOOR]: '#8b5a2b',
+  [TILE.BARS]: '#2b2b2b',
+  [TILE.WINDOW]: '#a8d8ea',
+  [TILE.DESK]: '#6b4226',
+  [TILE.RACK]: '#3d2b1f',
+  [TILE.CORRIDOR]: '#d8c39a',
+};
+
+export function renderSharifBuilding(ctx, map, originX = 0, originY = 0) {
+  const { grid, tileSize } = map;
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[y].length; x++) {
+      const tile = grid[y][x];
+      if (tile === TILE.EMPTY) continue;
+      const color = TILE_COLORS[tile];
+      const px = originX + x * tileSize;
+      const py = originY + y * tileSize;
+
+      ctx.fillStyle = color;
+      ctx.fillRect(px, py, tileSize, tileSize);
+
+      if (tile === TILE.BARS) {
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 2;
+        for (let i = 1; i < 4; i++) {
+          const lx = px + (tileSize / 4) * i;
+          ctx.beginPath();
+          ctx.moveTo(lx, py + 2);
+          ctx.lineTo(lx, py + tileSize - 2);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------
+// چاپ نقشه به‌صورت ASCII در کنسول — برای دیباگ سریع بدون نیاز به رندر گرافیکی
+// ------------------------------------------------------------
+const ASCII_CHARS = {
+  [TILE.EMPTY]: ' ',
+  [TILE.WALL]: '#',
+  [TILE.FLOOR]: '.',
+  [TILE.DOOR]: 'D',
+  [TILE.BARS]: '|',
+  [TILE.WINDOW]: 'o',
+  [TILE.DESK]: 'S',
+  [TILE.RACK]: 'R',
+  [TILE.CORRIDOR]: ',',
+};
+
+export function printAsciiMap(map) {
+  const lines = map.grid.map(row => row.map(t => ASCII_CHARS[t] ?? '?').join(''));
+  console.log(lines.join('\n'));
+  return lines.join('\n');
+}
