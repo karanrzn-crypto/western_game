@@ -873,7 +873,7 @@ class WorldObjects{
     // Concavity south face: z=-9.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, c2z0, cellX1-corrX1, H, WALL_T, stn);
     // Concavity east face: x=1.5, z: -9.5 to -10.5
-    this.pb(corrX1, (c2z0+gapZ0)/2, WALL_T, H, S.gapD, stn);
+    this.pb(corrX1, (c2z0+gapZ0)/2, (c2z0+gapZ0)/2, WALL_T, H, S.gapD, stn);
     // Concavity north face: z=-10.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, gapZ0, cellX1-corrX1, H, WALL_T, stn);
     // Cell 1 east wall: x=7.5, z: -10.5 to -12.5
@@ -1093,34 +1093,28 @@ class WorldObjects{
   }
 
   // Barred cell door: 7 vertical bars + top/bottom frame, hinged rotation
-  shBarredDoor(hingeZ, doorZ, gy, side){
-    // Find the door data to get swing value
+  shBarredDoor(hingeX, doorZ, gy, side){
     let swing=0;
-    for(const d of this.doors){
-      if(Math.abs(d.z-doorZ)<.01&&d.barred){swing=d.swing;break}
+    for(const dd of this.doors){
+      if(Math.abs(dd.z-doorZ)<.01&&dd.barred){swing=dd.swing;break}
     }
     const ang=swing*1.35;
-    const hingeX=hingeZ; // hinge is at x=corrX1
     const ry=side*ang;
-    const w=1.8, h=DOOR_H, d=.06;
+    const bw=1.8, bh=DOOR_H;
     // frame (static, not hinged)
-    this.pb(hingeX, gy+h/2+.05, doorZ, w+.12, .1, WALL_T, C.dark); // top frame
-    this.pb(hingeX, gy+.05, doorZ, w+.12, .1, WALL_T, C.dark);  // bottom frame
-    // hinged bars
-    const cy=Math.cos(ry), sy=Math.sin(ry);
-    const barCount=7, spacing=(w-.2)/(barCount-1);
+    this.pb(hingeX, gy+bh/2+.05, doorZ, bw+.12, .1, WALL_T, C.dark);
+    this.pb(hingeX, gy+.05, doorZ, bw+.12, .1, WALL_T, C.dark);
+    // hinged bars — each bar is a thin box hinged at hingeX
+    const barCount=7, spacing=(bw-.2)/(barCount-1);
     for(let i=0;i<barCount;i++){
-      const offset=-w/2+.1+i*spacing;
-      const bx=hingeX+cy*offset;
-      const bz=doorZ+sy*offset;
-      this.pbHinge(hingeX, gy+h/2, doorZ, .045, h, .045, SH_STEEL, ry);
-      // draw bar at offset from hinge
-      const m=this.tmpModel; m.fill(0);
-      const barHalfH=h/2, barHalfW=.022, barHalfD=.022;
-      m[0]=cy*barHalfW; m[4]=0; m[8]=-sy*barHalfD; m[12]=bx;
-      m[1]=0; m[5]=barHalfH; m[9]=0; m[13]=gy+h/2;
-      m[2]=sy*barHalfW; m[6]=0; m[10]=cy*barHalfD; m[14]=bz;
-      m[3]=0; m[7]=0; m[11]=0; m[15]=1;
+      const offset=-bw/2+.1+i*spacing;
+      this.pbHinge(hingeX, gy+bh/2, doorZ, .045, bh, .045, SH_STEEL, ry);
+      // offset the bar visually by adjusting the model matrix
+      const m=this.tmpModel;
+      // read current matrix, shift by offset along local Z
+      const cosA=Math.cos(ry),sinA=Math.sin(ry);
+      m[12]+=cosA*offset;
+      m[14]+=sinA*offset;
       this._gl.uniformMatrix4fv(this._loc.model,false,m);
       this._gl.uniform3f(this._loc.color,SH_STEEL[0],SH_STEEL[1],SH_STEEL[2]);
       this.box.draw();
