@@ -492,7 +492,7 @@ class WorldObjects{
 
     // ===== FURNITURE COLLIDERS =====
     // Office desk
-    const dkX=-1.5, dkZ=(offZ+frontZ)/2; // center of office
+    const dkX=-3.2, dkZ=(offZ+frontZ)/2; // center of office
     this.boxCol(dkX-0.5, dkZ-0.45, dkX+0.5, dkZ+0.45);
     // Office chair
     this.dot(dkX-0.6, dkZ, 0.3);
@@ -518,6 +518,10 @@ class WorldObjects{
   playerInDoorway(d,player){return Math.abs(player.pos.x-d.x)<d.w/2+.45&&Math.abs(player.pos.z-d.z)<.7}
   updateDoors(dt,player){
     for(const d of this.doors){
+      // Auto-push closed doors when player walks into the doorway
+      if(!d.pushing&&d.open<.05&&this.playerInDoorway(d,player)){
+        d.pushing=true;d.pushT=0;d.col.off=true;
+      }
       if(d.pushing){
         d.pushT+=dt;
         d.target=smooth(0,1,clamp(d.pushT/.4,0,1));
@@ -869,7 +873,7 @@ class WorldObjects{
     this.pb((gapR+sx1)/2, cy, frontZ, sx1-gapR, H, WALL_T, stn);
     if(S.h>DOOR_H+.2) this.pb(S.x, gy+(DOOR_H+S.h)/2, frontZ, S.doorW+.06, S.h-DOOR_H, WALL_T, stn);
     // East wall continuous: office + cell 2 (x=7.5, z: -4.5 to -9.5)
-    this.pb(cellX1-WALL_T/2, (frontZ+c2z0)/2, cellX1, WALL_T, H, frontZ-c2z0, stn);
+    this.pb(cellX1-WALL_T/2, cy, (frontZ+c2z0)/2, WALL_T, H, frontZ-c2z0, stn);
     // Concavity south face: z=-9.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, c2z0, cellX1-corrX1, H, WALL_T, stn);
     // Concavity east face: x=1.5, z: -9.5 to -10.5
@@ -877,7 +881,7 @@ class WorldObjects{
     // Concavity north face: z=-10.5, x: 1.5 to 7.5
     this.pb((corrX1+cellX1)/2, gy+H/2, gapZ0, cellX1-corrX1, H, WALL_T, stn);
     // Cell 1 east wall: x=7.5, z: -10.5 to -12.5
-    this.pb(cellX1-WALL_T/2, (gapZ0+backZ)/2, cellX1, WALL_T, H, backZ-gapZ0, stn);
+    this.pb(cellX1-WALL_T/2, cy, (gapZ0+backZ)/2, WALL_T, H, backZ-gapZ0, stn);
     // North back wall: z=-12.5, x: -4.5 to 7.5
     this.pb((sx0+cellX1)/2, gy+H/2, backZ, cellX1-sx0, H, WALL_T, stn);
     // West wall: x=-4.5, z: -12.5 to -4.5
@@ -954,7 +958,7 @@ class WorldObjects{
     for(const bz of[offZ-1, offZ+.4, -6.2]){this.pb((corrX1+cellX1)/2, top-.08, bz, cellX1-corrX1-.4, .15, .25, dk)}
 
     // ========== OFFICE INTERIOR ==========
-    const dkX=-1.5, dkZ=(offZ+frontZ)/2; // desk center
+    const dkX=-3.2, dkZ=(offZ+frontZ)/2; // desk center
     // --- Multi-part desk ---
     this.pb(dkX, gy+.72, dkZ, 1.0, .05, .9, wd2);            // desk top
     this.pb(dkX-.42, gy+.34, dkZ-.38, .06, .68, .06, dk);     // leg FL
