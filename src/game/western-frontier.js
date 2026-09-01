@@ -344,7 +344,7 @@ class WorldObjects{
     this.dot(vx1-VT-0.325,26.5,.45);                          // vault gold table
     // manager office colliders
     this.dot(10.3,27.5,.3);                                  // manager chair
-    this.boxCol(10.45,27.05,11.15,27.95);                      // manager desk
+    this.boxCol(10.65,27.075,11.55,27.925);                    // manager desk
     // manager office cabinet collider — against right wall, z=26.6
     this.boxCol(x1-WALL_T-0.55,26.6-0.5,x1-WALL_T,26.6+0.5);
   }
@@ -615,12 +615,12 @@ class WorldObjects{
     this.pb(offDoorX,gy+(DOOR_H+3.6)/2,offZ,DOOR_GAP+.06,3.6-DOOR_H,WALL_T,C.stone);
     // manager desk area — chair against west, desk in front, moved north to clear doorway
     this.bankChair(10.3,27.5,Math.PI/2);
-    const dkX=10.8,dkZ=27.5;
-    this.pb(dkX,gy+.72,dkZ, .7,.05,.9, C.wood2);             // desk top
-    this.pb(dkX-.28,gy+.34,dkZ-.38, .06,.68,.06, C.dark);     // leg FL
-    this.pb(dkX+.28,gy+.34,dkZ-.38, .06,.68,.06, C.dark);     // leg FR
-    this.pb(dkX-.28,gy+.34,dkZ+.38, .06,.68,.06, C.dark);     // leg BL
-    this.pb(dkX+.28,gy+.34,dkZ+.38, .06,.68,.06, C.dark);     // leg BR
+    const dkX=11.1,dkZ=27.5;
+    this.pb(dkX,gy+.72,dkZ, .9,.05,.85, C.wood2);            // desk top
+    this.pb(dkX-.38,gy+.34,dkZ-.35, .06,.68,.06, C.dark);     // leg FL
+    this.pb(dkX+.38,gy+.34,dkZ-.35, .06,.68,.06, C.dark);     // leg FR
+    this.pb(dkX-.38,gy+.34,dkZ+.35, .06,.68,.06, C.dark);     // leg BL
+    this.pb(dkX+.38,gy+.34,dkZ+.35, .06,.68,.06, C.dark);     // leg BR
     // waiting area: rug, chairs, round table
     this.pb(x0+2.5,gy+.02,z0+2.85,2.6,.04,2.2,[.4,.13,.11]);
     this.bankChair(x0+1.85,z0+2.25,0);this.bankChair(x0+3.15,z0+2.25,0);
@@ -1345,7 +1345,7 @@ class Game{
     a('Bank Vault Door',vdx,2.6,vz0+VT/2);
     a('Bank Teller Counter',(x0+1.05+x1-2.45)/2,1.3,B.z-1.45);
     a('Bank Manager Chair',10.3,1.4,27.5);
-    a('Bank Manager Desk',10.75,0.8,27.5);
+    a('Bank Manager Desk',11.1,0.8,27.5);
     a('Bank Waiting Table',x0+2.5,0.8,z0+2.85);
     a('Bank Manager Cabinet',x1-WALL_T-0.275,1.6,26.6);
     for(let i=0;i<this.objects.pushables.length;i++){
