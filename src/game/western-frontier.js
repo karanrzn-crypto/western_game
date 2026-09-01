@@ -4,8 +4,8 @@
 export function initWesternFrontier() {
 
 'use strict';
-/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v27.0.
-Evolution: ... → v26.3 (vault gold table, manager chair+desk, cabinet repositioned) → v27.0 (F-shaped Sheriff: office, 2 jail cells, barred doors, full interior, parquet floor, lanterns).
+/*[SEC-00] WESTERN FRONTIER — PART 3: TOWN v27.4.
+Evolution: ... → v27.3 (east wall fix, desk move, auto-door) → v27.4 (remove desk/chair/lamp/notice/cabinet, remove back window, remove cell door above-walls).
 MAP: 01 DOM 02 math 03 terrain 04 input 05 meshes 06 Terrain 07 TOWN+BANK+DOORS+SHERIFF 08 shaders 09 Player 10 Camera 11 DayCycle 12 Game 13 ctor 14 update 15 render+clip 16 drawPlayer 17 arms 18 HUD 19 boot.*/
 
 //[SEC-01] DOM
@@ -491,13 +491,7 @@ class WorldObjects{
     this.floors.push({x0:corrX1+WALL_T,x1:cellX1-WALL_T,z0:backZ+WALL_T/2,z1:gapZ0-WALL_T/2,y:fy});
 
     // ===== FURNITURE COLLIDERS =====
-    // Office desk
-    const dkX=-3.2, dkZ=(offZ+frontZ)/2; // center of office
-    this.boxCol(dkX-0.5, dkZ-0.45, dkX+0.5, dkZ+0.45);
-    // Office chair
-    this.dot(dkX-0.6, dkZ, 0.3);
-    // Storage cabinet (against west wall)
-    this.boxCol(corrX0+WALL_T, offZ-1.2, corrX0+WALL_T+0.6, offZ);
+    // (desk, chair, cabinet colliders removed — visuals also removed)
     // Filing cabinet (against east wall in office)
     this.boxCol(cellX1-WALL_T-0.5, offZ-0.4, cellX1-WALL_T, offZ+0.4);
     // Cell 1 bunk
@@ -895,16 +889,14 @@ class WorldObjects{
     this.pb((offGapR+corrX1)/2, cy, offZ, corrX1-offGapR, H, WALL_T, stn);
     this.pb((corrX1+cellX1)/2, cy, offZ, cellX1-corrX1, H, WALL_T, stn);
     if(S.h>DOOR_H+.2) this.pb(offDoorX, gy+(DOOR_H+S.h)/2, offZ, S.doorW+.06, S.h-DOOR_H, WALL_T, stn);
-    // Corridor/cell 2 wall at x=corrX1 (with door gap)
+    // Corridor/cell 2 wall at x=corrX1 (with door gap, no above-door wall)
     const c2dgZ0=c2DoorZ-.9, c2dgZ1=c2DoorZ+.9;
     this.pb(corrX1, cy, (offZ+c2dgZ0)/2, WALL_T, H, offZ-c2dgZ0, stn);
     this.pb(corrX1, cy, (c2dgZ1+c2z0)/2, WALL_T, H, c2z0-c2dgZ1, stn);
-    if(S.h>DOOR_H+.2) this.pb(corrX1, gy+(DOOR_H+S.h)/2, c2DoorZ, WALL_T, S.h-DOOR_H, 1.8, stn);
-    // Corridor/cell 1 wall at x=corrX1 (with door gap)
+    // Corridor/cell 1 wall at x=corrX1 (with door gap, no above-door wall)
     const c1dgZ0=c1DoorZ-.9, c1dgZ1=c1DoorZ+.9;
     this.pb(corrX1, cy, (gapZ0+c1dgZ0)/2, WALL_T, H, gapZ0-c1dgZ0, stn);
     this.pb(corrX1, cy, (c1dgZ1+backZ)/2, WALL_T, H, backZ-c1dgZ1, stn);
-    if(S.h>DOOR_H+.2) this.pb(corrX1, gy+(DOOR_H+S.h)/2, c1DoorZ, WALL_T, S.h-DOOR_H, 1.8, stn);
 
     // ========== FLAT ROOF (F-shape, 5 slabs) ==========
     const rY=top+.07;
@@ -950,53 +942,18 @@ class WorldObjects{
     this.shWin(cellX1, -8.5, 2.2, .75, 2.2, 1);
     // Cell 1 east window
     this.shWin(cellX1, -11.5, 2.2, .75, 2.2, 1);
-    // North back window (in corridor section)
-    this.shWin(-1.5, backZ, 2.2, .75, 2.2, 0);
 
     // ========== CEILING BEAMS ==========
     for(const bz of[offZ-1.5, offZ-.4, -11]){this.pb((corrX0+corrX1)/2, top-.08, bz, corrX1-corrX0-.4, .15, .25, dk)}
     for(const bz of[offZ-1, offZ+.4, -6.2]){this.pb((corrX1+cellX1)/2, top-.08, bz, cellX1-corrX1-.4, .15, .25, dk)}
 
     // ========== OFFICE INTERIOR ==========
-    const dkX=-3.2, dkZ=(offZ+frontZ)/2; // desk center
-    // --- Multi-part desk ---
-    this.pb(dkX, gy+.72, dkZ, 1.0, .05, .9, wd2);            // desk top
-    this.pb(dkX-.42, gy+.34, dkZ-.38, .06, .68, .06, dk);     // leg FL
-    this.pb(dkX+.42, gy+.34, dkZ-.38, .06, .68, .06, dk);     // leg FR
-    this.pb(dkX-.42, gy+.34, dkZ+.38, .06, .68, .06, dk);     // leg BL
-    this.pb(dkX+.42, gy+.34, dkZ+.38, .06, .68, .06, dk);     // leg BR
-    // cross brace
-    this.pb(dkX, gy+.15, dkZ, .8, .04, .04, dk);
-    // --- Paperwork on desk ---
-    this.pb(dkX-.25, gy+.76, dkZ-.15, .2, .01, .28, [0.9, 0.87, 0.78]); // paper
-    this.pb(dkX+.2, gy+.76, dkZ+.1, .18, .01, .22, [0.85, 0.82, 0.72]);  // paper 2
-    // --- Ledger ---
-    this.pb(dkX+.3, gy+.77, dkZ-.25, .15, .04, .2, [0.25, 0.15, 0.1]);  // leather ledger
-    // --- Ink bottle ---
-    this.pb(dkX-.35, gy+.78, dkZ+.2, .04, .06, .04, [0.1, 0.08, 0.15]); // ink
-    // --- Office chair (against south wall, behind desk) ---
-    this.bankChair(dkX-.05, dkZ+.7, Math.PI);
-    // --- Storage cabinet (against west wall) ---
-    const cabX=corrX0+WT+.3, cabZ=offZ-.6;
-    this.pb(cabX, gy+.85, cabZ, .6, 1.7, .9, dk);          // cabinet body
-    this.pb(cabX, gy+1.73, cabZ, .64, .06, .94, dk);        // top cap
-    this.pb(cabX-.3, gy+.85, cabZ-.2, .035, 1.6, .5, wd2);  // left door
-    this.pb(cabX-.3, gy+.85, cabZ+.2, .035, 1.6, .5, wd2);  // right door
-    for(let si=0;si<3;si++){const sy=gy+.35+si*.45;this.pb(cabX,sy,cabZ,.55,.04,.82,dk)} // 3 shelves
-    this.pb(cabX-.33, gy+.9, cabZ-.06, .03, .12, .03, C.gold); // left handle
-    this.pb(cabX-.33, gy+.9, cabZ+.06, .03, .12, .03, C.gold); // right handle
+    // (desk, chair, lamp, notice board, cabinet removed — will be re-added per user request)
     // --- Filing cabinet (against east wall in office) ---
     const fcX=cellX1-WT-.25, fcZ=offZ-.6;
     this.pb(fcX, gy+.6, fcZ, .45, 1.2, .5, SH_STEEL);       // body
     this.pb(fcX, gy+1.22, fcZ, .49, .05, .54, SH_STEEL);      // top
     for(let ri=0;ri<3;ri++){this.pb(fcX-.25, gy+.25+ri*.38, fcZ, .02, .04, .02, C.gold)} // drawer pulls
-    // --- Notice board (on west wall) ---
-    this.pb(corrX0+WT+.02, gy+2.0, (offZ+frontZ)/2+.3, .05, .8, 1.0, wd);
-    // wanted poster 1
-    this.pb(corrX0+WT+.04, gy+2.1, (offZ+frontZ)/2+.15, .01, .5, .35, [0.9,0.85,0.7]);
-    this.pb(corrX0+WT+.04, gy+1.95, (offZ+frontZ)/2+.15, .01, .12, .16, [0.8,0.75,0.6]); // sketch
-    // wanted poster 2
-    this.pb(corrX0+WT+.04, gy+2.05, (offZ+frontZ)/2+.5, .01, .4, .3, [0.88,0.83,0.68]);
     // --- Wall clock (on north partition wall) ---
     this.pb((corrX0+corrX1)/2, gy+2.8, offZ+.15, .3, .3, .05, wd);
     this.pb((corrX0+corrX1)/2, gy+2.8, offZ+.2, .15, .02, .02, dk); // hands H
@@ -1018,10 +975,6 @@ class WorldObjects{
       this.pb(rackX+.03, gy+2.05, rz, .6, .04, .04, dk); // barrel
       this.pb(rackX+.03, gy+2.0, rz, .15, .06, .04, wd); // stock
     }
-    // --- Desk lamp ---
-    this.pb(dkX+.4, gy+.76, dkZ-.35, .06, .04, .06, SH_STEEL); // base
-    this.pb(dkX+.4, gy+.84, dkZ-.35, .03, .2, .03, SH_STEEL); // arm
-    this.pb(dkX+.4, gy+.96, dkZ-.35, .15, .08, .15, [1.0,0.85,0.5]); // shade
 
     // ========== CORRIDOR ==========
     // Lantern in corridor
@@ -1812,14 +1765,9 @@ class Game{
     a('Sheriff Jail Door',-1.5,2.6,-7.5);
     a('Sheriff Cell 2 Door',1.5,2.6,-8.5);
     a('Sheriff Cell 1 Door',1.5,2.6,-11.5);
-    a('Sheriff Office Desk',-1.5,0.8,-5.7);
-    a('Sheriff Office Chair',-1.55,1.0,-5.0);
-    a('Sheriff Storage Cabinet',-4.12,1.5,-8.1);
     a('Sheriff Filing Cabinet',7.09,1.1,-8.1);
-    a('Sheriff Notice Board',-4.2,2.8,-5.8);
     a('Sheriff Wall Clock',-1.5,3.1,-7.35);
     a('Sheriff Firearm Rack',7.21,2.3,-6.0);
-    a('Sheriff Desk Lamp',-1.1,1.1,-6.05);
     a('Sheriff Cell 1 Bunk',5.5,0.7,-12.0);
     a('Sheriff Cell 2 Bunk',5.5,0.7,-8.0);
     a('Sheriff Corridor Bench',-3.7,0.6,-10.0);
