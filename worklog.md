@@ -139,3 +139,43 @@ Stage Summary:
   * No floating/clipping furniture: counter on the floor against the wall, stools on the floor, tables on the floor with pedestal bases, chairs on the floor, shelves on the wall. ✅
 - **Named objects** (searchable in `saloon.js` and `config.js`): `BarCounter`, `BarStool01..04`, `SaloonTable01..02`, `SaloonChair01..08`, `BarShelfLower`, `BarShelfUpper`, `SaloonLamp01..02`, `Piano` (optional).
 - **Reference fidelity**: layout matches the Hyper3D Rodin reference — bar counter on the back wall, 4 stools, 2 tables with 4 chairs each, 2 shelves with bottles, 2 hanging lamps, front+side windows. Piano omitted (not in reference). No new renderer / no GLB loader added.
+
+---
+Task ID: 4
+Agent: main (cron round)
+Task: QA + user-requested Saloon fixes — move bar counter forward, replace triangular gable roof with a false-front exterior, re-fix .gitignore.
+
+Work Log:
+- Reviewed worklog.md (Tasks 1-3) to understand the current state: Sheriff Office rebuilt (v29), Saloon interior rebuilt from the Hyper3D Rodin reference (v30), version strings updated to v30.
+- Ran agent-browser + VLM QA on the saloon interior and exterior. VLM rated the exterior 3/10 ("plain shed with triangular roof, no saloon character"). Identified that the bar counter was flush against the back wall with no bartender walkway, and the gable (triangular) roof didn't read as a western bar.
+- User feedback (this round): move the bar counter forward to z=-9.7 with the stools moved by the same offset; replace the triangular gable roof; make the exterior convey "bar" feeling.
+
+Changes made:
+- `config.js`: moved `BarCounter` centre z from -11.05 to -9.7 (creates a ~1.45m bartender walkway behind the counter between the counter back edge and the back wall). Moved `BarStool01..04` by the same +1.35 offset, from z=-9.70 to z=-8.35, so they keep the same ~1m gap in front of the counter. Shelves stay on the back wall at z=-11.30.
+- `world-objects.js`: changed the saloon roof call from `_bldWithDoor(ctx,TOWN.saloon,C.wood,'gable')` to `'flat'` so the actual roof is flat (no triangle). The gable mesh is no longer drawn for the saloon.
+- `saloon.js`: added `drawSaloonExterior(ctx, P)` called at the end of `drawSaloon`. It draws:
+  * **False front facade**: a tall flat wall at the front (z=z1) rising ~2.6m above the flat roof, wider than the building by 0.6m, with a cornice + decorative band at the top. This is the classic Western false-front that gives the saloon its grand rectangular silhouette.
+  * **SALOON sign**: a horizontal sign board on the false front with a GOLD border, dark inner panel, and 6 GOLD vertical letter-slats suggesting "SALOON", plus hanging brackets. Gold gives high contrast against the pale facade.
+  * **Front porch**: 4 wooden posts with stone bases + wood capitals, a flat porch roof overhang extending ~1.6m south of the front wall, a front fascia board.
+  * **Front windows** (2) flanking the door: wood frame, glass pane, cross bars dividing into 4 panes, dark shutters with horizontal slats on the outer side.
+  * **Porch railing**: a low rail between the outer posts (with a centre gap for entry) + short balusters.
+  * **Chimney**: a tall (2.2m) brick-red chimney on the roof (right side) with a dark cap, base flare, and horizontal brick-course lines.
+- `saloon.js` `generateSaloon`: added camera colliders for the false front (full facade height), the 4 porch posts, the porch roof overhang, and the chimney, so the third-person camera cannot clip through any of the new exterior features.
+- `.gitignore`: re-fixed the recurring regression (the file had reverted to only 2 lines, causing .next/ cache, .env, dev.log to get re-tracked by an earlier cron commit). Rewrote the full .gitignore and untracked .next/ (518 files), .env, dev.log, next-env.d.ts, db/custom.db again.
+
+Stage Summary:
+- **Files changed**: `config.js` (counter + stool z), `saloon.js` (drawSaloonExterior + exterior camBoxes, +130 lines), `world-objects.js` (saloon roof gable->flat), `.gitignore` (re-fixed).
+- **Build result**: lint clean (only pre-existing use-mobile.ts/use-toast.ts warnings, unrelated). Page returns 200, no console errors.
+- **Runtime verification (agent-browser + VLM)**:
+  * Bar counter moved forward — VLM confirms "the bar counter is now more forward, with a clear walkway behind it for a bartender". ✅
+  * Bar stools are in front of the counter between the tables and the bar — VLM sees them from the side angle. ✅
+  * False front facade — VLM confirms "a very prominent tall flat facade extends above the roofline, classic false front". ✅
+  * SALOON sign — VLM confirms "a prominent signboard with a gold border and dark background with vertical slats suggesting text". ✅
+  * Porch posts + overhang — VLM confirms "dark wooden posts supporting the overhanging roof". ✅
+  * Exterior rating improved from 3/10 to 6/10 per VLM.
+- **Named objects** (now searchable): `BarCounter`, `BarStool01..04`, `SaloonTable01..02`, `SaloonChair01..08`, `BarShelfLower`, `BarShelfUpper`, `SaloonLamp01..02`, `Piano`, plus new exterior elements: false front, SALOON sign, porch posts, porch roof, front windows, shutters, porch railing, chimney.
+- **Unresolved / next-phase recommendations**:
+  * VLM notes front windows are hard to see under the porch roof from some angles — could add a lamp above the door or make the windows brighter.
+  * VLM notes the chimney is hidden behind the false front from the direct front view — visible from the sides. This is architecturally correct.
+  * The recurring .gitignore regression (cron commits re-adding .next/) should be watched; the next cron round must NOT `git add -A` blindly.
+  * Future: could add swinging bat-wing saloon doors, a second-floor balcony on the false front, interior wanted posters / paintings / spittoon for more saloon atmosphere.
