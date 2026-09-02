@@ -1,6 +1,7 @@
 // Door logic — extracted from WorldObjects
 import {smooth,clamp,lerp} from './math.js';
-import {DOOR_TRIGGER,DOOR_CLOSE_SPEED,DOOR_OPEN_REMOVE,BANK_STEEL,C,SH_MAT} from './config.js';
+import {DOOR_TRIGGER,DOOR_CLOSE_SPEED,DOOR_OPEN_REMOVE,BANK_STEEL,C} from './config.js';
+import {SH_MATERIALS as SH_MAT} from './sheriff-rebuild/config.js';
 
 export function nearestDoor(doors,player){
   let best=null,bd=1e9;

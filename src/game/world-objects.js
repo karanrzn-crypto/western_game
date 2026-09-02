@@ -1,13 +1,13 @@
 // WorldObjects — collision, door, and rendering state for the town
 import {mat4Identity,clamp,lerp,smooth,mat4YPR,V3} from './math.js';
-import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,DOOR_OPEN_REMOVE,C,BANK,SHERIFF,SH_PARKET,SHERIFF_NEW} from './config.js';
+import {TOWN,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,DOOR_OPEN_REMOVE,C,BANK} from './config.js';
 import {boxMesh,cylinderMesh,floorMesh,gableMeshBaked} from './meshes.js';
 import {createDrawContext} from './draw-context.js';
 import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors as _updateDoors,drawDoor as _drawDoor} from './doors.js';
 import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _drawStable,bldWithDoor as _bldWithDoor,drawProps as _drawProps} from './town-buildings.js';
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
-import {generateSheriff as _generateNewSheriff,drawSheriffExterior as _drawSheriffExteriorNew} from './sheriff/sheriff.js';
-import {buildSheriffInterior as _buildSheriffInterior} from './sheriff/interior.js';
+import {drawSheriffExterior as _drawSheriffExteriorNew, generateSheriffColliders as _generateSheriffCollidersNew} from './sheriff-rebuild/building.js';
+import {buildSheriffInterior as _buildSheriffInterior} from './sheriff-rebuild/interior.js';
 import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon,drawSaloonBuilding as _drawSaloonBuilding,buildSaloonInterior as _buildSaloonInterior} from './bar/index.js';
 
 export class WorldObjects{
@@ -27,7 +27,7 @@ export class WorldObjects{
     this.tmpModel=mat4Identity();this._gl=null;this._loc=null;
     this.generate();
     this.generateBank();
-    this.generateSheriffNew();
+    _generateSheriffCollidersNew(this);
     this.generateSaloon();
   }
   boxCol(x0,z0,x1,z1){
@@ -46,8 +46,7 @@ export class WorldObjects{
   }
   generate(){ _generateTown(this); }
   generateBank(){ _generateBank(this); }
-  generateSheriff(){ _generateSheriff(this); }
-  generateSheriffNew(){ _generateNewSheriff(this); }
+  generateSheriff(){}  // v54: handled by _generateSheriffCollidersNew in constructor
   generateSaloon(){ _generateSaloon(this); }
   g(x,z){return this.terrain.sample(x,z)}
   nearestDoor(player){return _nearestDoor(this.doors,player)}
@@ -107,16 +106,17 @@ export class WorldObjects{
     const B=BANK,x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
     if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return 'bank';
 
-    // ---- SHERIFF v52: simple rectangular building ----
-    const sx0=SHERIFF_NEW.x-SHERIFF_NEW.w/2, sx1=SHERIFF_NEW.x+SHERIFF_NEW.w/2;
-    const sz0=SHERIFF_NEW.z-SHERIFF_NEW.d/2, sz1=SHERIFF_NEW.z+SHERIFF_NEW.d/2;
+    // ---- SHERIFF v54: rectangular building (from sheriff-rebuild/config.js) ----
+    const SN={x:4,z:-8.75,w:20,d:18,h:4.8};
+    const sx0=SN.x-SN.w/2, sx1=SN.x+SN.w/2;
+    const sz0=SN.z-SN.d/2, sz1=SN.z+SN.d/2;
     if(player.pos.x>sx0 && player.pos.x<sx1 && player.pos.z>sz0 && player.pos.z<sz1) return 'sheriff';
     return null;
   }
-  // v52: simple rectangular sheriff interior test
+  // v54: simple rectangular sheriff interior test
   _sheriffInside(px,pz){
-    const sx0=SHERIFF_NEW.x-SHERIFF_NEW.w/2, sx1=SHERIFF_NEW.x+SHERIFF_NEW.w/2;
-    const sz0=SHERIFF_NEW.z-SHERIFF_NEW.d/2, sz1=SHERIFF_NEW.z+SHERIFF_NEW.d/2;
+    const sx0=4-10, sx1=4+10;
+    const sz0=-8.75-9, sz1=-8.75+9;
     if(px>sx0 && px<sx1 && pz>sz0 && pz<sz1) return 'sheriff';
     return null;
   }
@@ -127,7 +127,7 @@ export class WorldObjects{
   interiorCeilingY(x,z,key){
     const gy=this.g(x,z);
     if(key==='sheriff'){
-      return gy+SHERIFF_NEW.h-.15;
+      return gy+4.8-.15;
     }
     if(key==='bank'){
       return gy+BANK.h-.15;
@@ -181,7 +181,7 @@ export class WorldObjects{
   drawStable(){const ctx=createDrawContext(this,this._gl,this._loc);_drawStable(ctx)}
   drawProps(){const ctx=createDrawContext(this,this._gl,this._loc);_drawProps(ctx)}
   drawBank(){const ctx=createDrawContext(this,this._gl,this._loc);_drawBank(ctx)}
-  drawSheriff(){const ctx=createDrawContext(this,this._gl,this._loc);_drawSheriff(ctx)}
+  drawSheriff(){const ctx=createDrawContext(this,this._gl,this._loc);_drawSheriffExteriorNew(ctx)}
   drawSaloon(){const ctx=createDrawContext(this,this._gl,this._loc);_drawSaloon(ctx)}
   draw(gl,loc){
     this._gl=gl;this._loc=loc;

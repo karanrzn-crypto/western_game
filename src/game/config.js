@@ -190,35 +190,7 @@ export const SALOON_LAYOUT={
 };
 export const SALOON_INCLUDE_PIANO=true;
 
-// SHERIFF v52 REBUILD — L-shaped building with office + cells
-export const SHERIFF_NEW = {
- x: 4, z: -8.75,
- w: 12,      // wide (reduced from 18 — was too wide)
- d: 16,      // deep
- h: 4.5,
- doorW: DOOR_GAP,
- office: { x0: -5, x1: 5, z0: -2, z1: 4 },      // south zone (narrowed)
- cells: { x0: -5, x1: 5, z0: -7.5, z1: -2 },    // north zone (narrowed)
-};
-export const SH_MAT = {
-  // warm western palette (v53 visual pass — keys preserved, values enriched)
-  pine:   [0.55, 0.40, 0.26],  // sun-bleached warm pine
-  pineD:  [0.44, 0.31, 0.20],  // shadowed pine (seams / base)
-  oak:    [0.49, 0.34, 0.22],  // richer saddle oak
-  oakD:   [0.34, 0.23, 0.14],  // dark oak trim
-  iron:   [0.25, 0.23, 0.22],  // aged gunmetal
-  ironD:  [0.15, 0.14, 0.15],  // deep aged iron (bar shadow / badge backing)
-  brass:  [0.74, 0.56, 0.26],  // polished brass
-  brassD: [0.56, 0.42, 0.20],  // tarnished brass shade
-  leather:[0.38, 0.22, 0.13],  // warm oiled saddle leather
-  canvas: [0.62, 0.55, 0.44],  // desaturated sun-worn canvas
-  // v53 accents (new keys — safe to add)
-  paper:  [0.93, 0.88, 0.75],  // aged notice paper
-  paperD: [0.85, 0.79, 0.63],  // older yellowed sheet
-  wanted: [0.70, 0.20, 0.15],  // wanted-poster red
-  mapbg:  [0.77, 0.69, 0.51],  // map parchment
-  blanket:[0.44, 0.31, 0.25],  // cell bunk blanket
-  glow:   [1.35, 1.00, 0.48],  // warm lamp-glow accent
-  glass:  [0.38, 0.47, 0.45],  // window glass tint
-  gold:   [0.80, 0.64, 0.28],  // badge gold
+// SHERIFF v54 REBUILD — now in sheriff-rebuild/ folder
+export const SHERIFF_DOOR = {
+ x: 4, z: -2.25, w: 1.90, h: 2.10, key: 'sheriff', side: 1, manualOnly: false
 };
