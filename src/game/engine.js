@@ -53,7 +53,7 @@ export function createGame(dom){
     }
     setCamMode(mode){
       this.camera.mode=mode;
-      dom.mode.textContent='v37 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+      dom.mode.textContent='v38 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
     }
     setDebugMode(enabled){
       this.debugMode=!!enabled;
@@ -79,11 +79,10 @@ export function createGame(dom){
       if(!inside&&this._lastInside){this.objects.resetPushables(this._lastInside)}
       this._lastInside=inside;
       const near=this.objects.nearestDoor(this.player);
-      // Show the 'press E' door hint for normal doors that are closed and not
-      // currently pushing open. The saloon's bat-wing doors auto-open, so
-      // the hint is suppressed for them (d.key==='saloon').
-      const isSaloonDoor = near && near.door.key==='saloon';
-      dom.doorHint.style.display=(near&&!isSaloonDoor&&!near.door.pushing&&near.door.open<.3)?'block':'none';
+      // Show the 'press E' door hint for any door that's closed and not
+      // currently pushing open. The saloon's bat-wing doors now also use
+      // manual E (manualOnly), so the hint shows for them too.
+      dom.doorHint.style.display=(near&&!near.door.pushing&&near.door.open<.3)?'block':'none';
       if(this.input.once('e')){
         if(near&&!near.door.pushing&&near.door.open<.3){
           near.door.pushing=true;near.door.pushT=0;
@@ -240,7 +239,7 @@ export function createGame(dom){
     const vb=dom.verBanner;
     vb.classList.add('show');
     setTimeout(()=>vb.classList.remove('show'),6000);
-    dom.flashNotice('نسخه ۳۷ — کلانتری + بار/سالون با چیدمان واقعی');
+    dom.flashNotice('نسخه ۳۸ — کلانتری + بار/سالون با چیدمان واقعی');
   }catch(err){
     dom.fail((err&&err.stack)||String(err));
   }

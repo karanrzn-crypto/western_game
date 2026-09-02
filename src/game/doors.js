@@ -14,6 +14,29 @@ export function isInside(d,player){return d.side>0?(player.pos.z<d.z-.15):(playe
 export function playerInDoorway(d,player){return Math.abs(player.pos.x-d.x)<d.w/2+.45&&Math.abs(player.pos.z-d.z)<.7}
 export function updateDoors(doors,dt,player){
   for(const d of doors){
+    // v38: manualOnly doors (saloon bat-wing) only open when the player
+    // presses E (engine.js sets d.pushing). Skip the auto-open logic so
+    // proximity alone doesn't open them.
+    if(d.manualOnly){
+      // Only handle the push animation + auto-close; no auto-open.
+      if(d.pushing){
+        d.pushT+=dt;
+        d.target=smooth(0,1,clamp(d.pushT/.4,0,1));
+        if(d.pushT>=.4){d.pushing=false;d.target=1}
+      }else if(d.open>.05){
+        // Auto-close when the player is away.
+        const inside=isInside(d,player);
+        const inWay=playerInDoorway(d,player);
+        const dist=Math.hypot(player.pos.x-d.x,player.pos.z-d.z);
+        d.target=(inside||inWay||dist<3.5)?1:0;
+      }
+      const speed=d.target<d.open?DOOR_CLOSE_SPEED:d.speed;
+      d.open=lerp(d.open,d.target,1-Math.exp(-speed*dt));
+      d.swing=smooth(0,1,d.open);
+      if(d.open<.06&&!playerInDoorway(d,player))d.col.off=false;
+      else if(d.open>.15)d.col.off=true;
+      continue;
+    }
     // Auto-push closed doors when player walks into the doorway
     if(!d.pushing&&d.open<.05&&playerInDoorway(d,player)){
       d.pushing=true;d.pushT=0;d.col.off=true;
@@ -58,10 +81,14 @@ export function drawDoor(ctx,d){
   // sits inside the wall opening, never floating in front of it).
   // v33: side posts start at gy+0.15 (above floor) instead of gy-0.05 so
   // there's NO horizontal bar / threshold at floor level blocking the entry.
+  // v38: saloon has NO side posts / lintel — the bat-wing doors alone are
+  // the door. This removes the 'rectangle in the wall' look.
   const frameColor=d.key==='sheriff_interior'?C.wood:C.dark;
-  ctx.pb(d.x-d.w/2-.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
-  ctx.pb(d.x+d.w/2+.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
-  ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
+  if(d.key!=='saloon'){
+    ctx.pb(d.x-d.w/2-.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
+    ctx.pb(d.x+d.w/2+.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
+    ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
+  }
   // v37: saloon has detailed BAT-WING swinging doors per the user's reference
   // image. Two mirrored half-height panels with vertical planks, horizontal
   // rails, curved top/bottom, iron hinges, and centre ring pulls.
