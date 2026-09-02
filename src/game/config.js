@@ -150,25 +150,28 @@ export const SALOON_LAYOUT={
   // [BarStool01..04] — 4 stools in a row in front of the counter, facing
   // north. Moved forward by the SAME offset as the counter (+1.35) so they
   // keep the same ~1.0m gap in front of the counter front edge.
-  BarStool01:    { center:[-31.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
-  BarStool02:    { center:[-30.0, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
-  BarStool03:    { center:[-28.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
-  BarStool04:    { center:[-25.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool01:    { center:[-31.5, 0.30, -8.35], size:[0.50, 0.60, 0.50], color:'dark'  },
+  BarStool02:    { center:[-30.0, 0.30, -8.35], size:[0.50, 0.60, 0.50], color:'dark'  },
+  BarStool03:    { center:[-28.5, 0.30, -8.35], size:[0.50, 0.60, 0.50], color:'dark'  },
+  BarStool04:    { center:[-25.5, 0.30, -8.35], size:[0.50, 0.60, 0.50], color:'dark'  },
   // [SaloonTable01] — round(ish, drawn as a square table) on the WEST side of
-  // the central floor, between the entrance and the bar.
-  SaloonTable01:  { center:[-31.0, 0.40, -6.50], size:[1.20, 0.06, 1.20], color:'wood'  },
+  // the central floor. v34: enlarged from 1.2 to 1.8m for better character
+  // scale (a 1.8m tall player needs ~1.8m tables to not look giant).
+  SaloonTable01:  { center:[-31.0, 0.40, -6.50], size:[1.80, 0.06, 1.80], color:'wood'  },
   // [SaloonTable02] — same, on the EAST side of the central floor.
-  SaloonTable02:  { center:[-26.0, 0.40, -6.50], size:[1.20, 0.06, 1.20], color:'wood'  },
+  SaloonTable02:  { center:[-26.0, 0.40, -6.50], size:[1.80, 0.06, 1.80], color:'wood'  },
   // [SaloonChair01..04] — 4 chairs around SaloonTable01 (N/S/E/W of it).
-  SaloonChair01:  { center:[-31.0, 0.24, -7.30], size:[0.46, 0.48, 0.46], color:'wood'  }, // north
-  SaloonChair02:  { center:[-31.0, 0.24, -5.70], size:[0.46, 0.48, 0.46], color:'wood'  }, // south
-  SaloonChair03:  { center:[-31.8, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // west
-  SaloonChair04:  { center:[-30.2, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // east
+  // v34: enlarged from 0.46 to 0.60 and moved further from the table centre
+  // (from 0.80 to 1.20 offset) so they sit at the edges of the larger table.
+  SaloonChair01:  { center:[-31.0, 0.30, -7.70], size:[0.60, 0.60, 0.60], color:'wood'  }, // north
+  SaloonChair02:  { center:[-31.0, 0.30, -5.30], size:[0.60, 0.60, 0.60], color:'wood'  }, // south
+  SaloonChair03:  { center:[-32.2, 0.30, -6.50], size:[0.60, 0.60, 0.60], color:'wood'  }, // west
+  SaloonChair04:  { center:[-29.8, 0.30, -6.50], size:[0.60, 0.60, 0.60], color:'wood'  }, // east
   // [SaloonChair05..08] — 4 chairs around SaloonTable02.
-  SaloonChair05:  { center:[-26.0, 0.24, -7.30], size:[0.46, 0.48, 0.46], color:'wood'  }, // north
-  SaloonChair06:  { center:[-26.0, 0.24, -5.70], size:[0.46, 0.48, 0.46], color:'wood'  }, // south
-  SaloonChair07:  { center:[-26.8, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // west
-  SaloonChair08:  { center:[-25.2, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // east
+  SaloonChair05:  { center:[-26.0, 0.30, -7.70], size:[0.60, 0.60, 0.60], color:'wood'  }, // north
+  SaloonChair06:  { center:[-26.0, 0.30, -5.30], size:[0.60, 0.60, 0.60], color:'wood'  }, // south
+  SaloonChair07:  { center:[-27.2, 0.30, -6.50], size:[0.60, 0.60, 0.60], color:'wood'  }, // west
+  SaloonChair08:  { center:[-24.8, 0.30, -6.50], size:[0.60, 0.60, 0.60], color:'wood'  }, // east
   // [BarShelfLower] — lower shelf behind the bar, against the back wall.
   BarShelfLower:  { center:[-28.5, 1.30, -11.30], size:[10.0, 0.06, 0.40], color:'wood2' },
   // [BarShelfUpper] — upper shelf behind the bar, against the back wall.

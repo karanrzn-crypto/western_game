@@ -75,8 +75,8 @@ export function getDebugLabels(world, objects) {
     sa('Spittoon', x0 + 1.2, 0.8, z1 - 3.0);
     sa('WantedPoster01', x0 + WALL_T + 0.04, 2.3, z1 - 2.2);
     sa('WantedPoster02', x0 + S.w - WALL_T - 0.04, 2.2, z0 + 2.5);
-    sa('SaloonPainting', x0 + S.w - WALL_T - 0.05, 2.6, z1 - 1.5);
-    sa('AntlerMount', S.x + 3.0, 3.2, z0 + WALL_T + 0.04);
+    sa('SaloonPainting', x0 + S.w - WALL_T - 0.05, 2.6, z1 - 0.8);
+    sa('AntlerMount', 0, -100, 0);  // removed (off-screen label)
     sa('WallSconce01', x0 + WALL_T + 0.08, 2.6, z0 + 2.5);
     sa('WallSconce02', x0 + S.w - WALL_T - 0.08, 2.6, z1 - 2.0);
     sa('BeerBarrel', x0 + 1.5, 1.4, z0 + 1.5);

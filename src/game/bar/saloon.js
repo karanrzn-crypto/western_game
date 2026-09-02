@@ -146,19 +146,23 @@ export function drawSaloon(ctx){
   }
 
   // ========== BAR STOOLS ==========
+  // v34: enlarged bar stools (from 0.40 to 0.50 seat) so they're proportional
+  // to the now-larger tables and chairs.
   for(const key of ['BarStool01','BarStool02','BarStool03','BarStool04']){
     const o=SALOON_LAYOUT[key];
     if(!o) continue;
     const [cx, cy, cz]=o.center;
-    ctx.pb(cx, gy+.45, cz, .40, .06, .40, wd);
-    ctx.pb(cx, gy+.47, cz, .44, .04, .44, dk);
-    ctx.pb(cx, gy+.22, cz, .06, .44, .06, dk);
-    ctx.pb(cx-.15, gy+.05, cz-.10, .05, .10, .05, dk);
-    ctx.pb(cx+.15, gy+.05, cz-.10, .05, .10, .05, dk);
-    ctx.pb(cx, gy+.05, cz+.15, .05, .10, .05, dk);
+    const [sx, , sz]=o.size;  // use config size (now 0.50)
+    ctx.pb(cx, gy+.48, cz, sx, .06, sz, wd);       // seat
+    ctx.pb(cx, gy+.50, cz, sx+.04, .04, sz+.04, dk); // seat rim
+    ctx.pb(cx, gy+.24, cz, .08, .48, .08, dk);      // centre post
+    ctx.pb(cx-.18, gy+.05, cz-.12, .06, .10, .06, dk); // feet
+    ctx.pb(cx+.18, gy+.05, cz-.12, .06, .10, .06, dk);
+    ctx.pb(cx, gy+.05, cz+.18, .06, .10, .06, dk);
   }
 
   // ========== SALOON TABLES ==========
+  // v34: tables now 1.8m (from config), with a thicker pedestal + base.
   for(const tKey of ['SaloonTable01','SaloonTable02']){
     const o=SALOON_LAYOUT[tKey];
     if(!o) continue;
@@ -167,10 +171,10 @@ export function drawSaloon(ctx){
     ctx.pb(cx, gy+.78, cz, sx, .06, sz, wd);
     // Table top edge.
     ctx.pb(cx, gy+.80, cz, sx+.06, .03, sz+.06, dk);
-    // Centre pedestal.
-    ctx.pb(cx, gy+.39, cz, .10, .78, .10, dk);
-    // Pedestal base.
-    ctx.pb(cx, gy+.03, cz, .40, .06, .40, dk);
+    // Centre pedestal (thicker for the larger table).
+    ctx.pb(cx, gy+.39, cz, .14, .78, .14, dk);
+    // Pedestal base (wider for stability).
+    ctx.pb(cx, gy+.03, cz, .60, .06, .60, dk);
   }
 
   // ========== POKER TABLE CLOTH (SaloonTable01 becomes a poker table) ==========
@@ -186,28 +190,35 @@ export function drawSaloon(ctx){
   }
 
   // ========== SALOON CHAIRS ==========
+  // v34: chairs now 0.60m (from config), with proportional legs + backrest.
   for(const key of ['SaloonChair01','SaloonChair02','SaloonChair03','SaloonChair04',
                     'SaloonChair05','SaloonChair06','SaloonChair07','SaloonChair08']){
     const o=SALOON_LAYOUT[key];
     if(!o) continue;
     const [cx, , cz]=o.center;
+    const [sx, , sz]=o.size;  // 0.60 from config
     let tableCentre=null;
     if(key<='SaloonChair04') tableCentre=SALOON_LAYOUT.SaloonTable01.center;
     else tableCentre=SALOON_LAYOUT.SaloonTable02.center;
     const [tcx, , tcz]=tableCentre;
     const dx=cx-tcx, dz=cz-tcz;
-    ctx.pb(cx, gy+.45, cz, .44, .06, .44, wd);
-    ctx.pb(cx-.18, gy+.22, cz-.18, .05, .44, .05, dk);
-    ctx.pb(cx+.18, gy+.22, cz-.18, .05, .44, .05, dk);
-    ctx.pb(cx-.18, gy+.22, cz+.18, .05, .44, .05, dk);
-    ctx.pb(cx+.18, gy+.22, cz+.18, .05, .44, .05, dk);
-    const off=.20;
+    // Seat.
+    ctx.pb(cx, gy+.48, cz, sx, .06, sz, wd);
+    // Legs (4 corner legs, sized to the chair).
+    const legOff=sx/2-0.08;
+    ctx.pb(cx-legOff, gy+.24, cz-legOff, .06, .48, .06, dk);
+    ctx.pb(cx+legOff, gy+.24, cz-legOff, .06, .48, .06, dk);
+    ctx.pb(cx-legOff, gy+.24, cz+legOff, .06, .48, .06, dk);
+    ctx.pb(cx+legOff, gy+.24, cz+legOff, .06, .48, .06, dk);
+    // Backrest on the OUTER side (away from the table) so a seated guest
+    // faces the table.
+    const off=0.26;
     if(Math.abs(dx)>Math.abs(dz)){
       const sign=dx>0?1:-1;
-      ctx.pb(cx+sign*off, gy+.68, cz, .06, .42, .44, wd);
+      ctx.pb(cx+sign*off, gy+.75, cz, .06, .54, sz, wd);
     }else{
       const sign=dz>0?1:-1;
-      ctx.pb(cx, gy+.68, cz+sign*off, .44, .42, .06, wd);
+      ctx.pb(cx, gy+.75, cz+sign*off, sx, .54, .06, wd);
     }
   }
 
@@ -301,10 +312,12 @@ export function drawSaloon(ctx){
   }
 
   // [SaloonPainting] — a framed painting on the EAST wall, near the FRONT
-  // of the room (z=z1-1.5). Placed CLEAR of the east-wall window (z=-8.3..-6.7)
-  // and clear of WantedPoster02 (z=-9.0).
+  // of the room. Placed at z=z1-0.8 (=-4.3) — CLEAR of the east-wall window
+  // (z=-8.3..-6.7), clear of WantedPoster02 (z=-9.0), and clear of
+  // WallSconce02 (z=-5.5). v34: moved further forward to avoid the wall
+  // sconce clipping into it.
   {
-    const paX=x1-WT-0.05, paY=gy+2.0, paZ=z1-1.5;      // z=-5.0, clear
+    const paX=x1-WT-0.05, paY=gy+2.0, paZ=z1-0.8;      // z=-4.3, clear of all
     ctx.pb(paX, paY, paZ, .06, .80, 1.00, pal);          // frame
     ctx.pb(paX, paY, paZ, .04, .72, .92, dk);            // canvas
     ctx.pb(paX-.02, paY, paZ, .04, .10, .92, [0.55,0.40,0.25]); // horizon
@@ -312,21 +325,7 @@ export function drawSaloon(ctx){
     ctx.pb(paX-.02, paY+.42, paZ+.30, .04, .10, .10, [0.95,0.80,0.40]); // sun
   }
 
-  // [AntlerMount] — a deer-antler mount on the BACK (north) wall, above the
-  // upper shelf. Mounted IN THE ROOM (z = z0 + WT + 0.04 — just inside the
-  // north wall).
-  {
-    const amX=b.x+3.0, amY=gy+2.6, amZ=z0+WT+0.04;
-    ctx.pb(amX, amY, amZ, .30, .40, .04, wd);            // plaque
-    for(const side of [-1, 1]){
-      for(let i=0; i<3; i++){
-        const ay=amY + 0.10 - i*0.10;
-        const ax=amX + side*(0.18 + i*0.06);
-        ctx.pb(ax, ay, amZ, .18, .03, .03, [0.85,0.78,0.65]);
-        ctx.pb(ax + side*0.06, ay+.08, amZ, .03, .10, .03, [0.85,0.78,0.65]);
-      }
-    }
-  }
+  // [AntlerMount] — REMOVED in v34 per user request.
 
   // [CardDeck] — a deck of playing cards on the poker table (SaloonTable01).
   {
