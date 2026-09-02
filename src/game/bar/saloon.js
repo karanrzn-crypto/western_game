@@ -513,58 +513,41 @@ export function drawSaloonBuilding(ctx){
 // the outer posts.
 // ---------------------------------------------------------------------------
 function drawSaloonBatwingDoorDirect(ctx, d, gy){
-  // Full-height door (same height as DOOR_H = 2.15m).
-  // v42: made the door NARROWER — the old version used d.w (1.9m) which
-  // made the two panels sit far apart with a big centre gap. Now the door
-  // is 1.3m wide total, so the panels meet tightly in the centre.
+  // v44: per user — move the door hinges to x = -29.4 so the doors sit
+  // flush against the west wall side of the doorway. Removed the visual
+  // effects (planks, rails, ring pulls) — only the plain door slab +
+  // hinges remain, simple and clean.
   const doorH = 2.15;
-  const doorW = 1.30;                 // narrower door (was d.w = 1.9m)
-  const panelW = (doorW - 0.02) / 2;  // each panel, tiny centre gap
-  const panelY = gy + doorH/2 + 0.02; // centre y
-  const panelT = 0.10;              // panel thickness (along z)
+  const doorW = 1.30;
+  const panelW = (doorW - 0.02) / 2;  // each panel
+  const panelY = gy + doorH/2 + 0.02;
+  const panelT = 0.10;
   const woodColor = [0.48, 0.38, 0.28];
-  const darkWood = [0.32, 0.24, 0.18];
   const ironColor = [0.18, 0.16, 0.15];
-  const swing = d.swing * 1.3;       // 0 closed → ~1.3 rad open
+  const swing = d.swing * 1.3;
 
-  // Offset the doors south (toward the street, +z) so they sit in FRONT of
-  // the door gap, clearly visible.
+  // Offset the doors south (in front of the door gap).
   const doorZ = d.z + 0.40;
 
+  // v44: hinge X position at -29.4 (per user). Both panels hinge here and
+  // swing from this point. The left panel extends west, the right panel
+  // extends east.
+  const hingeX = -29.4;
+
   const drawPanel = (side) => {
-    // Hinges on the OUTER edge of each panel — close to the centre line so
-    // the two panels meet tightly in the middle.
-    const hingeX = d.x + side * (panelW/2 + 0.01);
-    const panelCX = d.x + side * 0.01;   // panel centre near the door centre
-    // --- Panel slab (the main wooden board) ---
-    // Rotates around the hinge by `swing` radians.
+    // Panel centre: hinge + side * panelW/2.
+    const panelCX = hingeX + side * panelW/2;
+    // --- Panel slab (plain wooden board, no planks/rails/effects) ---
     ctx.pbHinge(hingeX, panelY, doorZ, panelW, doorH, panelT, woodColor, side * swing);
-    // --- Vertical planks (5 per panel, narrower door → fewer planks) ---
-    const plankN = 5;
-    const plankW = panelW / plankN;
-    for (let i = 0; i < plankN; i++){
-      const localX = -panelW/2 + plankW * (i + 0.5);
-      const px = panelCX + localX;
-      ctx.pb(px, panelY, doorZ + panelT/2 + 0.01, plankW * 0.85, doorH - 0.10, 0.02, darkWood);
-    }
-    // --- Horizontal rails (3: top, middle, bottom) ---
-    const railYs = [panelY + doorH*0.35, panelY, panelY - doorH*0.35];
-    for (const ry of railYs){
-      ctx.pb(panelCX, ry, doorZ + panelT/2 + 0.02, panelW - 0.06, 0.10, 0.03, woodColor);
-    }
-    // --- Iron strap hinges (2 per panel, on the outer edge) ---
+    // --- Iron strap hinges (2 per panel, at the hinge edge) ---
     for (const hy of [panelY + doorH*0.25, panelY - doorH*0.25]){
-      ctx.pb(hingeX + side * 0.05, hy, doorZ + panelT/2 + 0.03, 0.22, 0.08, 0.02, ironColor);
+      ctx.pb(hingeX, hy, doorZ + panelT/2 + 0.03, 0.22, 0.08, 0.02, ironColor);
       ctx.pb(hingeX, hy, doorZ, 0.06, 0.06, 0.06, ironColor);
     }
-    // --- Ring pull (handle) on the inner edge (near the centre) ---
-    const innerX = panelCX - side * (panelW/2 - 0.06);
-    ctx.pb(innerX, panelY, doorZ + panelT/2 + 0.04, 0.05, 0.05, 0.04, ironColor);
-    ctx.pb(innerX, panelY, doorZ + panelT/2 + 0.07, 0.10, 0.10, 0.02, ironColor);
   };
 
-  drawPanel(-1);  // left panel
-  drawPanel(+1);  // right panel
+  drawPanel(-1);  // left panel (extends west from the hinge)
+  drawPanel(+1);  // right panel (extends east from the hinge)
 }
 
 // Helper: get the front (south, +z) edge z of the BarCounter for placing the

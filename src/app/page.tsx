@@ -172,7 +172,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 
       {/* ---- VERSION BANNER ---- */}
       <div id="verBanner">
-        Western Frontier — v43
+        Western Frontier — v44
       </div>
 
       {/* ---- DOOR HINT ---- */}
@@ -185,7 +185,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
         {/* Status (top-left) */}
         <div id="status" className="card">
           <div id="title">
-            WESTERN FRONTIER // TOWN v43
+            WESTERN FRONTIER // TOWN v44
           </div>
           <div id="statusLine">Starting world...</div>
         </div>
@@ -219,7 +219,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
 
         {/* Mode (bottom-right) */}
         <div id="mode" className="card">
-          v43 &bull; THIRD PERSON &bull; LMB/RMB + DRAG &bull; V =
+          v44 &bull; THIRD PERSON &bull; LMB/RMB + DRAG &bull; V =
           FIRST PERSON
         </div>
 
