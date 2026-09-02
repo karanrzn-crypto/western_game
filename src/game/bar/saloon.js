@@ -490,61 +490,70 @@ export function drawSaloonBuilding(ctx){
 }
 
 // ---------------------------------------------------------------------------
-// drawSaloonBatwingDoorDirect — draws the bat-wing doors directly (not via
-// the drawDoor system). Same design as the reference image: 2 mirrored
-// half-height panels with vertical planks, horizontal rails, curved
-// top/bottom, iron hinges, ring pulls. The panels swing open based on
-// d.swing (0 = closed, 1 = open).
+// drawSaloonBatwingDoorDirect — v41: completely redesigned saloon door.
+//
+// The bat-wing doors (half-height) were hard to see from the third-person
+// camera. This version builds a FULL-HEIGHT two-panel wooden saloon door
+// that's clearly visible from any angle:
+//   - 2 full-height panels (each ~half the door width, full door height).
+//   - Each panel: 6 vertical planks with small gaps, 3 horizontal rails.
+//   - Iron strap hinges on the outer edge (2 per panel).
+//   - A ring pull handle on the inner edge of each panel.
+//   - Weathered grey-brown wood colour.
+// The panels swing open based on d.swing (0 = closed, 1 = open), hinged on
+// the outer posts.
 // ---------------------------------------------------------------------------
 function drawSaloonBatwingDoorDirect(ctx, d, gy){
-  const batH = 1.10;
-  const batW = (d.w - 0.04) / 2;
-  const batY = gy + batH/2 + 0.05;
-  const panelT = 0.09;
+  // Full-height door (same height as DOOR_H = 2.15m).
+  const doorH = 2.15;
+  const doorW = d.w;                 // full door width (= DOOR_GAP = 1.9m)
+  const panelW = (doorW - 0.04) / 2; // each panel, small centre gap
+  const panelY = gy + doorH/2 + 0.02; // centre y
+  const panelT = 0.10;              // panel thickness (along z)
   const woodColor = [0.48, 0.38, 0.28];
   const darkWood = [0.32, 0.24, 0.18];
   const ironColor = [0.18, 0.16, 0.15];
-  const swing = d.swing * 1.0;
-  // v40: offset the doors south (toward the street, +z for saloon) so they
-  // sit in FRONT of the door gap, not inside it. This makes them clearly
-  // visible from the street instead of being hidden in the doorway shadow.
+  const swing = d.swing * 1.3;       // 0 closed → ~1.3 rad open
+
+  // v40: offset the doors south (toward the street, +z) so they sit in
+  // FRONT of the door gap, clearly visible.
   const doorZ = d.z + 0.40;
 
   const drawPanel = (side) => {
-    const hingeX = d.x + side * d.w/2;
-    const panelCX = hingeX - side * batW/2;
-    // Panel slab (rotated by swing around the hinge).
-    ctx.pbHinge(hingeX, batY, doorZ, batW, batH, panelT, woodColor, side * swing);
-    // Vertical planks (9 per panel).
-    const plankN = 9;
-    const plankW = batW / plankN;
+    const hingeX = d.x + side * doorW/2;  // outer hinge post
+    const panelCX = hingeX - side * panelW/2;  // panel centre when closed
+    // --- Panel slab (the main wooden board) ---
+    // Rotates around the hinge by `swing` radians.
+    ctx.pbHinge(hingeX, panelY, doorZ, panelW, doorH, panelT, woodColor, side * swing);
+    // --- Vertical planks (6 per panel) ---
+    const plankN = 6;
+    const plankW = panelW / plankN;
     for (let i = 0; i < plankN; i++){
-      const localX = -batW/2 + plankW * (i + 0.5);
+      const localX = -panelW/2 + plankW * (i + 0.5);
       const px = panelCX + localX;
-      ctx.pb(px, batY, doorZ + panelT/2 + 0.01, plankW * 0.85, batH - 0.08, 0.02, darkWood);
+      // Plank front face (slightly proud of the panel).
+      ctx.pb(px, panelY, doorZ + panelT/2 + 0.01, plankW * 0.85, doorH - 0.10, 0.02, darkWood);
     }
-    // Horizontal rails (3: top, middle, bottom).
-    const railYs = [batY + batH*0.30, batY, batY - batH*0.30];
+    // --- Horizontal rails (3: top, middle, bottom) ---
+    const railYs = [panelY + doorH*0.35, panelY, panelY - doorH*0.35];
     for (const ry of railYs){
-      ctx.pb(panelCX, ry, doorZ + panelT/2 + 0.02, batW - 0.04, 0.08, 0.03, woodColor);
+      ctx.pb(panelCX, ry, doorZ + panelT/2 + 0.02, panelW - 0.06, 0.10, 0.03, woodColor);
     }
-    // Curved top edge (arch).
-    ctx.pb(panelCX, batY + batH/2 + 0.04, doorZ + panelT/2 + 0.01, batW - 0.06, 0.08, 0.02, woodColor);
-    // Curved bottom edge (scallop).
-    ctx.pb(panelCX, batY - batH/2 - 0.02, doorZ + panelT/2 + 0.01, batW - 0.10, 0.06, 0.02, woodColor);
-    // Iron strap hinges (2 per panel, on the outer edge).
-    for (const hy of [batY + batH*0.30, batY - batH*0.30]){
-      ctx.pb(hingeX - side * 0.04, hy, doorZ + panelT/2 + 0.03, 0.18, 0.06, 0.02, ironColor);
-      ctx.pb(hingeX, hy, doorZ, 0.05, 0.05, 0.05, ironColor);
+    // --- Iron strap hinges (2 per panel, on the outer edge) ---
+    for (const hy of [panelY + doorH*0.25, panelY - doorH*0.25]){
+      // Hinge plate (a flat iron bar) on the outer edge.
+      ctx.pb(hingeX - side * 0.05, hy, doorZ + panelT/2 + 0.03, 0.22, 0.08, 0.02, ironColor);
+      // Hinge pivot.
+      ctx.pb(hingeX, hy, doorZ, 0.06, 0.06, 0.06, ironColor);
     }
-    // Ring pull (handle) on the inner edge.
-    const innerX = panelCX - side * (batW/2 - 0.06);
-    ctx.pb(innerX, batY, doorZ + panelT/2 + 0.04, 0.04, 0.04, 0.03, ironColor);
-    ctx.pb(innerX, batY, doorZ + panelT/2 + 0.06, 0.08, 0.08, 0.02, ironColor);
+    // --- Ring pull (handle) on the inner edge ---
+    const innerX = panelCX - side * (panelW/2 - 0.08);
+    ctx.pb(innerX, panelY, doorZ + panelT/2 + 0.04, 0.05, 0.05, 0.04, ironColor);
+    ctx.pb(innerX, panelY, doorZ + panelT/2 + 0.07, 0.10, 0.10, 0.02, ironColor);
   };
 
-  drawPanel(-1);
-  drawPanel(+1);
+  drawPanel(-1);  // left panel (hinges on the left post)
+  drawPanel(+1);  // right panel (hinges on the right post)
 }
 
 // Helper: get the front (south, +z) edge z of the BarCounter for placing the
