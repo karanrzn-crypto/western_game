@@ -51,9 +51,11 @@ export function drawDoor(ctx,d){
   }
   // Frame: side posts + lintel (slightly larger than the opening so the door
   // sits inside the wall opening, never floating in front of it).
+  // v33: side posts start at gy+0.15 (above floor) instead of gy-0.05 so
+  // there's NO horizontal bar / threshold at floor level blocking the entry.
   const frameColor=d.key==='sheriff_interior'?C.wood:C.dark;
-  ctx.pb(d.x-d.w/2-.06,gy+1.1,d.z,.13,2.3,.16,frameColor);
-  ctx.pb(d.x+d.w/2+.06,gy+1.1,d.z,.13,2.3,.16,frameColor);
+  ctx.pb(d.x-d.w/2-.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
+  ctx.pb(d.x+d.w/2+.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
   ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
   // For the interior wood door, add plank seams on the closed leaf so it
   // reads clearly as a wooden door. The seams are drawn along the un-rotated

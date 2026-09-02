@@ -71,14 +71,14 @@ export function getDebugLabels(world, objects) {
       sa('Piano', pCentreX, 1.8, pCentreZ);
       sa('PianoStool', pCentreX + 0.85, 1.0, pCentreZ);
     }
-    // Named props (placed in saloon.js at fixed coords).
+    // Named props (placed in saloon.js at fixed coords — kept in sync).
     sa('Spittoon', x0 + 1.2, 0.8, z1 - 3.0);
-    sa('WantedPoster01', x0 + WALL_T + 0.04, 2.3, z1 - 2.5);
-    sa('WantedPoster02', x0 + S.w - WALL_T - 0.04, 2.2, z1 - 3.5);
-    sa('SaloonPainting', x0 + S.w - WALL_T - 0.05, 2.6, (z0 + z1)/2);
+    sa('WantedPoster01', x0 + WALL_T + 0.04, 2.3, z1 - 2.2);
+    sa('WantedPoster02', x0 + S.w - WALL_T - 0.04, 2.2, z0 + 2.5);
+    sa('SaloonPainting', x0 + S.w - WALL_T - 0.05, 2.6, z1 - 1.5);
     sa('AntlerMount', S.x + 3.0, 3.2, z0 + WALL_T + 0.04);
-    sa('WallSconce01', x0 + WALL_T + 0.08, 2.6, z1 - 4.5);
-    sa('WallSconce02', x0 + S.w - WALL_T - 0.08, 2.6, z1 - 5.5);
+    sa('WallSconce01', x0 + WALL_T + 0.08, 2.6, z0 + 2.5);
+    sa('WallSconce02', x0 + S.w - WALL_T - 0.08, 2.6, z1 - 2.0);
     sa('BeerBarrel', x0 + 1.5, 1.4, z0 + 1.5);
     // CardDeck + PokerChips + PokerTableCloth (on SaloonTable01).
     const pt1 = SALOON_LAYOUT.SaloonTable01.center;
@@ -92,7 +92,7 @@ export function getDebugLabels(world, objects) {
     const bc = SALOON_LAYOUT.BarCounter.center;
     sa('BarTowel', bc[0] + 2.5, 1.6, bc[2] + SALOON_LAYOUT.BarCounter.size[2]/2 - 0.03);
     // Saloon exterior labels.
-    sa('SALOON Sign', S.x, S.h + 1.6, z1 + WALL_T/2 + 0.4);
+    sa('BAR Sign', S.x, S.h + 1.6, z1 + WALL_T/2 + 0.4);
     sa('Saloon Porch', S.x, 1.5, z1 + 0.8);
     sa('Saloon Chimney', x0 + S.w - 1.5, S.h + 1.6, z0 + 2.0);
   }

@@ -100,19 +100,17 @@ export function generateSaloon(ctx){
   }
 
   // ---- Exterior camera colliders ----
-  // False front parapet: only covers ABOVE the roof (from top to ffTop), so
-  // the front wall + door + windows below remain unobstructed for the camera.
+  // v33: reduced to only the 2 large exterior features that the camera
+  // would actually clip through (the false front parapet and the porch roof
+  // overhang). The 4 porch posts and the chimney are small / thin enough
+  // that removing their camBoxes doesn't cause visible clipping but does
+  // reduce the per-frame camera-collision work (helps FPS).
   const ffTop=P.gy+b.h+2.6+.2;
+  // False front parapet (above the flat roof only).
   cam(x0-.1, z1-WALL_T/2-.05, x1+.1, z1+WALL_T/2+.05, ffTop, P.gy+b.h-.02);
-  // Porch posts — 4 thin tall camera boxes.
-  const porchDepth=1.6, postZ=z1+porchDepth-.10, postH=P.gy+2.7;
-  for(const px of [x0+0.4, b.x-2.4, b.x+2.4, x1-0.4]){
-    cam(px-.14, postZ-.14, px+.14, postZ+.14, postH);
-  }
   // Porch roof overhang camera box.
+  const porchDepth=1.6;
   cam(x0-.4, z1-.1, x1+.4, z1+porchDepth+.3, P.gy+2.85, P.gy+2.6);
-  // Chimney camera box.
-  cam(x1-1.5-.3, z0+2.0-.3, x1-1.5+.3, z0+2.0+.3, P.gy+b.h+2.4+.2);
 }
 
 // ---------------------------------------------------------------------------
@@ -277,10 +275,10 @@ export function drawSaloon(ctx){
   }
 
   // [WantedPoster01] — a "WANTED" poster on the WEST wall, near the front.
-  // Mounted IN THE ROOM (x = x0 + WT + 0.04 — just inside the west wall
-  // surface) so it doesn't clip into the wall.
+  // Mounted IN THE ROOM (x = x0 + WT + 0.04). Placed at z=z1-2.2 (front of
+  // the room), CLEAR of the west-wall window which spans z=-8.3..-6.7.
   {
-    const wpX=x0+WT+0.04, wpY=gy+1.7, wpZ=z1-2.5;
+    const wpX=x0+WT+0.04, wpY=gy+1.7, wpZ=z1-2.2;       // z=-5.7, clear of window
     ctx.pb(wpX, wpY, wpZ, .04, .50, .38, pal);           // paper
     ctx.pb(wpX, wpY+.18, wpZ, .05, .10, .36, [0.78,0.20,0.18]); // red "WANTED" band
     for(const ly of [-0.04, -0.08, -0.12, -0.16]){
@@ -290,9 +288,10 @@ export function drawSaloon(ctx){
   }
 
   // [WantedPoster02] — another "WANTED" poster on the EAST wall, near the
-  // front. Mounted IN THE ROOM (x = x1 - WT - 0.04 — just inside the east wall).
+  // BACK of the room (z=z0+2.5). Placed CLEAR of the east-wall window which
+  // spans z=-8.3..-6.7.
   {
-    const wpX=x1-WT-0.04, wpY=gy+1.6, wpZ=z1-3.5;
+    const wpX=x1-WT-0.04, wpY=gy+1.6, wpZ=z0+2.5;       // z=-9.0, clear of window
     ctx.pb(wpX, wpY, wpZ, .04, .44, .34, pal);
     ctx.pb(wpX, wpY+.15, wpZ, .05, .08, .32, [0.78,0.20,0.18]);
     for(const ly of [-0.04, -0.08, -0.12]){
@@ -301,10 +300,11 @@ export function drawSaloon(ctx){
     ctx.pb(wpX, wpY-.06, wpZ, .06, .08, .06, dk);
   }
 
-  // [SaloonPainting] — a framed painting on the EAST wall, mid-room.
-  // Mounted IN THE ROOM (x = x1 - WT - 0.05 — just inside the east wall).
+  // [SaloonPainting] — a framed painting on the EAST wall, near the FRONT
+  // of the room (z=z1-1.5). Placed CLEAR of the east-wall window (z=-8.3..-6.7)
+  // and clear of WantedPoster02 (z=-9.0).
   {
-    const paX=x1-WT-0.05, paY=gy+2.0, paZ=(z0+z1)/2;
+    const paX=x1-WT-0.05, paY=gy+2.0, paZ=z1-1.5;      // z=-5.0, clear
     ctx.pb(paX, paY, paZ, .06, .80, 1.00, pal);          // frame
     ctx.pb(paX, paY, paZ, .04, .72, .92, dk);            // canvas
     ctx.pb(paX-.02, paY, paZ, .04, .10, .92, [0.55,0.40,0.25]); // horizon
@@ -397,20 +397,21 @@ export function drawSaloon(ctx){
     ctx.pb(cx+2.5, gy+1.05, cz+sz_edge(o), .30, .12, .04, [0.80,0.75,0.65]);
   }
 
-  // [WallSconce01] — a wall-mounted oil lamp on the WEST wall, near the front.
-  // Mounted IN THE ROOM (x = x0 + WT + 0.08 — just inside the west wall).
+  // [WallSconce01] — a wall-mounted oil lamp on the WEST wall, near the BACK
+  // of the room. Placed at z=z0+2.5 (=-9.0), CLEAR of the west-wall window
+  // (z=-8.3..-6.7). Mounted IN THE ROOM (x = x0 + WT + 0.08).
   {
-    const wsX=x0+WT+0.08, wsY=gy+2.0, wsZ=z1-4.5;
+    const wsX=x0+WT+0.08, wsY=gy+2.0, wsZ=z0+2.5;        // z=-9.0, clear of window
     ctx.pb(wsX, wsY, wsZ, .04, .20, .20, dk);            // backing plate
     ctx.pb(wsX+.06, wsY, wsZ, .10, .18, .10, dk);        // lamp body
     ctx.pb(wsX+.10, wsY+.05, wsZ, .06, .16, .06, [0.85,0.85,0.7]); // chimney
     ctx.pb(wsX+.10, wsY+.15, wsZ, .03, .05, .03, [1.0,0.75,0.3]);  // flame
   }
 
-  // [WallSconce02] — a matching wall lamp on the EAST wall, near the front.
-  // Mounted IN THE ROOM (x = x1 - WT - 0.08 — just inside the east wall).
+  // [WallSconce02] — a matching wall lamp on the EAST wall, near the FRONT.
+  // Placed at z=z1-2.0 (=-5.5), CLEAR of the east-wall window. Mounted IN THE ROOM.
   {
-    const wsX=x1-WT-0.08, wsY=gy+2.0, wsZ=z1-5.5;
+    const wsX=x1-WT-0.08, wsY=gy+2.0, wsZ=z1-2.0;        // z=-5.5, clear of window
     ctx.pb(wsX, wsY, wsZ, .04, .20, .20, dk);
     ctx.pb(wsX-.06, wsY, wsZ, .10, .18, .10, dk);
     ctx.pb(wsX-.10, wsY+.05, wsZ, .06, .16, .06, [0.85,0.85,0.7]);
@@ -504,11 +505,69 @@ function drawSaloonExterior(ctx, P){
   // Sign inner panel (dark wood) — slightly south of the frame so it's
   // visible on the front face.
   ctx.pb(ffX, signY, signZ+.08, signW, signH, signT, dk);
-  // Vertical "letter slats" — 6 gold bars suggesting "SALOON".
-  const slatN=6, slatW=.18, slatGap=signW/(slatN+1);
-  for(let i=0;i<slatN;i++){
-    const sx=ffX-signW/2+slatGap*(i+1);
-    ctx.pb(sx, signY, signZ+.10, slatW, signH-.25, .06, gold);
+  // ---- "BAR" letters (gold, 3D pixel-style) ----
+  // Build each letter from small gold boxes on the sign's front face.
+  // The sign inner panel front face is at signZ + .08 + signT/2 = signZ+.16.
+  // Letters sit PROUD of that face (at signZ + .16 + .06) so they don't
+  // z-fight with the panel and are clearly visible.
+  const letterColor = gold;
+  const letterZ = signZ + .16 + .06;  // proud of the sign panel front face
+  const letterH = 0.55;        // letter height
+  const letterW = 0.35;        // letter width
+  const letterGap = 0.15;      // gap between letters
+  const letterDepth = 0.06;    // letter thickness (proud of the panel)
+  const totalW = 3*letterW + 2*letterGap;
+  const letterStartX = ffX - totalW/2 + letterW/2;
+  // Helper to draw a small box for a letter stroke.
+  const stroke = (cx, cy, w, h) => {
+    ctx.pb(cx, cy, letterZ, w, h, letterDepth, letterColor);
+  };
+  // Letter heights: top, middle, bottom Y positions.
+  const yT = signY + letterH/2;   // top
+  const yM = signY;                // middle
+  const yB = signY - letterH/2;   // bottom
+  const halfW = letterW/2;
+  // 'B' — two vertical strokes on the left + two horizontal strokes + middle + bumps on the right
+  {
+    const bx = letterStartX;
+    // Left vertical (full height).
+    stroke(bx - halfW + 0.04, signY, 0.08, letterH);
+    // Top horizontal.
+    stroke(bx, yT - 0.04, letterW - 0.04, 0.08);
+    // Middle horizontal.
+    stroke(bx, yM, letterW - 0.08, 0.08);
+    // Bottom horizontal.
+    stroke(bx, yB + 0.04, letterW - 0.04, 0.08);
+    // Right bumps (top + bottom halves).
+    stroke(bx + halfW - 0.04, yT - letterH/4, 0.08, letterH/2 - 0.04);
+    stroke(bx + halfW - 0.04, yB + letterH/4, 0.08, letterH/2 - 0.04);
+  }
+  // 'A' — two diagonal-ish verticals + a middle bar. Simplified as 2 verticals
+  // + top join + middle bar.
+  {
+    const ax = letterStartX + letterW + letterGap;
+    // Left vertical (slightly inward at top — simplified to vertical).
+    stroke(ax - halfW + 0.06, signY, 0.08, letterH);
+    // Right vertical.
+    stroke(ax + halfW - 0.06, signY, 0.08, letterH);
+    // Top join (a horizontal bar at the top).
+    stroke(ax, yT - 0.04, letterW - 0.08, 0.08);
+    // Middle bar.
+    stroke(ax, yM, letterW - 0.10, 0.08);
+  }
+  // 'R' — left vertical + top horizontal + right bump (top half) + diagonal leg.
+  {
+    const rx = letterStartX + 2*(letterW + letterGap);
+    // Left vertical (full height).
+    stroke(rx - halfW + 0.04, signY, 0.08, letterH);
+    // Top horizontal.
+    stroke(rx, yT - 0.04, letterW - 0.04, 0.08);
+    // Middle horizontal (shorter — only the top bowl).
+    stroke(rx, yM, letterW - 0.10, 0.08);
+    // Right bump (top half only).
+    stroke(rx + halfW - 0.04, yT - letterH/4, 0.08, letterH/2 - 0.04);
+    // Diagonal leg (a single box going down to the bottom-right).
+    stroke(rx + halfW - 0.10, yB + letterH/4, 0.08, letterH/2 - 0.04);
   }
   // Hanging brackets (going back to the parapet).
   ctx.pb(ffX-signW/2+.15, signY+signH/2+.10, (ffZ+signZ)/2, .10, .20, (signZ-ffZ), dk);
