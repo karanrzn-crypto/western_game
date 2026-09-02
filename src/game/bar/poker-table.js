@@ -4,19 +4,11 @@
 // Authored entirely in frame() space; the only inputs are the table centre,
 // the ground height and the radius, so it can be dropped anywhere.
 import { frame } from './frame.js';
+import { M } from './materials.js';
 
-const OAK   = [0.42, 0.29, 0.19];
-const OAK_D = [0.30, 0.20, 0.13];
-const BAIZE = [0.13, 0.36, 0.20];
-const BAIZE_L=[0.18, 0.46, 0.26];
-const LEATH = [0.30, 0.17, 0.12];
-const BRASS = [0.74, 0.58, 0.24];
-const IVORY = [0.94, 0.92, 0.85];
-const CHIP_R= [0.72, 0.16, 0.16];
-const CHIP_B= [0.22, 0.36, 0.60];
-const CHIP_W= [0.90, 0.88, 0.80];
-const IRON  = [0.19, 0.18, 0.17];
-const AMBER = [0.76, 0.50, 0.16];
+const OAK=M.oak, OAK_D=M.oakD, BAIZE=M.baize, BAIZE_L=M.baizeL, LEATH=M.leather,
+      BRASS=M.brass, IVORY=M.ivory, CHIP_R=[0.74,0.20,0.20], CHIP_B=[0.24,0.38,0.62],
+      CHIP_W=M.ivory, IRON=M.iron, AMBER=M.whiskey;
 
 export const POKER_TABLE_H = 0.78; // rail top — matches the 0.65 chair seats
 

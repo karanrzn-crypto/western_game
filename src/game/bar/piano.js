@@ -3,19 +3,11 @@
 // v < 0, so the piano can face any wall with zero clipping. Total footprint
 // is exactly 1.52 wide x 0.65 deep, matching the collider in saloon.js.
 import { frame } from './frame.js';
+import { M } from './materials.js';
 
-const WALNUT   = [0.34, 0.19, 0.12];
-const WALNUT_D = [0.24, 0.13, 0.085];
-const WALNUT_L = [0.44, 0.26, 0.16];
-const IVORY    = [0.93, 0.90, 0.82];
-const IVORY_W  = [0.86, 0.80, 0.66]; // yellowed keys
-const BLACKKEY = [0.07, 0.06, 0.06];
-const FELT     = [0.46, 0.11, 0.10];
-const SILK     = [0.55, 0.14, 0.13];
-const BRASS    = [0.76, 0.60, 0.26];
-const IRON     = [0.18, 0.17, 0.16];
-const WAX      = [0.92, 0.89, 0.78];
-const FLAME    = [1.00, 0.72, 0.28];
+const WALNUT=M.walnut, WALNUT_D=M.walnutD, WALNUT_L=M.walnutL, IVORY=M.ivory,
+      IVORY_W=M.paperOld, BLACKKEY=M.soot, FELT=M.felt, SILK=M.silk, BRASS=M.brass,
+      IRON=M.iron, WAX=M.wax, FLAME=M.flame;
 
 const PW = 1.52, PD = 0.65, PH = 1.34; // width, depth, height
 const BD = 0.50;                       // cabinet depth (keybed adds the rest)

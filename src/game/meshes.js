@@ -18,11 +18,32 @@ export function boxMesh(gl){
   return new Mesh(gl,new Float32Array(p),new Float32Array(n),new Float32Array(c),new Uint16Array(idx))
 }
 export function cylinderMesh(gl,seg=10){
-  const p=[],n=[],c=[],idx=[];
-  for(let s=0;s<seg;s++){const a=s/seg*TAU,ca=Math.cos(a),sa=Math.sin(a);p.push(ca,-1,sa);n.push(ca,0,sa);c.push(.35,.22,.12)}
-  for(let s=0;s<seg;s++){const a=s/seg*TAU,ca=Math.cos(a),sa=Math.sin(a);p.push(ca,1,sa);n.push(ca,0,sa);c.push(.35,.22,.12)}
-  for(let s=0;s<seg;s++){const j=(s+1)%seg;idx.push(s,j,seg+j,s,seg+j,seg+s)}
-  return new Mesh(gl,new Float32Array(p),new Float32Array(n),new Float32Array(c),new Uint16Array(idx))
+ // v51 FIX: the old cylinder was an OPEN TUBE (side wall only) with a single
+ // dark baked tint. With no back-face culling you saw straight through the
+ // ends, which read as glass / half-transparent, and every pc() colour came
+ // out ~50% dark and over-warm. Now: capped, wound CCW-outside (so culling
+ // works), and shaded on the same scale as boxMesh so pc() and pb() finally
+ // agree on what a colour means.
+ const p=[],n=[],c=[],idx=[];
+ const tint=sh=>[sh,sh*.82,sh*.58];
+ const side=tint(.80),top=tint(.95),bot=tint(.68);
+ for(let s=0;s<seg;s++){
+  const a0=s/seg*TAU,a1=(s+1)/seg*TAU;
+  const c0=Math.cos(a0),s0=Math.sin(a0),c1=Math.cos(a1),s1=Math.sin(a1);
+  const b=p.length/3;
+  p.push(c0,-1,s0, c1,-1,s1, c1,1,s1, c0,1,s0);
+  n.push(c0,0,s0, c1,0,s1, c1,0,s1, c0,0,s0);
+  for(let k=0;k<4;k++)c.push(side[0],side[1],side[2]);
+  idx.push(b,b+2,b+1, b,b+3,b+2);
+ }
+ for(const yy of [1,-1]){
+  const b=p.length/3,t=yy>0?top:bot;
+  p.push(0,yy,0);n.push(0,yy,0);c.push(t[0],t[1],t[2]);
+  for(let s=0;s<seg;s++){const a=s/seg*TAU;p.push(Math.cos(a),yy,Math.sin(a));n.push(0,yy,0);c.push(t[0],t[1],t[2])}
+  for(let s=0;s<seg;s++){const j=(s+1)%seg;
+   if(yy>0)idx.push(b,b+1+j,b+1+s);else idx.push(b,b+1+s,b+1+j)}
+ }
+ return new Mesh(gl,new Float32Array(p),new Float32Array(n),new Float32Array(c),new Uint16Array(idx))
 }
 export function gableMeshBaked(gl,hw,rh,hd){
   const p=[],n=[],c=[],idx=[];
