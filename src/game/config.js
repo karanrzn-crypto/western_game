@@ -193,12 +193,12 @@ export const SALOON_INCLUDE_PIANO=true;
 // SHERIFF v52 REBUILD — L-shaped building with office + cells
 export const SHERIFF_NEW = {
  x: 4, z: -8.75,
- w: 18,      // wide
+ w: 12,      // wide (reduced from 18 — was too wide)
  d: 16,      // deep
  h: 4.5,
  doorW: DOOR_GAP,
- office: { x0: -8, x1: 8, z0: -2, z1: 4 },      // south zone
- cells: { x0: -8, x1: 8, z0: -7.5, z1: -2 },    // north zone
+ office: { x0: -5, x1: 5, z0: -2, z1: 4 },      // south zone (narrowed)
+ cells: { x0: -5, x1: 5, z0: -7.5, z1: -2 },    // north zone (narrowed)
 };
 export const SH_MAT = {
   // warm western palette (v53 visual pass — keys preserved, values enriched)

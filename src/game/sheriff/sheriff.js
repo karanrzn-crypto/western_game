@@ -4,7 +4,7 @@
 // the jail side), a brass star badge + framed canvas sign over the door, a
 // roof overhang with brackets, a porch deck, and corner trim. Everything is
 // drawn with the existing pb/pc primitives and is purely visual.
-import {SHERIFF_NEW as S,SH_MAT as M,DOOR_GAP,DOOR_H,WALL_T,C} from '../config.js';
+import {SHERIFF_NEW as S,SH_MAT as M,DOOR_GAP,DOOR_H,WALL_T,DOOR_SPEED,C} from '../config.js';
 import {frame} from '../bar/frame.js';
 
 export function sheriffPlan(){
@@ -23,17 +23,59 @@ export function sheriffPlan(){
 
 export function generateSheriff(ctx){
  const P=sheriffPlan();
- const {ox0,ox1,oz0,oz1,offZ0,celZ0} = P;
+ const {ox0,ox1,oz0,oz1,offZ0,celZ0,b,gy} = P;
  const WT=WALL_T;
- // wall colliders (perimeter)
- ctx.boxCol(ox0, oz0-WT, ox1, oz0+WT);                      // north wall
- ctx.boxCol(ox0, oz1-WT, ox1, oz1+WT);                      // south wall
- ctx.boxCol(ox0-WT, oz0, ox0+WT, oz1);                      // west wall
- ctx.boxCol(ox1-WT, oz0, ox1+WT, oz1);                      // east wall
- // interior wall between office and cells
+ const doorX=(ox0+ox1)/2, gapL=doorX-DOOR_GAP/2, gapR=doorX+DOOR_GAP/2;
+
+ // ---- Player wall colliders (with door gap in south wall) ----
+ // North wall (full)
+ ctx.boxCol(ox0, oz0-WT, ox1, oz0+WT);
+ // South wall — split around door gap
+ ctx.boxCol(ox0, oz1-WT, gapL, oz1+WT);           // left of door
+ ctx.boxCol(gapR, oz1-WT, ox1, oz1+WT);           // right of door
+ // West wall
+ ctx.boxCol(ox0-WT, oz0, ox0+WT, oz1);
+ // East wall
+ ctx.boxCol(ox1-WT, oz0, ox1+WT, oz1);
+ // Interior wall between office and cells
  ctx.boxCol(P.offX0, offZ0-WT, P.offX1, offZ0+WT);
- // door gap in the interior wall (centre)
- const doorX=(P.offX0+P.offX1)/2, gapL=doorX-DOOR_GAP/2, gapR=doorX+DOOR_GAP/2;
+
+ // ---- Camera colliders (full-height walls) ----
+ const top=gy+b.h;
+ ctx.cam(ox0, oz0-WT, ox1, oz0+WT, top+.1);
+ ctx.cam(ox0, oz1-WT, gapL, oz1+WT, top+.1);
+ ctx.cam(gapR, oz1-WT, ox1, oz1+WT, top+.1);
+ ctx.cam(ox0-WT, oz0, ox0+WT, oz1, top+.1);
+ ctx.cam(ox1-WT, oz0, ox1+WT, oz1, top+.1);
+ ctx.cam(P.offX0, offZ0-WT, P.offX1, offZ0+WT, top+.1);
+ // Roof slab
+ ctx.cam(ox0-.15, oz0-.15, ox1+.15, oz1+.15, top+3, top-.05);
+
+ // ---- Floor (planks) ----
+ ctx.floors.push({x0:ox0+WT, x1:ox1-WT, z0:oz0+WT/2, z1:oz1-WT/2, y:gy+.008});
+
+ // ---- Front door (manual E, like saloon) ----
+ const d={
+   x:doorX, z:oz1, w:DOOR_GAP, h:DOOR_H,
+   side:1, open:0, target:0, pushing:false, pushT:0,
+   speed:DOOR_SPEED, swing:0, key:'sheriff',
+   manualOnly:true, swingSign:-1,
+ };
+ d.col={x0:gapL, x1:gapR, z0:oz1-.09, z1:oz1+.09, door:true, off:false};
+ d.inside={x0:ox0+WT, x1:ox1-WT, z0:oz0+WT, z1:oz1-WT};
+ ctx.doors.push(d);
+
+ // ---- Interior door (between office and cells) ----
+ const doorIntX=(P.offX0+P.offX1)/2, igapL=doorIntX-DOOR_GAP/2, igapR=doorIntX+DOOR_GAP/2;
+ const d2={
+   x:doorIntX, z:offZ0, w:DOOR_GAP, h:DOOR_H,
+   side:-1, open:0, target:0, pushing:false, pushT:0,
+   speed:DOOR_SPEED, swing:0, key:'sheriff_interior',
+   manualOnly:false, swingSign:-1,
+ };
+ d2.col={x0:igapL, x1:igapR, z0:offZ0-.09, z1:offZ0+.09, door:true, off:false};
+ d2.inside={x0:P.offX0+WT, x1:P.offX1-WT, z0:celZ0+WT, z1:offZ0-WT};
+ ctx.doors.push(d2);
 }
 
 // ---------------------------------------------------------------------------
