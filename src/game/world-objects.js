@@ -7,6 +7,7 @@ import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _pl
 import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _drawStable,bldWithDoor as _bldWithDoor,drawProps as _drawProps} from './town-buildings.js';
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
 import {generateSheriff as _generateSheriff,drawSheriff as _drawSheriff,shPlan as _shPlan} from './sheriff.js';
+import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon} from './saloon.js';
 
 export class WorldObjects{
   constructor(gl,terrain){
@@ -26,6 +27,7 @@ export class WorldObjects{
     this.generate();
     this.generateBank();
     this.generateSheriff();
+    this.generateSaloon();
   }
   boxCol(x0,z0,x1,z1){
     this.cols.push({x0:Math.min(x0,x1),z0:Math.min(z0,z1),x1:Math.max(x0,x1),z1:Math.max(z0,z1)});
@@ -44,6 +46,7 @@ export class WorldObjects{
   generate(){ _generateTown(this); }
   generateBank(){ _generateBank(this); }
   generateSheriff(){ _generateSheriff(this); }
+  generateSaloon(){ _generateSaloon(this); }
   g(x,z){return this.terrain.sample(x,z)}
   nearestDoor(player){return _nearestDoor(this.doors,player)}
   isInside(d,player){return _isInside(d,player)}
@@ -209,11 +212,13 @@ export class WorldObjects{
   drawProps(){const ctx=createDrawContext(this,this._gl,this._loc);_drawProps(ctx)}
   drawBank(){const ctx=createDrawContext(this,this._gl,this._loc);_drawBank(ctx)}
   drawSheriff(){const ctx=createDrawContext(this,this._gl,this._loc);_drawSheriff(ctx)}
+  drawSaloon(){const ctx=createDrawContext(this,this._gl,this._loc);_drawSaloon(ctx)}
   draw(gl,loc){
     this._gl=gl;this._loc=loc;
     const ctx=createDrawContext(this,gl,loc);
     for(const f of this.floors)this.pfl((f.x0+f.x1)/2,f.y,(f.z0+f.z1)/2,(f.x1-f.x0)/2,(f.z1-f.z0)/2,C.floorW);
     _bldWithDoor(ctx,TOWN.saloon,C.wood,'gable');
+    _drawSaloon(ctx);
     _bldWithDoor(ctx,TOWN.store,C.wood2,'gable');
     _drawSheriff(ctx);
     _drawChurch(ctx);

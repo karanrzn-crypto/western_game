@@ -118,3 +118,68 @@ export const SH_OFFICE_LAYOUT={
    Cells are generated dynamically by armCells() in sheriff.js; each cell has
    a JailBench01..06 placed against its north wall (back of the cell). ===== */
 // (no static coords needed — shCellInterior already draws the bunk)
+
+/* ===== SALOON / BAR — interior layout (v30)
+   Based on the Hyper3D Rodin reference model "Old Western saloon".
+   The saloon is a rectangular building (13 wide x 8 deep, h 4.4). The front
+   entrance is at the south (z = z1 = -3.5, centre at x = b.x = -28.5). The
+   back wall is at the north (z = z0 = -11.5).
+
+   REFERENCE MODEL LAYOUT (from VLM analysis):
+     - Main bar counter spans the full back wall (north).
+     - 4 bar stools line up in front of the counter, facing north.
+     - 2 round tables sit in the central floor area, between the entrance
+       and the bar. 4 chairs around each table.
+     - Shelves behind the bar on the back wall hold bottles.
+     - 2 hanging lamps from the ceiling over the tables.
+     - 2 front windows flanking the door, plus side-wall windows.
+
+   All interior object coords below are in WORLD space. They are derived from
+   the saloon bounding box (x0..x1, z0..z1) and a clear visitor path along the
+   centre column (x = b.x = -28.5) from the front door to the bar counter.
+   Naming convention matches the reference: BarCounter, BarStool01..04,
+   SaloonTable01..02, SaloonChair01..08 (4 per table), BarShelfLower/Upper,
+   SaloonLamp01..02, plus doors and windows handled by the generator. ===== */
+export const SALOON_LAYOUT={
+  // [BarCounter] — long counter against the back (north) wall.
+  // Spans most of the back wall, leaving small gaps at each corner so it
+  // doesn't clip into the side walls.
+  // center [x,y,z], size [sx,sy,sz] (full dims; y is centre height above gy)
+  BarCounter:    { center:[-28.5, 0.55, -11.05], size:[10.6, 1.10, 0.70], color:'wood2' },
+  // [BarStool01..04] — 4 stools in a row in front of the counter, facing
+  // north. Spaced evenly across the counter width, ~2.0m apart, ~0.9m south
+  // of the counter front edge.
+  BarStool01:    { center:[-31.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool02:    { center:[-30.0, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool03:    { center:[-28.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
+  // (the 4th stool sits west of the entrance path to keep the centre clear)
+  BarStool04:    { center:[-25.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
+  // [SaloonTable01] — round(ish, drawn as a square table) on the WEST side of
+  // the central floor, between the entrance and the bar.
+  SaloonTable01:  { center:[-31.0, 0.40, -6.50], size:[1.20, 0.06, 1.20], color:'wood'  },
+  // [SaloonTable02] — same, on the EAST side of the central floor.
+  SaloonTable02:  { center:[-26.0, 0.40, -6.50], size:[1.20, 0.06, 1.20], color:'wood'  },
+  // [SaloonChair01..04] — 4 chairs around SaloonTable01 (N/S/E/W of it).
+  SaloonChair01:  { center:[-31.0, 0.24, -7.30], size:[0.46, 0.48, 0.46], color:'wood'  }, // north
+  SaloonChair02:  { center:[-31.0, 0.24, -5.70], size:[0.46, 0.48, 0.46], color:'wood'  }, // south
+  SaloonChair03:  { center:[-31.8, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // west
+  SaloonChair04:  { center:[-30.2, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // east
+  // [SaloonChair05..08] — 4 chairs around SaloonTable02.
+  SaloonChair05:  { center:[-26.0, 0.24, -7.30], size:[0.46, 0.48, 0.46], color:'wood'  }, // north
+  SaloonChair06:  { center:[-26.0, 0.24, -5.70], size:[0.46, 0.48, 0.46], color:'wood'  }, // south
+  SaloonChair07:  { center:[-26.8, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // west
+  SaloonChair08:  { center:[-25.2, 0.24, -6.50], size:[0.46, 0.48, 0.46], color:'wood'  }, // east
+  // [BarShelfLower] — lower shelf behind the bar, against the back wall.
+  BarShelfLower:  { center:[-28.5, 1.30, -11.30], size:[10.0, 0.06, 0.40], color:'wood2' },
+  // [BarShelfUpper] — upper shelf behind the bar, against the back wall.
+  BarShelfUpper:  { center:[-28.5, 2.10, -11.30], size:[10.0, 0.06, 0.40], color:'wood2' },
+  // [SaloonLamp01] — hanging lamp over SaloonTable01.
+  SaloonLamp01:   { center:[-31.0, 3.70, -6.50], size:[0.40, 0.50, 0.40], color:'dark'  },
+  // [SaloonLamp02] — hanging lamp over SaloonTable02.
+  SaloonLamp02:   { center:[-26.0, 3.70, -6.50], size:[0.40, 0.50, 0.40], color:'dark'  },
+  // [Piano] — upright piano against the west wall, near the front. (The
+  // reference model mentions no piano, so we keep this as an OPTIONAL corner
+  // accent only. Disabled by default; enable via SALOON_INCLUDE_PIANO.)
+  Piano:          { center:[-34.50, 0.65, -4.50], size:[0.70, 1.30, 1.20], color:'dark'  },
+};
+export const SALOON_INCLUDE_PIANO=false;

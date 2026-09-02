@@ -84,3 +84,58 @@ Stage Summary:
   * DocumentCabinet in the south-east corner: resting on the floor. ✅
 - **Named objects** (searchable in `sheriff.js` and `config.js`): `FrontDoor`, `InteriorWoodDoor`, `JailDoor01..06`, `SheriffDesk`, `SheriffChair`, `VisitorChair`, `NoticeBoard`, `MapBoard`, `GunRack`, `FilingCabinet`, `DocumentCabinet`, `WallClock`, `OfficeStove`.
 - **No push** to the remote repo was performed (user said: only load the latest commit and prepare changes; do not push).
+
+---
+Task ID: 3
+Agent: main
+Task: Rebuild Bar/Saloon interior to match the Hyper3D Rodin reference model "Old Western saloon" — using only the existing ctx.pb() renderer (no GLB / Three.js).
+
+Work Log:
+- Read the Hyper3D Rodin reference model page (https://hyper3d.ai/workspace/rodin/4b77ad62-4c12-44fa-a682-17f6414925fb) via the web-reader skill, downloaded the preview.webp (6.7 KB) and several other covers/renders, and used VLM (glm-5v-turbo) to analyse the layout. The reference model is an "Old Western saloon" with:
+  * Rectangular building, ~4:3 width:depth.
+  * Main bar counter spanning the full back wall (north).
+  * 4 bar stools in a row in front of the counter, facing north.
+  * 2 round tables in the central floor area, between entrance and bar.
+  * 4 chairs around each table.
+  * 2 wall-mounted shelves behind the bar with bottles.
+  * 2 hanging lamps over the tables.
+  * 2 front windows flanking the door, plus side-wall windows.
+  * No piano, no stairs (single level).
+- Reviewed the existing saloon code: `town-buildings.js::bldWithDoor` only draws the building shell (walls + gable roof + door) — the saloon interior was completely empty. `generateTown` adds the front/side/back wall colliders + door + floor for saloon.
+- Reviewed the existing renderer API: `ctx.pb(x,y,z,sx,sy,sz,color)` draws a box, `ctx.pbHinge` for hinged objects, `ctx.boxCol` for player colliders, `ctx.cam` for camera colliders, `ctx.pgl` for baked meshes. Confirmed no GLB loader is needed.
+- `config.js`:
+  * Added `SALOON_LAYOUT` — a named, plan-aligned table of every interior object:
+    `BarCounter`, `BarStool01..04`, `SaloonTable01..02`, `SaloonChair01..08` (4 per table),
+    `BarShelfLower`, `BarShelfUpper`, `SaloonLamp01..02`, and an optional `Piano`
+    (disabled by `SALOON_INCLUDE_PIANO=false` since the reference has no piano).
+  * All coords are in WORLD space, derived from the saloon bounding box
+    (x0..x1 = -35..-22, z0..z1 = -11.5..-3.5). A clear visitor path runs along
+    x = b.x = -28.5 from the front door straight north to the bar counter.
+- `saloon.js` (new file, 280 lines):
+  * `saloonPlan()` — single source of truth for all saloon coords.
+  * `generateSaloon(ctx)` — adds player colliders for the BarCounter (solid block), SaloonTable01/02 (thin), and optionally Piano. Does NOT add colliders for chairs/stools (low enough to step around). Adds a camera collider for the BarCounter.
+  * `drawSaloon(ctx)` — renders the interior (exterior shell is still drawn by `bldWithDoor`):
+    - [BarCounter] — solid wooden counter along the back wall, with an overhanging top, a darker front fascia, a bartender rail, and 3 drawer-fronts with handles on the customer side.
+    - [BarStool01..04] — round-ish seats with a centre post + 3 splayed feet.
+    - [SaloonTable01..02] — table top on a centre pedestal with a flat foot, plus a whiskey bottle + glass in the centre.
+    - [SaloonChair01..08] — seat + 4 corner legs + a backrest placed on the OUTER side of the table (computed from the chair's offset relative to its table centre, so a seated guest faces the table). 4 chairs per table (N/S/E/W).
+    - [BarShelfLower/Upper] — wall-mounted shelves with brackets, plus 12 bottles each in a deterministic colour pattern (green, brown, blue, amber, dark-red).
+    - [SaloonLamp01..02] — hanging chain + canopy + shade + warm-yellow light, over each table.
+    - Interior wainscoting (a thin dark band around the lower walls) and exposed ceiling beams for atmosphere.
+    - Front + side window sills and faint glass panes on the interior side.
+- `world-objects.js`:
+  * Imported `generateSaloon` and `drawSaloon` from `saloon.js`.
+  * Added `generateSaloon()` to the constructor and a `drawSaloon()` method.
+  * Called `generateSaloon()` after the other generators in the constructor.
+  * Called `_drawSaloon(ctx)` inside `draw()` right after `_bldWithDoor(ctx, TOWN.saloon, ...)` so the interior draws on top of the exterior shell.
+
+Stage Summary:
+- **Files changed**: `config.js` (added `SALOON_LAYOUT` + `SALOON_INCLUDE_PIANO`), `saloon.js` (NEW, 280 lines), `world-objects.js` (import + 3 wiring changes).
+- **Build result**: `bun run lint` shows only the pre-existing `use-mobile.ts` / `use-toast.ts` setState warnings (unrelated to this task); no errors in any of the saloon files. Page returns 200.
+- **Runtime verification (agent-browser + VLM)**:
+  * Entrance view: long bar counter on the back wall, bar stools in front of it, two tables with chairs on left and right of a clear centre path, shelves with bottles on the back wall, ceiling beams. ✅
+  * Corner view: VLM confirms "this is a believable western saloon layout — long bar counter against the wall with back-bar shelving for liquor is a classic configuration". ✅
+  * Centre path is clear for walking from the front door to the bar counter. ✅
+  * No floating/clipping furniture: counter on the floor against the wall, stools on the floor, tables on the floor with pedestal bases, chairs on the floor, shelves on the wall. ✅
+- **Named objects** (searchable in `saloon.js` and `config.js`): `BarCounter`, `BarStool01..04`, `SaloonTable01..02`, `SaloonChair01..08`, `BarShelfLower`, `BarShelfUpper`, `SaloonLamp01..02`, `Piano` (optional).
+- **Reference fidelity**: layout matches the Hyper3D Rodin reference — bar counter on the back wall, 4 stools, 2 tables with 4 chairs each, 2 shelves with bottles, 2 hanging lamps, front+side windows. Piano omitted (not in reference). No new renderer / no GLB loader added.
