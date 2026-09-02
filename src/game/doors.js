@@ -14,13 +14,6 @@ export function isInside(d,player){return d.side>0?(player.pos.z<d.z-.15):(playe
 export function playerInDoorway(d,player){return Math.abs(player.pos.x-d.x)<d.w/2+.45&&Math.abs(player.pos.z-d.z)<.7}
 export function updateDoors(doors,dt,player){
   for(const d of doors){
-    // v36: saloon door is permanently open (d.alwaysOpen) — skip the
-    // auto-push + auto-close logic entirely so the doorway stays open and
-    // the collider stays off. The player can walk straight through.
-    if(d.alwaysOpen){
-      d.open=1; d.target=1; d.swing=1; d.col.off=true;
-      continue;
-    }
     // Auto-push closed doors when player walks into the doorway
     if(!d.pushing&&d.open<.05&&playerInDoorway(d,player)){
       d.pushing=true;d.pushT=0;d.col.off=true;
@@ -69,10 +62,12 @@ export function drawDoor(ctx,d){
   ctx.pb(d.x-d.w/2-.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
   ctx.pb(d.x+d.w/2+.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
   ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
-  // v35: REMOVED the bat-wing doors — they appeared as two strange objects at
-  // the doorway (the user saw them appear and disappear from certain angles).
-  // The saloon doorway is now a fully open frame (no door leaf at all),
-  // matching the classic Western saloon open entrance.
+  // v37: saloon has detailed BAT-WING swinging doors per the user's reference
+  // image. Two mirrored half-height panels with vertical planks, horizontal
+  // rails, curved top/bottom, iron hinges, and centre ring pulls.
+  if(d.key==='saloon'){
+    drawSaloonBatwingDoor(ctx, d, gy);
+  }
   // For the interior wood door, add plank seams on the closed leaf so it
   // reads clearly as a wooden door. The seams are drawn along the un-rotated
   // leaf axis (close enough at the low max swing of ~1.35 rad; the visual
@@ -84,4 +79,71 @@ export function drawDoor(ctx,d){
       ctx.pb(px, gy+d.h/2+.02, d.z, .025, d.h*.86, .10, C.dark);
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// drawSaloonBatwingDoor — detailed Western saloon bat-wing doors per the
+// user's reference image. Two mirrored half-height panels (~1.1m tall, each
+// ~half the door width) that swing open when the player approaches.
+//
+// Design (from the reference):
+//   - 2 mirrored panels hinged on the outer posts, meeting in the centre.
+//   - Each panel: ~9 vertical planks (slats) with small gaps.
+//   - 3 horizontal rails (top, middle, bottom) crossing the planks.
+//   - Top edge curves up slightly toward the centre (arch).
+//   - Bottom edge curves up (scalloped) toward the outer edges.
+//   - 2 iron strap hinges on the outer edge of each panel.
+//   - A ring pull (handle) on the inner edge of each panel.
+//   - Weathered grey-brown wood colour.
+// The doors swing open (rotate) based on d.swing (0 = closed, 1 = open).
+// ---------------------------------------------------------------------------
+function drawSaloonBatwingDoor(ctx, d, gy){
+  // Half-height bat-wing doors (~1.1m tall).
+  const batH = 1.10;
+  const batW = (d.w - 0.04) / 2;   // each panel, small centre gap (0.04m)
+  const batY = gy + batH/2 + 0.05;  // centre y (slightly above floor)
+  const panelT = 0.09;              // panel thickness (along z)
+  // Weathered grey-brown wood colour (slightly desaturated, with grey
+  // undertones as in the reference).
+  const woodColor = [0.48, 0.38, 0.28];
+  const darkWood = [0.32, 0.24, 0.18];
+  const ironColor = [0.18, 0.16, 0.15];
+  const swing = d.swing * 1.0;       // 0 closed → 1 open (full swing)
+
+  // Helper to draw one bat-wing panel. side = -1 (left) or +1 (right).
+  const drawPanel = (side) => {
+    const hingeX = d.x + side * d.w/2;  // outer hinge post
+    const panelCX = hingeX - side * batW/2;  // panel centre (when closed)
+    // The panel rotates around its hinge by `swing` radians (around Y).
+    ctx.pbHinge(hingeX, batY, d.z, batW, batH, panelT, woodColor, side * swing);
+    // --- Vertical planks (9 per panel) ---
+    const plankN = 9;
+    const plankW = batW / plankN;
+    for (let i = 0; i < plankN; i++){
+      const localX = -batW/2 + plankW * (i + 0.5);
+      const px = panelCX + localX;
+      ctx.pb(px, batY, d.z + panelT/2 + 0.01, plankW * 0.85, batH - 0.08, 0.02, darkWood);
+    }
+    // --- Horizontal rails (3: top, middle, bottom) ---
+    const railYs = [batY + batH*0.30, batY, batY - batH*0.30];
+    for (const ry of railYs){
+      ctx.pb(panelCX, ry, d.z + panelT/2 + 0.02, batW - 0.04, 0.08, 0.03, woodColor);
+    }
+    // --- Curved top edge (arch) ---
+    ctx.pb(panelCX, batY + batH/2 + 0.04, d.z + panelT/2 + 0.01, batW - 0.06, 0.08, 0.02, woodColor);
+    // --- Curved bottom edge (scallop) ---
+    ctx.pb(panelCX, batY - batH/2 - 0.02, d.z + panelT/2 + 0.01, batW - 0.10, 0.06, 0.02, woodColor);
+    // --- Iron strap hinges (2 per panel, on the outer edge) ---
+    for (const hy of [batY + batH*0.30, batY - batH*0.30]){
+      ctx.pb(hingeX - side * 0.04, hy, d.z + panelT/2 + 0.03, 0.18, 0.06, 0.02, ironColor);
+      ctx.pb(hingeX, hy, d.z, 0.05, 0.05, 0.05, ironColor);
+    }
+    // --- Ring pull (handle) on the inner edge ---
+    const innerX = panelCX - side * (batW/2 - 0.06);
+    ctx.pb(innerX, batY, d.z + panelT/2 + 0.04, 0.04, 0.04, 0.03, ironColor);
+    ctx.pb(innerX, batY, d.z + panelT/2 + 0.06, 0.08, 0.08, 0.02, ironColor);
+  };
+
+  drawPanel(-1);
+  drawPanel(+1);
 }
