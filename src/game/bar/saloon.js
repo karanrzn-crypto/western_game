@@ -74,13 +74,20 @@ export function generateSaloon(ctx){
     bc(cx-sx/2+t, cz-sz/2+t, cx+sx/2-t, cz+sz/2-t);
   }
   // [Piano] — solid block against the west wall (so the player can't walk
-  // through it).
+  // through it). The piano's BACK is flush against the west wall (x=x0+WT),
+  // the body extends INTO the room (east, +x) by 0.65m, and the keyboard
+  // faces east. This avoids the v31 bug where the piano was placed with its
+  // depth axis along X (into the wall) — half of it was inside the wall.
   if(SALOON_INCLUDE_PIANO){
-    // Piano back at x = x0 + WT, extends forward (south) ~0.65m.
     const pd=0.65, pw=1.50;
-    const pBackX=x0+WT, pFrontX=pBackX+pd;
-    const pz=z1-1.5;
-    bc(pBackX, pz-pw/2, pFrontX, pz+pw/2);
+    // Piano back at x = x0 + WT (on the west wall surface).
+    const pBackX=x0+WT;
+    // Piano centre is pd/2 INTO the room (east of the wall).
+    const pCentreX=pBackX+pd/2;
+    // Piano z-centre: near the front of the room, against the west wall.
+    const pCentreZ=z1-1.8;
+    // Player collider: from the wall to pCentreX + pd/2, spanning the piano width.
+    bc(pBackX, pCentreZ-pw/2, pCentreX+pd/2, pCentreZ+pw/2);
   }
 
   // ---- Camera colliders ----
@@ -242,16 +249,19 @@ export function drawSaloon(ctx){
   }
 
   // ========== PIANO (upright, against the west wall) ==========
-  // [Piano] — upright walnut piano, back against the west wall (x=x0), near
-  // the front of the room. Keyboard faces south (into the room).
+  // [Piano] — upright walnut piano, BACK flush against the west wall
+  // (x = x0 + WT), body extends INTO the room (east, +x), keyboard faces
+  // east. This is the v32 fix: the piano is rotated 90° so its back is
+  // against the wall, not half-buried in it.
   if(SALOON_INCLUDE_PIANO){
-    const pd=0.65;
-    const pBackX=x0+WT;             // piano back against the west wall
-    const pCentreX=pBackX+pd/2;     // piano centre x
-    const pCentreZ=z1-1.5;          // near the front of the room
-    drawPiano(ctx, pCentreX, pCentreZ, gy, +1);
-    // [PianoStool] — small round stool in front of (south of) the piano.
-    drawPianoStool(ctx, pCentreX, pCentreZ + 0.85, gy);
+    const pd=0.65, pw=1.50;
+    const pBackX=x0+WT;               // piano back on the west wall
+    const pCentreX=pBackX+pd/2;       // piano centre (pd/2 into the room)
+    const pCentreZ=z1-1.8;            // near the front of the room
+    drawPiano(ctx, pBackX, pCentreZ, gy, 'E');   // keyboard faces east (+x)
+    // [PianoStool] — small round stool in front of the keyboard (east of
+    // the piano, further into the room).
+    drawPianoStool(ctx, pCentreX + 0.85, pCentreZ, gy);
   }
 
   // ========== NAMED INTERIOR PROPS (small visual objects) ==========
@@ -266,23 +276,23 @@ export function drawSaloon(ctx){
     ctx.pb(spX, gy+.12, spZ, .24, .02, .24, gold);        // lip
   }
 
-  // [WantedPoster01] — a "WANTED" poster on the west wall, near the front.
+  // [WantedPoster01] — a "WANTED" poster on the WEST wall, near the front.
+  // Mounted IN THE ROOM (x = x0 + WT + 0.04 — just inside the west wall
+  // surface) so it doesn't clip into the wall.
   {
-    const wpX=x0+WT/2+.02, wpY=gy+1.7, wpZ=z1-2.5;
+    const wpX=x0+WT+0.04, wpY=gy+1.7, wpZ=z1-2.5;
     ctx.pb(wpX, wpY, wpZ, .04, .50, .38, pal);           // paper
     ctx.pb(wpX, wpY+.18, wpZ, .05, .10, .36, [0.78,0.20,0.18]); // red "WANTED" band
-    // A few dark "text" lines on the poster.
     for(const ly of [-0.04, -0.08, -0.12, -0.16]){
       ctx.pb(wpX, wpY+ly, wpZ, .28, .01, .01, dk);
     }
-    // A crude face silhouette.
     ctx.pb(wpX, wpY-.04, wpZ, .08, .10, .08, dk);
   }
 
-  // [WantedPoster02] — another "WANTED" poster on the east wall, near the
-  // front. Slightly different position and angle.
+  // [WantedPoster02] — another "WANTED" poster on the EAST wall, near the
+  // front. Mounted IN THE ROOM (x = x1 - WT - 0.04 — just inside the east wall).
   {
-    const wpX=x1-WT/2-.02, wpY=gy+1.6, wpZ=z1-3.5;
+    const wpX=x1-WT-0.04, wpY=gy+1.6, wpZ=z1-3.5;
     ctx.pb(wpX, wpY, wpZ, .04, .44, .34, pal);
     ctx.pb(wpX, wpY+.15, wpZ, .05, .08, .32, [0.78,0.20,0.18]);
     for(const ly of [-0.04, -0.08, -0.12]){
@@ -291,33 +301,28 @@ export function drawSaloon(ctx){
     ctx.pb(wpX, wpY-.06, wpZ, .06, .08, .06, dk);
   }
 
-  // [SaloonPainting] — a framed painting on the east wall, mid-room. A
-  // generic western landscape painting (frame + dark canvas + a horizon).
+  // [SaloonPainting] — a framed painting on the EAST wall, mid-room.
+  // Mounted IN THE ROOM (x = x1 - WT - 0.05 — just inside the east wall).
   {
-    const paX=x1-WT/2-.02, paY=gy+2.0, paZ=(z0+z1)/2;
+    const paX=x1-WT-0.05, paY=gy+2.0, paZ=(z0+z1)/2;
     ctx.pb(paX, paY, paZ, .06, .80, 1.00, pal);          // frame
-    ctx.pb(paX, paY, paZ, .04, .72, .92, dk);            // canvas (dark)
-    // A "horizon" line (lighter strip across the middle of the canvas).
-    ctx.pb(paX-.02, paY, paZ, .04, .10, .92, [0.55,0.40,0.25]);
-    // A "sky" strip above the horizon.
-    ctx.pb(paX-.02, paY+.30, paZ, .04, .30, .92, [0.45,0.50,0.62]);
-    // A small "sun" circle.
-    ctx.pb(paX-.02, paY+.42, paZ+.30, .04, .10, .10, [0.95,0.80,0.40]);
+    ctx.pb(paX, paY, paZ, .04, .72, .92, dk);            // canvas
+    ctx.pb(paX-.02, paY, paZ, .04, .10, .92, [0.55,0.40,0.25]); // horizon
+    ctx.pb(paX-.02, paY+.30, paZ, .04, .30, .92, [0.45,0.50,0.62]); // sky
+    ctx.pb(paX-.02, paY+.42, paZ+.30, .04, .10, .10, [0.95,0.80,0.40]); // sun
   }
 
-  // [AntlerMount] — a deer-antler mount on the back wall (above the upper
-  // shelf), a classic western saloon decoration.
+  // [AntlerMount] — a deer-antler mount on the BACK (north) wall, above the
+  // upper shelf. Mounted IN THE ROOM (z = z0 + WT + 0.04 — just inside the
+  // north wall).
   {
-    const amX=b.x+3.0, amY=gy+2.6, amZ=z0+WT/2+.02;
-    // Mount plaque (a small shield-shaped board).
-    ctx.pb(amX, amY, amZ, .30, .40, .04, wd);
-    // Antler "branches" — 4 small angled bars on each side.
+    const amX=b.x+3.0, amY=gy+2.6, amZ=z0+WT+0.04;
+    ctx.pb(amX, amY, amZ, .30, .40, .04, wd);            // plaque
     for(const side of [-1, 1]){
       for(let i=0; i<3; i++){
         const ay=amY + 0.10 - i*0.10;
         const ax=amX + side*(0.18 + i*0.06);
         ctx.pb(ax, ay, amZ, .18, .03, .03, [0.85,0.78,0.65]);
-        // A small tine sticking up.
         ctx.pb(ax + side*0.06, ay+.08, amZ, .03, .10, .03, [0.85,0.78,0.65]);
       }
     }
@@ -392,22 +397,20 @@ export function drawSaloon(ctx){
     ctx.pb(cx+2.5, gy+1.05, cz+sz_edge(o), .30, .12, .04, [0.80,0.75,0.65]);
   }
 
-  // [WallSconce01] — a wall-mounted oil lamp on the west wall, near the front.
+  // [WallSconce01] — a wall-mounted oil lamp on the WEST wall, near the front.
+  // Mounted IN THE ROOM (x = x0 + WT + 0.08 — just inside the west wall).
   {
-    const wsX=x0+WT/2+.05, wsY=gy+2.0, wsZ=z1-4.5;
-    // Backing plate.
-    ctx.pb(wsX, wsY, wsZ, .04, .20, .20, dk);
-    // Lamp body.
-    ctx.pb(wsX+.06, wsY, wsZ, .10, .18, .10, dk);
-    // Glass chimney.
-    ctx.pb(wsX+.10, wsY+.05, wsZ, .06, .16, .06, [0.85,0.85,0.7]);
-    // Flame.
-    ctx.pb(wsX+.10, wsY+.15, wsZ, .03, .05, .03, [1.0,0.75,0.3]);
+    const wsX=x0+WT+0.08, wsY=gy+2.0, wsZ=z1-4.5;
+    ctx.pb(wsX, wsY, wsZ, .04, .20, .20, dk);            // backing plate
+    ctx.pb(wsX+.06, wsY, wsZ, .10, .18, .10, dk);        // lamp body
+    ctx.pb(wsX+.10, wsY+.05, wsZ, .06, .16, .06, [0.85,0.85,0.7]); // chimney
+    ctx.pb(wsX+.10, wsY+.15, wsZ, .03, .05, .03, [1.0,0.75,0.3]);  // flame
   }
 
-  // [WallSconce02] — a matching wall lamp on the east wall, near the front.
+  // [WallSconce02] — a matching wall lamp on the EAST wall, near the front.
+  // Mounted IN THE ROOM (x = x1 - WT - 0.08 — just inside the east wall).
   {
-    const wsX=x1-WT/2-.05, wsY=gy+2.0, wsZ=z1-5.5;
+    const wsX=x1-WT-0.08, wsY=gy+2.0, wsZ=z1-5.5;
     ctx.pb(wsX, wsY, wsZ, .04, .20, .20, dk);
     ctx.pb(wsX-.06, wsY, wsZ, .10, .18, .10, dk);
     ctx.pb(wsX-.10, wsY+.05, wsZ, .06, .16, .06, [0.85,0.85,0.7]);
@@ -415,11 +418,15 @@ export function drawSaloon(ctx){
   }
 
   // ========== INTERIOR WALL DETAIL: wainscoting ==========
+  // A thin dark wooden band running around the lower part of all interior
+  // walls. Placed just INSIDE the wall surfaces (at x0+WT, x1-WT, z0+WT,
+  // z1-WT — the interior face of each wall) so it doesn't clip into the
+  // walls.
   const wainscotY=gy+.60, wainscotH=.04, wainscotD=.04;
-  ctx.pb((x0+x1)/2, wainscotY, z0+WT/2+.02, x1-x0-2*WT, wainscotH, wainscotD, dk);
-  ctx.pb((x0+x1)/2, wainscotY, z1-WT/2-.02, x1-x0-2*WT, wainscotH, wainscotD, dk);
-  ctx.pb(x0+WT/2+.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);
-  ctx.pb(x1-WT/2-.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);
+  ctx.pb((x0+x1)/2, wainscotY, z0+WT+0.02, x1-x0-2*WT, wainscotH, wainscotD, dk);  // north
+  ctx.pb((x0+x1)/2, wainscotY, z1-WT-0.02, x1-x0-2*WT, wainscotH, wainscotD, dk);  // south
+  ctx.pb(x0+WT+0.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);  // west
+  ctx.pb(x1-WT-0.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);  // east
 
   // ========== CEILING BEAMS ==========
   for(let bz=z0+1.5; bz<=z1-1.5; bz+=2.0){
@@ -427,14 +434,15 @@ export function drawSaloon(ctx){
   }
 
   // ========== INTERIOR WINDOW SILLS ==========
+  // On the interior face of the front wall (z = z1 - WT) and side walls.
   const winY=gy+1.4;
   for(const wx of [b.x-b.w/4, b.x+b.w/4]){
-    ctx.pb(wx, winY-.10, z1-WT/2-.02, 1.6, .06, .12, wd);
-    ctx.pb(wx, winY+.40, z1-WT/2-.01, 1.4, .80, .04, [0.13,0.18,0.22]);
+    ctx.pb(wx, winY-.10, z1-WT-0.02, 1.6, .06, .12, wd);     // sill (just inside)
+    ctx.pb(wx, winY+.40, z1-WT-0.01, 1.4, .80, .04, [0.13,0.18,0.22]); // pane
   }
-  for(const sx of [x0+WT/2+.02, x1-WT/2-.02]){
-    ctx.pb(sx, winY-.10, (z0+z1)/2, .12, .06, 1.6, wd);
-    ctx.pb(sx, winY+.40, (z0+z1)/2, .04, .80, 1.4, [0.13,0.18,0.22]);
+  for(const sx of [x0+WT+0.02, x1-WT-0.02]){
+    ctx.pb(sx, winY-.10, (z0+z1)/2, .12, .06, 1.6, wd);      // sill (just inside)
+    ctx.pb(sx, winY+.40, (z0+z1)/2, .04, .80, 1.4, [0.13,0.18,0.22]); // pane
   }
 
   // ========== EXTERIOR: FALSE FRONT PARAPET + SALOON SIGN + PORCH ==========
@@ -549,12 +557,10 @@ function drawSaloonExterior(ctx, P){
   }
 
   // ---- PORCH RAILING ----
-  const railY=gy+0.95;
-  ctx.pb((postXs[0]+postXs[1])/2, railY, postZ, postXs[1]-postXs[0], .06, .08, w2);
-  ctx.pb((postXs[2]+postXs[3])/2, railY, postZ, postXs[3]-postXs[2], .06, .08, w2);
-  for(const px of postXs){
-    ctx.pb(px, gy+0.45, postZ, .06, .90, .06, dk);
-  }
+  // v32: REMOVED. The railing ran across the porch edge and visually
+  // appeared as a brown horizontal bar blocking the door when entering /
+  // exiting. The 4 porch posts alone are enough for the western look.
+  // (The rail + balusters are removed to keep the entrance fully clear.)
 
   // ---- CHIMNEY ----
   const chimX=x1-1.5, chimZ=z0+2.0;
