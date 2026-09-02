@@ -25,7 +25,13 @@ export function generateTown(ctx){
         if(TOWN[k].key&&ctx.gableRh[k])ctx.camGable(b,ctx.gableRh[k],b.h+.03);
         else{const sgy=ctx.g(b.x,b.z),sTop=sgy+b.h;ctx.cam(b.x-b.w/2-.1,b.z-b.d/2-.1,b.x+b.w/2+.1,b.z+b.d/2+.1,sTop+.16,sTop-.02)}
         const d={x:b.x,z:frontZ,w:DOOR_GAP,h:DOOR_H,side:b.z<0?1:-1,open:0,target:0,pushing:false,pushT:0,speed:DOOR_SPEED,swing:0,key:b.key};
-        d.col={x0:gapL,x1:gapR,z0:frontZ-.09,z1:frontZ+.09,door:true,off:false};
+        // v36: the saloon has a permanently OPEN doorway (no door leaf, no
+        // collider) — the player can walk straight in without pressing E.
+        // Other buildings (store) keep a normal door.
+        const isSaloonOpen = (b.key === 'saloon');
+        d.alwaysOpen = isSaloonOpen;
+        d.col={x0:gapL,x1:gapR,z0:frontZ-.09,z1:frontZ+.09,door:true,off:isSaloonOpen};
+        if(isSaloonOpen){ d.open=1; d.target=1; d.swing=1; }
         d.inside={x0:x0+WALL_T,z0:z0+WALL_T/2,x1:x1-WALL_T,z1:z1-WALL_T/2};
         ctx.doors.push(d);
         ctx.floors.push({x0:x0+WALL_T,x1:x1-WALL_T,z0:z0+WALL_T/2,z1:z1-WALL_T/2,y:ctx.g(b.x,b.z)+.008});

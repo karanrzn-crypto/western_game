@@ -146,19 +146,21 @@ export function drawSaloon(ctx){
   }
 
   // ========== BAR STOOLS ==========
-  // v35: raised the stools (taller legs) so they're not too short. Seat now
-  // at gy+0.62 (was gy+0.48), centre post + feet sized accordingly.
+  // v36: raised even higher (bar-stool height ~0.75m) and slightly larger
+  // seat. Taller centre post + feet so the stool is not too short.
   for(const key of ['BarStool01','BarStool02','BarStool03','BarStool04']){
     const o=SALOON_LAYOUT[key];
     if(!o) continue;
     const [cx, cy, cz]=o.center;
     const [sx, , sz]=o.size;  // config size (0.50)
-    ctx.pb(cx, gy+.62, cz, sx, .06, sz, wd);       // seat (higher)
-    ctx.pb(cx, gy+.64, cz, sx+.04, .04, sz+.04, dk); // seat rim
-    ctx.pb(cx, gy+.32, cz, .08, .62, .08, dk);      // centre post (taller)
-    ctx.pb(cx-.18, gy+.05, cz-.12, .06, .10, .06, dk); // feet
-    ctx.pb(cx+.18, gy+.05, cz-.12, .06, .10, .06, dk);
-    ctx.pb(cx, gy+.05, cz+.18, .06, .10, .06, dk);
+    ctx.pb(cx, gy+.75, cz, sx+.04, .06, sz+.04, wd);     // seat (higher + wider)
+    ctx.pb(cx, gy+.77, cz, sx+.08, .04, sz+.08, dk);      // seat rim
+    ctx.pb(cx, gy+.38, cz, .10, .74, .10, dk);            // centre post (taller)
+    ctx.pb(cx-.20, gy+.05, cz-.14, .07, .10, .07, dk);    // feet (wider)
+    ctx.pb(cx+.20, gy+.05, cz-.14, .07, .10, .07, dk);
+    ctx.pb(cx, gy+.05, cz+.20, .07, .10, .07, dk);
+    // Footrest ring (a horizontal bar near the bottom of the post).
+    ctx.pb(cx, gy+.20, cz, sx+.10, .04, sz+.10, dk);
   }
 
   // ========== SALOON TABLES ==========
@@ -190,8 +192,8 @@ export function drawSaloon(ctx){
   }
 
   // ========== SALOON CHAIRS ==========
-  // v35: raised the chairs (taller legs) so they're not too short. Seat now
-  // at gy+0.55 (was gy+0.48), legs from gy+0.03 to gy+0.55 (0.52m legs).
+  // v36: raised even higher (seat at gy+0.65, legs 0.62m) and slightly
+  // larger proportions. Taller backrest to match.
   for(const key of ['SaloonChair01','SaloonChair02','SaloonChair03','SaloonChair04',
                     'SaloonChair05','SaloonChair06','SaloonChair07','SaloonChair08']){
     const o=SALOON_LAYOUT[key];
@@ -203,23 +205,22 @@ export function drawSaloon(ctx){
     else tableCentre=SALOON_LAYOUT.SaloonTable02.center;
     const [tcx, , tcz]=tableCentre;
     const dx=cx-tcx, dz=cz-tcz;
-    // Seat (raised).
-    ctx.pb(cx, gy+.55, cz, sx, .06, sz, wd);
-    // Legs (4 corner legs, taller — from gy+0.03 to gy+0.55).
-    const legOff=sx/2-0.08;
-    ctx.pb(cx-legOff, gy+.29, cz-legOff, .06, .52, .06, dk);
-    ctx.pb(cx+legOff, gy+.29, cz-legOff, .06, .52, .06, dk);
-    ctx.pb(cx-legOff, gy+.29, cz+legOff, .06, .52, .06, dk);
-    ctx.pb(cx+legOff, gy+.29, cz+legOff, .06, .52, .06, dk);
-    // Backrest on the OUTER side (away from the table) so a seated guest
-    // faces the table. Raised to match the higher seat.
-    const off=0.26;
+    // Seat (raised + slightly larger).
+    ctx.pb(cx, gy+.65, cz, sx+.04, .06, sz+.04, wd);
+    // Legs (4 corner legs, taller — from gy+0.03 to gy+0.65, ~0.62m legs).
+    const legOff=(sx+.04)/2-0.08;
+    ctx.pb(cx-legOff, gy+.34, cz-legOff, .07, .62, .07, dk);
+    ctx.pb(cx+legOff, gy+.34, cz-legOff, .07, .62, .07, dk);
+    ctx.pb(cx-legOff, gy+.34, cz+legOff, .07, .62, .07, dk);
+    ctx.pb(cx+legOff, gy+.34, cz+legOff, .07, .62, .07, dk);
+    // Backrest on the OUTER side (away from the table) — taller to match.
+    const off=0.28;
     if(Math.abs(dx)>Math.abs(dz)){
       const sign=dx>0?1:-1;
-      ctx.pb(cx+sign*off, gy+.85, cz, .06, .60, sz, wd);
+      ctx.pb(cx+sign*off, gy+.95, cz, .06, .68, sz+.04, wd);
     }else{
       const sign=dz>0?1:-1;
-      ctx.pb(cx, gy+.85, cz+sign*off, sx, .60, .06, wd);
+      ctx.pb(cx, gy+.95, cz+sign*off, sx+.04, .68, .06, wd);
     }
   }
 

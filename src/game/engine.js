@@ -53,7 +53,7 @@ export function createGame(dom){
     }
     setCamMode(mode){
       this.camera.mode=mode;
-      dom.mode.textContent='v35 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+      dom.mode.textContent='v36 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
     }
     setDebugMode(enabled){
       this.debugMode=!!enabled;
@@ -79,7 +79,9 @@ export function createGame(dom){
       if(!inside&&this._lastInside){this.objects.resetPushables(this._lastInside)}
       this._lastInside=inside;
       const near=this.objects.nearestDoor(this.player);
-      dom.doorHint.style.display=near&&!near.door.pushing&&near.door.open<.3?'block':'none';
+      // v36: don't show the 'press E to open door' hint for doors that are
+      // permanently open (saloon).
+      dom.doorHint.style.display=(near&&!near.door.alwaysOpen&&!near.door.pushing&&near.door.open<.3)?'block':'none';
       if(this.input.once('e')){
         if(near&&!near.door.pushing&&near.door.open<.3){
           near.door.pushing=true;near.door.pushT=0;
@@ -236,7 +238,7 @@ export function createGame(dom){
     const vb=dom.verBanner;
     vb.classList.add('show');
     setTimeout(()=>vb.classList.remove('show'),6000);
-    dom.flashNotice('نسخه ۳۵ — کلانتری + بار/سالون با چیدمان واقعی');
+    dom.flashNotice('نسخه ۳۶ — کلانتری + بار/سالون با چیدمان واقعی');
   }catch(err){
     dom.fail((err&&err.stack)||String(err));
   }

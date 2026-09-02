@@ -14,6 +14,13 @@ export function isInside(d,player){return d.side>0?(player.pos.z<d.z-.15):(playe
 export function playerInDoorway(d,player){return Math.abs(player.pos.x-d.x)<d.w/2+.45&&Math.abs(player.pos.z-d.z)<.7}
 export function updateDoors(doors,dt,player){
   for(const d of doors){
+    // v36: saloon door is permanently open (d.alwaysOpen) — skip the
+    // auto-push + auto-close logic entirely so the doorway stays open and
+    // the collider stays off. The player can walk straight through.
+    if(d.alwaysOpen){
+      d.open=1; d.target=1; d.swing=1; d.col.off=true;
+      continue;
+    }
     // Auto-push closed doors when player walks into the doorway
     if(!d.pushing&&d.open<.05&&playerInDoorway(d,player)){
       d.pushing=true;d.pushT=0;d.col.off=true;
