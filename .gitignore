@@ -1,2 +1,99 @@
-skills/
-node_modules/
+# =============================================================================
+# .gitignore  —  Western Game (Next.js 16 + Prisma + Bun)
+# DO NOT modify unless you know what you're doing. This file is critical for
+# repo hygiene — without it, .next/ cache (500+ files) and .env get committed.
+# =============================================================================
+
+# ===== Dependencies =====
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ===== Next.js build output (NEVER commit — 500+ cache files) =====
+/.next/
+/out/
+next-env.d.ts
+
+# ===== Build artifacts =====
+/build
+dist/
+*.tsbuildinfo
+
+# ===== Testing =====
+/coverage
+
+# ===== Cache =====
+.cache
+.turbo
+.eslintcache
+*.tgz
+
+# ===== Environment & secrets (NEVER commit) =====
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+
+# ===== Vercel =====
+.vercel
+
+# ===== Logs (any location) =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dev.log
+dev.out.log
+server.log
+
+# ===== Databases (local SQLite) =====
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+db/*.db
+db/*.db-journal
+db/*.db-shm
+db/*.db-wal
+prisma/*.db
+
+# ===== OS / editor =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ===== z.ai platform tooling (sandbox-internal) =====
+/skills/
+/.zscripts/
+.z-ai-config
+.claude
+
+# ===== Runtime data directories =====
+/download/
+/upload/
+local-*
+
+# ===== Tool results / temp screenshots =====
+tool-results/
+*-screenshot.png
+sheriff-*.png
+bar-*.png
+qa-*.png
+
+# ===== Misc =====
+game-test.png
+prompt
