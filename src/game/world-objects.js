@@ -217,7 +217,7 @@ export class WorldObjects{
     this._gl=gl;this._loc=loc;
     const ctx=createDrawContext(this,gl,loc);
     for(const f of this.floors)this.pfl((f.x0+f.x1)/2,f.y,(f.z0+f.z1)/2,(f.x1-f.x0)/2,(f.z1-f.z0)/2,C.floorW);
-    _bldWithDoor(ctx,TOWN.saloon,C.wood,'gable');
+    _bldWithDoor(ctx,TOWN.saloon,C.wood,'flat');
     _drawSaloon(ctx);
     _bldWithDoor(ctx,TOWN.store,C.wood2,'gable');
     _drawSheriff(ctx);

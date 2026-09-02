@@ -141,19 +141,19 @@ export const SH_OFFICE_LAYOUT={
    SaloonTable01..02, SaloonChair01..08 (4 per table), BarShelfLower/Upper,
    SaloonLamp01..02, plus doors and windows handled by the generator. ===== */
 export const SALOON_LAYOUT={
-  // [BarCounter] — long counter against the back (north) wall.
-  // Spans most of the back wall, leaving small gaps at each corner so it
-  // doesn't clip into the side walls.
-  // center [x,y,z], size [sx,sy,sz] (full dims; y is centre height above gy)
-  BarCounter:    { center:[-28.5, 0.55, -11.05], size:[10.6, 1.10, 0.70], color:'wood2' },
+  // [BarCounter] — long counter with a BARTENDER WALKWAY behind it (between
+  // the counter and the back wall). Moved forward from z=-11.05 to z=-9.7
+  // so the bartender has ~1.45m of space behind the counter (between the
+  // counter back edge z=-10.05 and the back wall z=-11.5). The shelves stay
+  // on the back wall at z=-11.30.
+  BarCounter:    { center:[-28.5, 0.55, -9.70], size:[10.6, 1.10, 0.70], color:'wood2' },
   // [BarStool01..04] — 4 stools in a row in front of the counter, facing
-  // north. Spaced evenly across the counter width, ~2.0m apart, ~0.9m south
-  // of the counter front edge.
-  BarStool01:    { center:[-31.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
-  BarStool02:    { center:[-30.0, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
-  BarStool03:    { center:[-28.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
-  // (the 4th stool sits west of the entrance path to keep the centre clear)
-  BarStool04:    { center:[-25.5, 0.30, -9.70], size:[0.40, 0.60, 0.40], color:'dark'  },
+  // north. Moved forward by the SAME offset as the counter (+1.35) so they
+  // keep the same ~1.0m gap in front of the counter front edge.
+  BarStool01:    { center:[-31.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool02:    { center:[-30.0, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool03:    { center:[-28.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
+  BarStool04:    { center:[-25.5, 0.30, -8.35], size:[0.40, 0.60, 0.40], color:'dark'  },
   // [SaloonTable01] — round(ish, drawn as a square table) on the WEST side of
   // the central floor, between the entrance and the bar.
   SaloonTable01:  { center:[-31.0, 0.40, -6.50], size:[1.20, 0.06, 1.20], color:'wood'  },
