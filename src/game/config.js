@@ -182,4 +182,4 @@ export const SALOON_LAYOUT={
   // accent only. Disabled by default; enable via SALOON_INCLUDE_PIANO.)
   Piano:          { center:[-34.50, 0.65, -4.50], size:[0.70, 1.30, 1.20], color:'dark'  },
 };
-export const SALOON_INCLUDE_PIANO=false;
+export const SALOON_INCLUDE_PIANO=true;

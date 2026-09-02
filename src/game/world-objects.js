@@ -7,7 +7,7 @@ import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _pl
 import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _drawStable,bldWithDoor as _bldWithDoor,drawProps as _drawProps} from './town-buildings.js';
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
 import {generateSheriff as _generateSheriff,drawSheriff as _drawSheriff,shPlan as _shPlan} from './sheriff.js';
-import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon} from './saloon.js';
+import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon} from './bar/index.js';
 
 export class WorldObjects{
   constructor(gl,terrain){
