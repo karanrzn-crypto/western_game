@@ -1,259 +1,141 @@
-// Piano — upright Western saloon piano (v32)
-// Based on the user's reference image: an upright piano with a warm walnut /
-// mahogany body, recessed back paneling (3 vertical sections with molding),
-// an integrated music rest above the keyboard, a high-contrast ivory/black
-// keyboard, and four straight square-tapered block legs. Approximately 1.3m
-// tall, 1.5m wide, 0.65m deep.
-//
-// All drawing uses the existing ctx.pb() renderer — no GLB / Three.js.
-// Named objects: Piano (the whole instrument), PianoStool (a small round
-// stool in front of it for the pianist).
-//
-// v32: added orientation parameter so the piano can face any of the 4 walls
-// without clipping into the wall. The piano's BACK is always flush against
-// the wall; the keyboard + music rest face INTO the room.
+// bar/piano.js — upright saloon piano (v50, frame-authored)
+// Back is ALWAYS flush on the wall (v = 0) and nothing is ever drawn at
+// v < 0, so the piano can face any wall with zero clipping. Total footprint
+// is exactly 1.52 wide x 0.65 deep, matching the collider in saloon.js.
+import { frame } from './frame.js';
 
-import { C } from '../config.js';
+const WALNUT   = [0.34, 0.19, 0.12];
+const WALNUT_D = [0.24, 0.13, 0.085];
+const WALNUT_L = [0.44, 0.26, 0.16];
+const IVORY    = [0.93, 0.90, 0.82];
+const IVORY_W  = [0.86, 0.80, 0.66]; // yellowed keys
+const BLACKKEY = [0.07, 0.06, 0.06];
+const FELT     = [0.46, 0.11, 0.10];
+const SILK     = [0.55, 0.14, 0.13];
+const BRASS    = [0.76, 0.60, 0.26];
+const IRON     = [0.18, 0.17, 0.16];
+const WAX      = [0.92, 0.89, 0.78];
+const FLAME    = [1.00, 0.72, 0.28];
 
-// Palette for the piano. Walnut/mahogany body — a rich medium-dark brown.
-const PIANO_BODY = [0.36, 0.20, 0.13];     // walnut
-const PIANO_BODY_DARK = [0.26, 0.14, 0.09]; // darker walnut (molding / legs)
-const IVORY = [0.92, 0.88, 0.80];          // ivory natural keys
-const BLACK_KEY = [0.08, 0.07, 0.07];       // black sharp keys
-const PIANO_FELT = [0.45, 0.12, 0.10];      // red felt strip above keys
-const BRASS = [0.78, 0.62, 0.25];           // brass pedal + hinges
+const PW = 1.52, PD = 0.65, PH = 1.34; // width, depth, height
+const BD = 0.50;                       // cabinet depth (keybed adds the rest)
 
-// ---------------------------------------------------------------------------
-// drawPiano — draws an upright piano with its BACK against a wall.
-//   (backX, backZ) = the centre of the piano's BACK edge (on the wall surface).
-//   facing = the direction the keyboard faces, away from the wall:
-//     'S' (+z / south), 'N' (-z / north), 'E' (+x / east), 'W' (-x / west).
-//   gy = ground height at the piano location.
-//
-// The piano body has:
-//   - width (the long horizontal dimension, 1.5m, along the wall)
-//   - depth (the short dimension, 0.65m, away from the wall)
-//   - height (1.3m)
-// The piano's back sits ON the wall; the body extends INTO the room by `depth`.
-// ---------------------------------------------------------------------------
 export function drawPiano(ctx, backX, backZ, gy, facing = 'S'){
-  // Piano dimensions.
-  const pw = 1.50;     // width (along the wall)
-  const pd = 0.65;     // depth (away from the wall)
-  const ph = 1.30;     // height
+  const f = frame(ctx, backX, backZ, facing);
+  const hw = PW / 2;
 
-  // Compute the piano body's centre and orientation in world coords.
-  // The body's centre is `depth/2` INTO the room from the back edge.
-  let cx, cz;          // body centre (world)
-  let alongX;          // true if the width runs along X (wall is east/west)
-  let forwardSign;     // +1 or -1: which way the keyboard faces
-  if (facing === 'S'){ // keyboard faces +z (south); wall is to the north
-    cx = backX; cz = backZ + pd/2; alongX = true;  forwardSign = +1;
-  } else if (facing === 'N'){ // keyboard faces -z (north); wall is to the south
-    cx = backX; cz = backZ - pd/2; alongX = true;  forwardSign = -1;
-  } else if (facing === 'E'){ // keyboard faces +x (east); wall is to the west
-    cx = backX + pd/2; cz = backZ; alongX = false; forwardSign = +1;
-  } else { // 'W' — keyboard faces -x (west); wall is to the east
-    cx = backX - pd/2; cz = backZ; alongX = false; forwardSign = -1;
+  // ---------- PLINTH + CABINET ----------
+  f.put(0, gy + 0.055, BD/2, PW,        0.11, BD,        WALNUT_D);
+  f.put(0, gy + 0.67,  BD/2, PW - 0.04, 1.12, BD - 0.02, WALNUT);
+  // side pilasters (give the body real edges instead of a flat slab)
+  for (const s of [-1, 1]){
+    f.put(s * (hw - 0.045), gy + 0.68, BD/2 + 0.01, 0.09, 1.14, BD, WALNUT_L);
+    f.put(s * (hw - 0.045), gy + 0.68, BD - 0.01,   0.11, 1.14, 0.03, WALNUT_D);
   }
-  // sx, sz = the body's size along world X and Z respectively.
-  const sx = alongX ? pw : pd;
-  const sz = alongX ? pd : pw;
+  // back stiffeners, drawn INSIDE the room (v > 0) — never behind the wall
+  for (const u of [-0.50, 0, 0.50]) f.put(u, gy + 0.70, 0.03, 0.10, 1.06, 0.05, WALNUT_D);
 
-  // ---- MAIN BODY (the cabinet) ----
-  const bodyCy = gy + ph / 2;
-  ctx.pb(cx, bodyCy, cz, sx, ph, sz, PIANO_BODY);
+  // ---------- TOP LID ----------
+  f.put(0, gy + PH - 0.05, BD/2 + 0.03, PW + 0.05, 0.10, BD + 0.06, WALNUT_D);
+  f.put(0, gy + PH - 0.10, BD/2 + 0.03, PW,        0.03, BD + 0.04, WALNUT_L); // hinge seam
+  f.put(0, gy + PH + 0.005,BD/2 + 0.03, PW - 0.10, 0.02, BD - 0.06, WALNUT_L); // polish
+  for (const u of [-0.42, 0.42]) f.put(u, gy + PH - 0.10, BD + 0.05, 0.09, 0.035, 0.03, BRASS); // lid hinges
 
-  // ---- RECESSED BACK PANELING ----
-  // 3 vertical recessed sections on the BACK face (against the wall).
-  // The panels run ALONG the wall (the width direction); each panel is
-  // centred at backCoord ± offsets along the width axis.
-  const backY = gy + ph * 0.55;
-  const panelW = (pw - 0.20) / 3;
-  for (let i = 0; i < 3; i++){
-    // Offset along the wall (width axis).
-    const along = -pw/2 + 0.10 + panelW * (i + 0.5);
-    if (alongX){
-      // Wall is east/west, width runs along X. Back face is at z = backZ.
-      const ppanelX = backX + along;
-      ctx.pb(ppanelX, backY, backZ - forwardSign * 0.02, panelW - 0.08, ph * 0.55, 0.02, PIANO_BODY_DARK);
-      // Molding around each panel.
-      const mT = 0.03;
-      ctx.pb(ppanelX, backY + ph*0.27, backZ - forwardSign * 0.04, panelW - 0.04, mT, 0.04, PIANO_BODY);
-      ctx.pb(ppanelX, backY - ph*0.27, backZ - forwardSign * 0.04, panelW - 0.04, mT, 0.04, PIANO_BODY);
-      ctx.pb(ppanelX - panelW/2 + 0.02, backY, backZ - forwardSign * 0.04, mT, ph*0.55, 0.04, PIANO_BODY);
-      ctx.pb(ppanelX + panelW/2 - 0.02, backY, backZ - forwardSign * 0.04, mT, ph*0.55, 0.04, PIANO_BODY);
-    } else {
-      // Wall is north/south, width runs along Z. Back face is at x = backX.
-      const ppanelZ = backZ + along;
-      ctx.pb(backX - forwardSign * 0.02, backY, ppanelZ, 0.02, ph * 0.55, panelW - 0.08, PIANO_BODY_DARK);
-      const mT = 0.03;
-      ctx.pb(backX - forwardSign * 0.04, backY + ph*0.27, ppanelZ, 0.04, mT, panelW - 0.04, PIANO_BODY);
-      ctx.pb(backX - forwardSign * 0.04, backY - ph*0.27, ppanelZ, 0.04, mT, panelW - 0.04, PIANO_BODY);
-      ctx.pb(backX - forwardSign * 0.04, backY, ppanelZ - panelW/2 + 0.02, 0.04, ph*0.55, mT, PIANO_BODY);
-      ctx.pb(backX - forwardSign * 0.04, backY, ppanelZ + panelW/2 - 0.02, 0.04, ph*0.55, mT, PIANO_BODY);
-    }
+  // ---------- UPPER FRONT PANEL: fretwork over red silk ----------
+  const panY = gy + 1.05, panH = 0.34, front = BD - 0.005;
+  f.put(0, panY, front - 0.03, PW - 0.20, panH,        0.04, SILK);      // fabric behind
+  f.put(0, panY, front,        PW - 0.20, panH,        0.02, WALNUT_D);  // recess
+  // lattice: 11 verticals + 3 horizontals
+  for (let i = 0; i < 11; i++)
+    f.put(-0.60 + i * 0.12, panY, front + 0.015, 0.028, panH - 0.02, 0.02, WALNUT);
+  for (const dy of [-0.13, 0, 0.13])
+    f.put(0, panY + dy, front + 0.02, PW - 0.22, 0.026, 0.022, WALNUT);
+  // molding frame around the panel
+  for (const dy of [-1, 1]) f.put(0, panY + dy * (panH/2 + 0.03), front + 0.01, PW - 0.14, 0.05, 0.05, WALNUT_L);
+  for (const du of [-1, 1]) f.put(du * (PW/2 - 0.13), panY, front + 0.01, 0.05, panH + 0.08, 0.05, WALNUT_L);
+
+  // ---------- CANDLE SCONCES (brass arms on the front) ----------
+  for (const s of [-1, 1]){
+    const u = s * 0.56;
+    f.put(u, gy + 0.98, front + 0.01, 0.05, 0.14, 0.04, BRASS);
+    f.put(u + s * 0.05, gy + 1.03, front + 0.06, 0.14, 0.03, 0.10, BRASS);
+    f.cyl(u + s * 0.10, gy + 1.06, front + 0.10, 0.045, 0.03, BRASS);
+    f.cyl(u + s * 0.10, gy + 1.14, front + 0.10, 0.022, 0.15, WAX);
+    f.cyl(u + s * 0.10, gy + 1.23, front + 0.10, 0.012, 0.04, FLAME);
   }
 
-  // ---- TOP CABINET ----
-  const topY = gy + ph - 0.10;
-  ctx.pb(cx, topY, cz, sx + 0.04, 0.20, sz + 0.04, PIANO_BODY_DARK);
+  // ---------- FALLBOARD + MAKER PLAQUE ----------
+  f.put(0, gy + 0.83, front + 0.015, PW - 0.16, 0.16, 0.05, WALNUT_L);
+  f.put(0, gy + 0.83, front + 0.045, 0.42,      0.055,0.02, BRASS);
+  f.put(0, gy + 0.745,front + 0.03,  PW - 0.16, 0.03, 0.05, WALNUT_D);
 
-  // ---- KEYBOARD ----
-  // The keyboard protrudes slightly from the FRONT face of the body (the
-  // face opposite the wall). It sits at ~0.65m height.
-  const kbY = gy + 0.65;
-  const kbW = pw - 0.10;          // keyboard width (along the wall)
-  const kbD = 0.18;               // keyboard depth (away from the wall)
-  // Keyboard front face is at the body front + a little more.
-  // Body front edge (away from wall):
-  let bodyFrontAlong, kbFrontAlong;
-  if (alongX){
-    bodyFrontAlong = cz + forwardSign * sz/2;
-    kbFrontAlong = bodyFrontAlong + forwardSign * 0.04;
-  } else {
-    bodyFrontAlong = cx + forwardSign * sx/2;
-    kbFrontAlong = bodyFrontAlong + forwardSign * 0.04;
+  // ---------- KEYBED + KEYS ----------
+  // keybed shelf: v 0.44 .. 0.65 (the protruding part, inside the collider)
+  f.put(0, gy + 0.63, 0.545, PW - 0.02, 0.14, 0.21, WALNUT_D);
+  f.put(0, gy + 0.705,0.545, PW - 0.02, 0.03, 0.22, WALNUT_L); // key slip
+  f.put(0, gy + 0.715,0.455, PW - 0.16, 0.02, 0.03, FELT);      // felt behind keys
+  // cheek blocks
+  for (const s of [-1, 1]) f.put(s * (hw - 0.075), gy + 0.735, 0.545, 0.11, 0.07, 0.21, WALNUT_L);
+
+  const kbW = PW - 0.20, nK = 21, kw = kbW / nK, kY = gy + 0.735;
+  for (let i = 0; i < nK; i++){
+    const u = -kbW/2 + kw * (i + 0.5);
+    f.put(u, kY, 0.555, kw * 0.90, 0.030, 0.185, i % 7 === 3 ? IVORY_W : IVORY);
+    if (i < nK - 1) f.put(u + kw/2, kY + 0.002, 0.52, 0.008, 0.032, 0.12, WALNUT_D);
   }
-  // Keyboard base / fallboard housing.
-  if (alongX){
-    ctx.pb(cx, kbY - 0.10, (kbFrontAlong + bodyFrontAlong)/2, kbW, 0.20, kbD + 0.04, PIANO_BODY_DARK);
-  } else {
-    ctx.pb((kbFrontAlong + bodyFrontAlong)/2, kbY - 0.10, cz, kbD + 0.04, 0.20, kbW, PIANO_BODY_DARK);
-  }
-  // Red felt strip just above the keys.
-  if (alongX){
-    ctx.pb(cx, kbY + 0.02, kbFrontAlong - forwardSign * 0.02, kbW, 0.04, 0.03, PIANO_FELT);
-  } else {
-    ctx.pb(kbFrontAlong - forwardSign * 0.02, kbY + 0.02, cz, 0.03, 0.04, kbW, PIANO_FELT);
-  }
-  // Ivory natural keys — a row along the wall axis.
-  const keyN = 14;
-  const keyW = kbW / keyN;
-  for (let i = 0; i < keyN; i++){
-    const kAlong = -kbW/2 + keyW * (i + 0.5);
-    if (alongX){
-      const kx = cx + kAlong;
-      ctx.pb(kx, kbY, kbFrontAlong, keyW * 0.92, 0.04, kbD, IVORY);
-      if (i < keyN - 1){
-        ctx.pb(kx + keyW * 0.46, kbY, kbFrontAlong + forwardSign * 0.01, 0.01, 0.04, kbD, PIANO_BODY_DARK);
-      }
-    } else {
-      const kz = cz + kAlong;
-      ctx.pb(kbFrontAlong, kbY, kz, kbD, 0.04, keyW * 0.92, IVORY);
-      if (i < keyN - 1){
-        ctx.pb(kbFrontAlong + forwardSign * 0.01, kbY, kz + keyW * 0.46, kbD, 0.04, 0.01, PIANO_BODY_DARK);
-      }
+  // black keys: after C, D, F, G, A of every octave — the real pattern
+  for (let oct = 0; oct < 3; oct++)
+    for (const s of [0, 1, 3, 4, 5]){
+      const i = oct * 7 + s;
+      if (i >= nK - 1) break;
+      f.put(-kbW/2 + kw * (i + 1), kY + 0.030, 0.505, kw * 0.58, 0.030, 0.115, BLACKKEY);
     }
-  }
-  // Black sharp keys — simplified pattern.
-  const blackPattern = [0, 1, 3, 4, 5];
-  const sharpsPerOctave = blackPattern.length;
-  const octaves = Math.floor(keyN / 7);
-  for (let oct = 0; oct < octaves; oct++){
-    for (let s = 0; s < sharpsPerOctave; s++){
-      const naturalIdx = oct * 7 + blackPattern[s];
-      if (naturalIdx >= keyN - 1) break;
-      const kAlong = -kbW/2 + keyW * (naturalIdx + 1);
-      if (alongX){
-        const kx = cx + kAlong;
-        ctx.pb(kx, kbY + 0.04, kbFrontAlong, keyW * 0.55, 0.04, kbD * 0.7, BLACK_KEY);
-      } else {
-        const kz = cz + kAlong;
-        ctx.pb(kbFrontAlong, kbY + 0.04, kz, kbD * 0.7, 0.04, keyW * 0.55, BLACK_KEY);
-      }
-    }
+
+  // ---------- MUSIC DESK + SHEET (with a bullet hole, naturally) ----------
+  f.put(0, gy + 0.895, 0.42, kbW * 0.86, 0.20, 0.035, WALNUT, 0);
+  f.put(0, gy + 0.795, 0.44, kbW * 0.86, 0.03, 0.045, WALNUT_L);
+  f.put(-0.16, gy + 0.915, 0.395, 0.42, 0.24, 0.012, [0.93,0.90,0.82]);
+  f.put( 0.24, gy + 0.905, 0.398, 0.34, 0.22, 0.010, [0.88,0.85,0.75]);
+  for (let i = 0; i < 5; i++)
+    f.put(-0.16, gy + 0.86 + i * 0.028, 0.385, 0.38, 0.008, 0.010, WALNUT_D);
+  f.put(0.26, gy + 0.95, 0.385, 0.035, 0.035, 0.012, IRON);   // bullet hole
+  f.put(0.53, gy + 1.05, front + 0.02, 0.03, 0.03, 0.03, IRON); // and one in the panel
+
+  // ---------- PEDAL LYRE ----------
+  f.put(0, gy + 0.30, 0.40, 0.06, 0.42, 0.05, WALNUT_D);
+  for (const s of [-1, 1]) f.put(s * 0.11, gy + 0.26, 0.40, 0.035, 0.34, 0.04, WALNUT_D);
+  f.put(0, gy + 0.115, 0.44, 0.34, 0.04, 0.05, WALNUT_D);
+  for (const u of [-0.10, 0, 0.10]){
+    f.put(u, gy + 0.10, 0.50, 0.065, 0.022, 0.13, BRASS);
+    f.put(u, gy + 0.13, 0.44, 0.030, 0.030, 0.05, BRASS);
   }
 
-  // ---- MUSIC REST ----
-  const restY = gy + 0.85;
-  // The music rest is on the front face of the body, above the keyboard.
-  let restAlong; // front face coord (where the rest board sits)
-  if (alongX){
-    restAlong = kbFrontAlong + forwardSign * 0.02;
-    ctx.pb(cx, restY, restAlong, kbW * 0.9, 0.25, 0.04, PIANO_BODY);
-    ctx.pb(cx, restY - 0.12, restAlong + forwardSign * 0.02, kbW * 0.9, 0.03, 0.03, PIANO_BODY_DARK);
-    // Sheet music.
-    ctx.pb(cx - 0.15, restY + 0.02, restAlong - forwardSign * 0.02, 0.40, 0.20, 0.01, [0.95, 0.93, 0.86]);
-    for (const ny of [restY - 0.04, restY, restY + 0.04]){
-      ctx.pb(cx - 0.15, ny, restAlong - forwardSign * 0.03, 0.36, 0.01, 0.01, PIANO_BODY_DARK);
-    }
-  } else {
-    restAlong = kbFrontAlong + forwardSign * 0.02;
-    ctx.pb(restAlong, restY, cz, 0.04, 0.25, kbW * 0.9, PIANO_BODY);
-    ctx.pb(restAlong + forwardSign * 0.02, restY - 0.12, cz, 0.03, 0.03, kbW * 0.9, PIANO_BODY_DARK);
-    ctx.pb(restAlong - forwardSign * 0.02, restY + 0.02, cz - 0.15, 0.01, 0.20, 0.40, [0.95, 0.93, 0.86]);
-    for (const ny of [restY - 0.04, restY, restY + 0.04]){
-      ctx.pb(restAlong - forwardSign * 0.03, ny, cz - 0.15, 0.01, 0.01, 0.36, PIANO_BODY_DARK);
-    }
+  // ---------- FRONT LEGS + CASTERS ----------
+  for (const s of [-1, 1]){
+    f.put(s * (hw - 0.06), gy + 0.33, BD - 0.06, 0.10, 0.44, 0.11, WALNUT_D);
+    f.cyl(s * (hw - 0.06), gy + 0.035, BD - 0.06, 0.045, 0.07, IRON);
+    f.cyl(s * (hw - 0.06), gy + 0.035, 0.09,      0.045, 0.07, IRON);
   }
 
-  // ---- CORNER BLOCK LEGS ----
-  const legW = 0.10;
-  const legH = 0.62;
-  const legCy = gy + legH / 2;
-  const legInset = 0.08;
-  // The 4 legs sit at the corners of the body's footprint.
-  // Corners in (along, forward) where along is along the wall and forward is
-  // away from the wall. The body spans along=[-pw/2, pw/2], forward=[0, pd].
-  const legCorners = [
-    [-pw/2 + legInset, pd/2 - 0.05],   // back-left
-    [ pw/2 - legInset, pd/2 - 0.05],   // back-right
-    [-pw/2 + legInset, -pd/2 + 0.05],  // front-left
-    [ pw/2 - legInset, -pd/2 + 0.05],  // front-right
-  ];
-  for (const [alongOff, forwardOff] of legCorners){
-    let lx, lz;
-    if (alongX){
-      lx = cx + alongOff;
-      lz = cz + forwardOff;
-    } else {
-      lx = cx + forwardOff;
-      lz = cz + alongOff;
-    }
-    ctx.pb(lx, legCy, lz, legW, legH, legW, PIANO_BODY_DARK);
-    ctx.pb(lx, gy + 0.03, lz, legW + 0.03, 0.06, legW + 0.03, PIANO_BODY_DARK);
-  }
-
-  // ---- PEDALS ----
-  const pedalY = gy + 0.12;
-  // Pedals sit under the keyboard, on the front face side.
-  if (alongX){
-    const pedalZ = kbFrontAlong + forwardSign * 0.02;
-    ctx.pb(cx, pedalY + 0.08, pedalZ - forwardSign * 0.02, 0.30, 0.04, 0.04, PIANO_BODY_DARK);
-    for (const ped of [-0.08, 0.08]){
-      ctx.pb(cx + ped, pedalY, pedalZ, 0.06, 0.04, 0.12, BRASS);
-    }
-  } else {
-    const pedalX = kbFrontAlong + forwardSign * 0.02;
-    ctx.pb(pedalX - forwardSign * 0.02, pedalY + 0.08, cz, 0.04, 0.04, 0.30, PIANO_BODY_DARK);
-    for (const ped of [-0.08, 0.08]){
-      ctx.pb(pedalX, pedalY, cz + ped, 0.12, 0.04, 0.06, BRASS);
-    }
-  }
-
-  // ---- HINGES (brass, on the side of the cabinet) ----
-  for (const hy of [gy + ph * 0.3, gy + ph * 0.7]){
-    if (alongX){
-      // Hinges on the +x side of the body.
-      ctx.pb(cx + sx/2 + 0.01, hy, cz, 0.02, 0.12, 0.06, BRASS);
-    } else {
-      ctx.pb(cx, hy, cz + sz/2 + 0.01, 0.06, 0.12, 0.02, BRASS);
-    }
-  }
+  // ---------- BOTTLE + GLASS ON THE LID ----------
+  f.cyl(0.44, gy + PH + 0.11, 0.30, 0.052, 0.20, [0.30,0.19,0.11]);
+  f.cyl(0.44, gy + PH + 0.24, 0.30, 0.020, 0.07, [0.30,0.19,0.11]);
+  f.cyl(0.60, gy + PH + 0.05, 0.28, 0.048, 0.09, [0.84,0.86,0.82]);
+  f.cyl(0.60, gy + PH + 0.03, 0.28, 0.042, 0.05, [0.76,0.50,0.16]);
 }
 
 // ---------------------------------------------------------------------------
-// drawPianoStool — a small round wooden stool in front of the piano for the
-// pianist. Placed IN FRONT of the keyboard (i.e. further into the room from
-// the wall). facing matches the piano facing.
+// drawPianoStool — round tufted-leather stool on a turned screw column.
 // ---------------------------------------------------------------------------
 export function drawPianoStool(ctx, sx, sz, gy){
-  const dk = C.dark, wd = C.wood;
-  ctx.pb(sx, gy + 0.42, sz, 0.34, 0.06, 0.34, wd);
-  ctx.pb(sx, gy + 0.44, sz, 0.38, 0.03, 0.38, dk);
-  ctx.pb(sx, gy + 0.20, sz, 0.06, 0.40, 0.06, dk);
-  ctx.pb(sx - 0.12, gy + 0.05, sz - 0.08, 0.05, 0.10, 0.05, dk);
-  ctx.pb(sx + 0.12, gy + 0.05, sz - 0.08, 0.05, 0.10, 0.05, dk);
-  ctx.pb(sx, gy + 0.05, sz + 0.12, 0.05, 0.10, 0.05, dk);
+  const f = frame(ctx, sx, sz, 'S');
+  f.cyl(0, gy + 0.545, 0, 0.20, 0.075, [0.32,0.18,0.13]); // leather cushion
+  f.cyl(0, gy + 0.505, 0, 0.21, 0.035, WALNUT_D);         // seat frame
+  f.ring(6, 0.11, (u, v) => f.cyl(u, gy + 0.575, v, 0.016, 0.012, IRON)); // tufting
+  f.cyl(0, gy + 0.30, 0, 0.055, 0.42, WALNUT);            // screw column
+  for (let i = 0; i < 6; i++) f.cyl(0, gy + 0.16 + i * 0.045, 0, 0.068, 0.020, WALNUT_D);
+  f.ring(3, 0.17, (u, v, a) => {
+    f.putR(u, gy + 0.055, v, 0.075, 0.09, 0.30, WALNUT_D, a);
+    f.cyl(u * 1.05, gy + 0.03, v * 1.05, 0.04, 0.06, IRON);
+  });
 }

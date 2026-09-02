@@ -29,6 +29,7 @@ import {
 import { V3 } from '../math.js';
 import { drawPiano, drawPianoStool } from './piano.js';
 import { drawBatwingDoors } from './batwing.js';
+import { drawPokerTable } from './poker-table.js';
 
 // ---------------------------------------------------------------------------
 // saloonPlan — single source of truth for all saloon coordinates.
@@ -165,8 +166,9 @@ export function drawSaloon(ctx){
   }
 
   // ========== SALOON TABLES ==========
-  // v34: tables now 1.8m (from config), with a thicker pedestal + base.
-  for(const tKey of ['SaloonTable01','SaloonTable02']){
+  // v50: SaloonTable01 is now the round POKER TABLE (drawn by drawPokerTable
+  // from bar/poker-table.js). Only SaloonTable02 is drawn by this loop.
+  for(const tKey of ['SaloonTable02']){
     const o=SALOON_LAYOUT[tKey];
     if(!o) continue;
     const [cx, , cz]=o.center, [sx, , sz]=o.size;
@@ -179,18 +181,17 @@ export function drawSaloon(ctx){
     // Pedestal base (wider for stability).
     ctx.pb(cx, gy+.03, cz, .60, .06, .60, dk);
   }
-
-  // ========== POKER TABLE CLOTH (SaloonTable01 becomes a poker table) ==========
-  // [PokerTableCloth] — a green felt cloth on SaloonTable01 marking it as the
-  // card / poker table.
+  // ----- Round poker table (SaloonTable01's position) -----
   {
     const o=SALOON_LAYOUT.SaloonTable01;
-    const [cx, , cz]=o.center, [sx, , sz]=o.size;
-    ctx.pb(cx, gy+.82, cz, sx-.02, .02, sz-.02, [0.18, 0.42, 0.22]);
-    // A thin darker border on the felt.
-    ctx.pb(cx, gy+.83, cz, sx-.02, .01, .04, [0.10, 0.28, 0.14]);
-    ctx.pb(cx, gy+.83, cz, .04, .01, sz-.02, [0.10, 0.28, 0.14]);
+    const [cx, , cz]=o.center;
+    // Use the table size to derive the radius (config size is 1.80 → radius 0.90).
+    drawPokerTable(ctx, cx, cz, gy, { r: o.size[0]/2, facing: 'S' });
   }
+
+  // v50: REMOVED the old PokerTableCloth block — the round poker table has
+  // its own green baize + leather armrest. The old CardDeck / PokerChips
+  // blocks are also gone — the round table has its own hand in play.
 
   // ========== SALOON CHAIRS ==========
   // v36: raised even higher (seat at gy+0.65, legs 0.62m) and slightly
@@ -330,33 +331,9 @@ export function drawSaloon(ctx){
 
   // [AntlerMount] — REMOVED in v34 per user request.
 
-  // [CardDeck] — a deck of playing cards on the poker table (SaloonTable01).
-  {
-    const o=SALOON_LAYOUT.SaloonTable01;
-    const [cx, , cz]=o.center;
-    // The deck (a small stack of white cards with a red top).
-    ctx.pb(cx-.20, gy+.84, cz+.10, .18, .04, .14, [0.95,0.93,0.86]);
-    ctx.pb(cx-.20, gy+.87, cz+.10, .18, .01, .14, [0.78,0.20,0.20]);
-    // A couple of cards laid out next to the deck.
-    ctx.pb(cx+.20, gy+.83, cz-.05, .12, .01, .08, [0.95,0.93,0.86]);
-    ctx.pb(cx+.20, gy+.84, cz-.05, .04, .01, .04, [0.78,0.20,0.20]);
-  }
-
-  // [PokerChips] — stacks of poker chips on the poker table.
-  {
-    const o=SALOON_LAYOUT.SaloonTable01;
-    const [cx, , cz]=o.center;
-    // Red chip stack (3 chips).
-    for(let i=0; i<3; i++){
-      ctx.pb(cx+.15, gy+.83+i*0.02, cz+.20, .14, .02, .14, [0.78,0.18,0.18]);
-    }
-    // White chip stack (2 chips).
-    for(let i=0; i<2; i++){
-      ctx.pb(cx-.15, gy+.83+i*0.02, cz-.20, .14, .02, .14, [0.92,0.90,0.82]);
-    }
-    // Blue chip (single).
-    ctx.pb(cx-.05, gy+.83, cz+.05, .14, .02, .14, [0.25,0.40,0.62]);
-  }
+  // v50: REMOVED the old CardDeck and PokerChips blocks — the round poker
+  // table has its own hand in play (community cards, deck, chip stacks,
+  // pot, whiskey, ashtray, revolver). No duplicate props on the poker table.
 
   // [WhiskeyBottle] — a whiskey bottle on SaloonTable02 (the non-poker table),
   // tipped on its side in a small glass.
