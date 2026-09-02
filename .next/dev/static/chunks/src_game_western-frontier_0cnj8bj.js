@@ -3,7 +3,7 @@
 
 __turbopack_context__.v((parentImport) => {
     return Promise.all([
-  "static/chunks/src_game_059b1mo._.js"
+  "static/chunks/src_game_0c96839._.js"
 ].map((chunk) => __turbopack_context__.l(chunk))).then(() => {
         return parentImport("[project]/src/game/western-frontier.js [app-client] (ecmascript)");
     });

@@ -3,7 +3,7 @@ module.exports = [
 
 __turbopack_context__.v((parentImport) => {
     return Promise.all([
-  "server/chunks/ssr/src_game_0e9yj28._.js"
+  "server/chunks/ssr/src_game_0z08nlc._.js"
 ].map((chunk) => __turbopack_context__.l(chunk))).then(() => {
         return parentImport("[project]/src/game/western-frontier.js [app-ssr] (ecmascript)");
     });

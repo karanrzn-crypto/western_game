@@ -1,0 +1,29 @@
+▲ Next.js 16.3.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.9.192:3000
+- Environments: .env
+✓ Ready in 316ms
+✓ Running next.config.ts took 36ms
+⚠ Turbopack's filesystem cache has been deleted because we previously detected an internal error in Turbopack. Builds or page loads may be slower as a result.
+
+○ Compiling / ...
+ GET / 200 in 3.7s (next.js: 3.5s, application-code: 159ms)
+ GET / 200 in 772ms (next.js: 588ms, application-code: 184ms)
+ GET / 200 in 38ms (next.js: 3ms, application-code: 36ms)
+ GET / 200 in 33ms (next.js: 4ms, application-code: 29ms)
+✓ Compiled in 174ms
+ GET / 200 in 22ms (next.js: 6ms, application-code: 16ms)
+ GET / 200 in 29ms (next.js: 2ms, application-code: 27ms)
+ GET / 200 in 30ms (next.js: 3ms, application-code: 27ms)
+ GET / 200 in 30ms (next.js: 3ms, application-code: 27ms)
+✓ Compiled in 183ms
+✓ Compiled in 157ms
+✓ Compiled in 137ms
+ GET / 200 in 24ms (next.js: 6ms, application-code: 17ms)
+ GET / 200 in 19ms (next.js: 3ms, application-code: 16ms)
+ GET / 200 in 16ms (next.js: 3ms, application-code: 13ms)
+✓ Compiled in 157ms
+ GET / 200 in 26ms (next.js: 6ms, application-code: 20ms)
+ GET / 200 in 29ms (next.js: 3ms, application-code: 27ms)
+ GET / 200 in 43ms (next.js: 9ms, application-code: 33ms)
+[browser] Unexpected import of module [project]/src/game/western-frontier.js [app-client] (ecmascript) from module [project]/src/app/page.tsx [app-client] (ecmascript), which was deleted by an HMR update (.next/dev/static/chunks/src_game_western-frontier_0cnj8bj.js:8:16)
