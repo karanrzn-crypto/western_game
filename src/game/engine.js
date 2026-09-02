@@ -11,6 +11,7 @@ import {Player} from './player.js';
 import {WorldObjects} from './world-objects.js';
 import {drawPlayer,drawFirstPersonArms} from './player-render.js';
 import {drawDebugAxes,getDebugLabels,renderDebugLabels} from './debug.js';
+import {Creak} from './audio/creak.js';
 
 export function createGame(dom){
   class Game{
@@ -42,6 +43,7 @@ export function createGame(dom){
       this.tmpModel=mat4Identity();
       this._I=mat4Identity();
       this.day=new DayCycle();this.input=new Input(dom.canvas,dom.flashNotice);
+      this.audio=new Creak();   // v51: procedural wood-creak synth
       this.running=true;this.last=performance.now();
       this.camera.target.copy(this.player.pos);this.camera.target.y+=1;
       this.camera.desiredPosition.set(this.player.pos.x+3,this.player.pos.y+2,this.player.pos.z+5);
@@ -53,7 +55,7 @@ export function createGame(dom){
     }
     setCamMode(mode){
       this.camera.mode=mode;
-      dom.mode.textContent='v50 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+      dom.mode.textContent='v51 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
     }
     setDebugMode(enabled){
       this.debugMode=!!enabled;
@@ -74,6 +76,9 @@ export function createGame(dom){
       if(this.input.once('r'))this.player.reset();
       this.day.update(dt);
       this.objects.updateDoors(dt,this.player);
+      // v51: 3D positional audio — creaks while doors move, thuds when shut.
+      this.audio.listen(this.camera);
+      for (const d of this.objects.doors) this.audio.hinge(d, dt);
       this.objects.updatePushables(dt,this.player);
       const inside=this.objects.playerInsideBuilding(this.player);
       if(!inside&&this._lastInside){this.objects.resetPushables(this._lastInside)}
@@ -84,10 +89,11 @@ export function createGame(dom){
       // manual E (manualOnly), so the hint shows for them too.
       dom.doorHint.style.display=(near&&!near.door.pushing&&near.door.open<.3)?'block':'none';
       if(this.input.once('e')){
+        this.audio.resume();   // v51: browsers block audio until first key/click
         if(near&&!near.door.pushing&&near.door.open<.3){
           near.door.pushing=true;near.door.pushT=0;
           near.door.col.off=true;
-          // v50: swing the doors AWAY from the player (classic saloon doors).
+          // v51: swing the doors AWAY from the player (classic saloon doors).
           const _isInside = near.door.side>0
             ? (this.player.pos.z < near.door.z - 0.15)
             : (this.player.pos.z > near.door.z + 0.15);
