@@ -486,69 +486,17 @@ export function drawSaloonBuilding(ctx){
   // ---- FLAT ROOF ----
   ctx.pb((x0+x1)/2, top+.01, (z0+z1)/2, b.w+.06, .06, b.d+.06, dk);
 
-  // ---- BAT-WING DOORS (drawn directly in the gap) ----
-  // Find the saloon door object to read its swing state.
-  let saloonDoor=null;
-  for(const d of ctx.doors){ if(d.key==='saloon'){ saloonDoor=d; break; } }
-  if(saloonDoor){
-    drawSaloonBatwingDoorDirect(ctx, saloonDoor, gy);
-  }
+  // v45: SALOON DOOR REMOVED per user request. The user will provide their
+  // own door code. The doorway is now an empty opening (no door geometry).
 
   // ---- FALSE FRONT PARAPET + SALOON SIGN + PORCH (the old drawSaloonExterior) ----
   drawSaloonExterior(ctx, P);
 }
 
 // ---------------------------------------------------------------------------
-// drawSaloonBatwingDoorDirect — v41: completely redesigned saloon door.
-//
-// The bat-wing doors (half-height) were hard to see from the third-person
-// camera. This version builds a FULL-HEIGHT two-panel wooden saloon door
-// that's clearly visible from any angle:
-//   - 2 full-height panels (each ~half the door width, full door height).
-//   - Each panel: 6 vertical planks with small gaps, 3 horizontal rails.
-//   - Iron strap hinges on the outer edge (2 per panel).
-//   - A ring pull handle on the inner edge of each panel.
-//   - Weathered grey-brown wood colour.
-// The panels swing open based on d.swing (0 = closed, 1 = open), hinged on
-// the outer posts.
+// v45: drawSaloonBatwingDoorDirect REMOVED per user request. The user will
+// provide their own door code.
 // ---------------------------------------------------------------------------
-function drawSaloonBatwingDoorDirect(ctx, d, gy){
-  // v44: per user — move the door hinges to x = -29.4 so the doors sit
-  // flush against the west wall side of the doorway. Removed the visual
-  // effects (planks, rails, ring pulls) — only the plain door slab +
-  // hinges remain, simple and clean.
-  const doorH = 2.15;
-  const doorW = 1.30;
-  const panelW = (doorW - 0.02) / 2;  // each panel
-  const panelY = gy + doorH/2 + 0.02;
-  const panelT = 0.10;
-  const woodColor = [0.48, 0.38, 0.28];
-  const ironColor = [0.18, 0.16, 0.15];
-  const swing = d.swing * 1.3;
-
-  // Offset the doors south (in front of the door gap).
-  const doorZ = d.z + 0.40;
-
-  // v44: hinge X position at -29.4 (per user). Both panels hinge here and
-  // swing from this point. The left panel extends west, the right panel
-  // extends east.
-  const hingeX = -29.4;
-
-  const drawPanel = (side) => {
-    // Panel centre: hinge + side * panelW/2.
-    const panelCX = hingeX + side * panelW/2;
-    // --- Panel slab (plain wooden board, no planks/rails/effects) ---
-    ctx.pbHinge(hingeX, panelY, doorZ, panelW, doorH, panelT, woodColor, side * swing);
-    // --- Iron strap hinges (2 per panel, at the hinge edge) ---
-    for (const hy of [panelY + doorH*0.25, panelY - doorH*0.25]){
-      ctx.pb(hingeX, hy, doorZ + panelT/2 + 0.03, 0.22, 0.08, 0.02, ironColor);
-      ctx.pb(hingeX, hy, doorZ, 0.06, 0.06, 0.06, ironColor);
-    }
-  };
-
-  drawPanel(-1);  // left panel (extends west from the hinge)
-  drawPanel(+1);  // right panel (extends east from the hinge)
-}
 
 // Helper: get the front (south, +z) edge z of the BarCounter for placing the
 // BarTowel on the customer-facing edge.

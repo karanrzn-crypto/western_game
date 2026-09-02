@@ -53,7 +53,7 @@ export function createGame(dom){
     }
     setCamMode(mode){
       this.camera.mode=mode;
-      dom.mode.textContent='v44 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+      dom.mode.textContent='v45 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
     }
     setDebugMode(enabled){
       this.debugMode=!!enabled;
@@ -239,7 +239,7 @@ export function createGame(dom){
     const vb=dom.verBanner;
     vb.classList.add('show');
     setTimeout(()=>vb.classList.remove('show'),6000);
-    dom.flashNotice('نسخه ۴۴ — کلانتری + بار/سالون با چیدمان واقعی');
+    dom.flashNotice('نسخه ۴۵ — کلانتری + بار/سالون با چیدمان واقعی');
   }catch(err){
     dom.fail((err&&err.stack)||String(err));
   }
