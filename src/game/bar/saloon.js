@@ -24,8 +24,9 @@
 
 import {
   TOWN, DOOR_GAP, DOOR_H, WALL_T, DOOR_SPEED, C,
-  SALOON_LAYOUT, SALOON_INCLUDE_PIANO
+  SALOON_INCLUDE_PIANO
 } from '../config.js';
+import { SALOON_LAYOUT } from './config.js';  // ✅ scaled layout from bar/config.js
 import { V3 } from '../math.js';
 import { drawPiano, drawPianoStool } from './piano.js';
 import { drawBatwingDoors } from './batwing.js';
