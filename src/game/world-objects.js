@@ -8,7 +8,7 @@ import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _d
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
 import {generateSheriff as _generateNewSheriff,drawSheriffExterior as _drawSheriffExteriorNew} from './sheriff/sheriff.js';
 import {buildSheriffInterior as _buildSheriffInterior} from './sheriff/interior.js';
-import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon,drawSaloonBuilding as _drawSaloonBuilding,buildSaloonInterior as _buildSaloonInterior,buildSaloonColliders as _buildSaloonColliders} from './bar/index.js';
+import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon,drawSaloonBuilding as _drawSaloonBuilding,buildSaloonInterior as _buildSaloonInterior} from './bar/index.js';
 
 export class WorldObjects{
   constructor(gl,terrain){

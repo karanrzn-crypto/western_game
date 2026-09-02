@@ -24,14 +24,13 @@
 
 import {
   TOWN, DOOR_GAP, DOOR_H, WALL_T, DOOR_SPEED, C,
-  SALOON_INCLUDE_PIANO
+  SALOON_LAYOUT, SALOON_INCLUDE_PIANO
 } from '../config.js';
-import { SALOON_LAYOUT } from './config.js';  // ✅ scaled layout from bar/config.js
 import { V3 } from '../math.js';
 import { drawPiano, drawPianoStool } from './piano.js';
 import { drawBatwingDoors } from './batwing.js';
 import { drawPokerTable } from './poker-table.js';
-import { buildSaloonColliders } from './interior.js';
+import { saloonColliders } from './interior.js';
 
 // ---------------------------------------------------------------------------
 // saloonPlan — single source of truth for all saloon coordinates.
@@ -116,8 +115,8 @@ export function generateSaloon(ctx){
   const porchDepth=1.6;
   cam(x0-.4, z1-.1, x1+.4, z1+porchDepth+.3, P.gy+2.85, P.gy+2.6);
 
-  // v54: floor prop colliders (from interior.js, simple version)
-  buildSaloonColliders(ctx);
+  // v51: floor prop colliders (barrels, crates, stove, hat rack, etc.)
+  saloonColliders(ctx);
 }
 
 // ---------------------------------------------------------------------------

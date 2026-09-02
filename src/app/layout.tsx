@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Western Frontier — Town v56",
+  title: "Western Frontier — Town v53",
   description:
     "Western Frontier 3D Game — Part 3: Town. A WebGL2 western town exploration game.",
 };
