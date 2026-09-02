@@ -462,11 +462,20 @@ export function drawSaloonBuilding(ctx){
   const wd=C.wood, dk=C.dark, pal=C.pale;
 
   // ---- 4 EXTERIOR WALLS ----
-  // Front wall split around the door gap (no lintel above — bat-wing doors
-  // are the only thing in the gap).
+  // Front wall: split around the door gap BELOW, with a wall section ABOVE
+  // the door (from the door top to the roof). v43: the wall above the door
+  // was missing, creating a dark void above the doorway.
   const H=b.h+.03, cy=gy+H/2;
-  ctx.pb((x0+gapL)/2, cy, frontZ, gapL-x0, H, WT, wd);
-  ctx.pb((gapR+x1)/2, cy, frontZ, x1-gapR, H, WT, wd);
+  ctx.pb((x0+gapL)/2, cy, frontZ, gapL-x0, H, WT, wd);   // front-left
+  ctx.pb((gapR+x1)/2, cy, frontZ, x1-gapR, H, WT, wd);    // front-right
+  // Wall section ABOVE the door (from door top to roof). This closes the
+  // gap above the doorway so the wall is continuous.
+  const doorTopY = gy + DOOR_H;   // top of the door opening
+  const aboveH = top - doorTopY; // height of the wall section above the door
+  if(aboveH > 0.02){
+    const aboveCy = doorTopY + aboveH/2;
+    ctx.pb(doorX, aboveCy, frontZ, DOOR_GAP, aboveH, WT, wd);
+  }
   // West wall (full depth).
   ctx.pb(x0+WT/2, cy, (z0+z1)/2, WT, H, z1-z0, wd);
   // East wall (full depth).
