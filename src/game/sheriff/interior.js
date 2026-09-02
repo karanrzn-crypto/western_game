@@ -11,11 +11,18 @@ export function buildSheriffInterior(t){
  const iw=offX1-offX0, id=offZ1-offZ0;
  const room = frame(t, (offX0+offX1)/2, (offZ0+offZ1)/2, 'S');
 
- // floor planks
+ // floor planks — v53: deterministic per-plank tint (was Math.random, which
+ // flickered every frame); same pine/pineD/oak mix, warmer palette
  for(let i=0;i<20;i++){
-  const z=-id/2+id*(i+0.5)/20, rnd=Math.random();
-  room.put(0,gy+0.012,z,iw,0.024,id/20-0.012,rnd>0.66?M.pineD:rnd>0.33?M.pine:M.oak);
+  const z=-id/2+id*(i+0.5)/20, h=(i*31)%10;
+  const c=h>6?M.pineD:h>3?M.pine:M.oak;
+  const t=0.94+0.10*(((i*17)%5)/4);
+  room.put(0,gy+0.012,z,iw,0.024,id/20-0.012,[c[0]*t,c[1]*t,c[2]*t]);
  }
+ // v53: woven canvas rug under the desk area (desaturated, with darker border)
+ room.put(-iw*0.25,gy+0.028,0.05,2.6,0.012,1.9,M.canvas);
+ room.put(-iw*0.25,gy+0.032,1.02,2.6,0.006,0.14,M.blanket);
+ room.put(-iw*0.25-1.26,gy+0.032,0.05,0.14,0.006,1.9,M.blanket);
  // ceiling joists
  for(let i=0;i<5;i++){
   const z=-id/2+id*(i+0.5)/5;

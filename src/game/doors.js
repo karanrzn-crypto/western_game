@@ -1,6 +1,6 @@
 // Door logic — extracted from WorldObjects
 import {smooth,clamp,lerp} from './math.js';
-import {DOOR_TRIGGER,DOOR_CLOSE_SPEED,DOOR_OPEN_REMOVE,BANK_STEEL,C} from './config.js';
+import {DOOR_TRIGGER,DOOR_CLOSE_SPEED,DOOR_OPEN_REMOVE,BANK_STEEL,C,SH_MAT} from './config.js';
 
 export function nearestDoor(doors,player){
   let best=null,bd=1e9;
@@ -102,6 +102,10 @@ export function drawDoor(ctx,d){
       const px=d.x-d.w/2+pi*d.w/4;
       ctx.pb(px, gy+d.h/2+.02, d.z, .025, d.h*.86, .10, C.dark);
     }
+    // v53: brass hardware — escutcheon plate + knob on the office side
+    const hx=d.x+d.w/2-.28;
+    ctx.pb(hx, gy+1.02, d.z, .07, .17, .035, SH_MAT.brassD);   // escutcheon
+    ctx.pb(hx, gy+1.02, d.z+.065, .06, .06, .05, SH_MAT.brass);// knob
   }
 }
 
