@@ -53,7 +53,7 @@ export function createGame(dom){
     }
     setCamMode(mode){
       this.camera.mode=mode;
-      dom.mode.textContent='v45 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
+      dom.mode.textContent='v46 • '+(mode==='third'?'THIRD PERSON':'FIRST PERSON')+' • LMB/RMB + DRAG • V = '+(mode==='third'?'FIRST PERSON':'THIRD PERSON');
     }
     setDebugMode(enabled){
       this.debugMode=!!enabled;
@@ -87,6 +87,11 @@ export function createGame(dom){
         if(near&&!near.door.pushing&&near.door.open<.3){
           near.door.pushing=true;near.door.pushT=0;
           near.door.col.off=true;
+          // v46: swing the doors AWAY from the player (classic saloon doors).
+          const _isInside = near.door.side>0
+            ? (this.player.pos.z < near.door.z - 0.15)
+            : (this.player.pos.z > near.door.z + 0.15);
+          near.door.swingSign = _isInside ? 1 : -1;
           this.player.doorPush=.01;
           dom.flashNotice('در باز شد');
         }

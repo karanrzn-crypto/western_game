@@ -28,6 +28,7 @@ import {
 } from '../config.js';
 import { V3 } from '../math.js';
 import { drawPiano, drawPianoStool } from './piano.js';
+import { drawBatwingDoors } from './batwing.js';
 
 // ---------------------------------------------------------------------------
 // saloonPlan — single source of truth for all saloon coordinates.
@@ -486,8 +487,11 @@ export function drawSaloonBuilding(ctx){
   // ---- FLAT ROOF ----
   ctx.pb((x0+x1)/2, top+.01, (z0+z1)/2, b.w+.06, .06, b.d+.06, dk);
 
-  // v45: SALOON DOOR REMOVED per user request. The user will provide their
-  // own door code. The doorway is now an empty opening (no door geometry).
+  // ---- BAT-WING DOORS (drawn by drawBatwingDoors from bar/batwing.js) ----
+  // v46: the saloon door object is created in generateSaloonShell. Find it
+  // and draw the bat-wing doors (everything rotates as a rigid body).
+  const sd = ctx.doors.find(x => x.key === 'saloon');
+  if (sd) drawBatwingDoors(ctx, sd, gy);
 
   // ---- FALSE FRONT PARAPET + SALOON SIGN + PORCH (the old drawSaloonExterior) ----
   drawSaloonExterior(ctx, P);

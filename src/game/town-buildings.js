@@ -116,9 +116,21 @@ export function generateSaloonShell(ctx){
   // ---- Floor ----
   ctx.floors.push({x0:x0+WALL_T, x1:x1-WALL_T, z0:z0+WALL_T/2, z1:z1-WALL_T/2, y:gy+.008});
 
-  // v45: SALOON DOOR OBJECT REMOVED per user request. The user will provide
-  // their own door code. The doorway is now an empty opening (no door
-  // collision, no door state, no door drawing).
+  // ---- Door (bat-wing, manual E only) ----
+  // v46: restored the saloon door object so the new drawBatwingDoors (from
+  // bar/batwing.js) has a door to read from. The door only opens with E
+  // (manualOnly=true — no auto-open on proximity).
+  const d={
+    x:b.x, z:frontZ, w:DOOR_GAP, h:DOOR_H,
+    side: b.z<0 ? 1 : -1,
+    open:0, target:0, pushing:false, pushT:0,
+    speed:DOOR_SPEED, swing:0, key:b.key,
+    manualOnly: true,
+    swingSign: -1,   // default swing direction (set by updateDoors when pushing)
+  };
+  d.col={x0:gapL, x1:gapR, z0:frontZ-.09, z1:frontZ+.09, door:true, off:false};
+  d.inside={x0:x0+WALL_T, z0:z0+WALL_T/2, x1:x1-WALL_T, z1:z1-WALL_T/2};
+  ctx.doors.push(d);
 }
 
 export function drawChurch(ctx){
