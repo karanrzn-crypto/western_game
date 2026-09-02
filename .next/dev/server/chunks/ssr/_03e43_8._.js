@@ -246,7 +246,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 id: "verBanner",
-                children: "Western Frontier — v26"
+                children: "Western Frontier — v30"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
                 lineNumber: 174,
@@ -279,7 +279,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 id: "title",
-                                children: "WESTERN FRONTIER // TOWN v26"
+                                children: "WESTERN FRONTIER // TOWN v30"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
                                 lineNumber: 187,
@@ -449,7 +449,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1015;col
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         id: "mode",
                         className: "card",
-                        children: "v26 • THIRD PERSON • LMB/RMB + DRAG • V = FIRST PERSON"
+                        children: "v30 • THIRD PERSON • LMB/RMB + DRAG • V = FIRST PERSON"
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
                         lineNumber: 221,

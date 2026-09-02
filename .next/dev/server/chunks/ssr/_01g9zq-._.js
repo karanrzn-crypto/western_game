@@ -17,7 +17,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 const metadata = {
-    title: "Western Frontier — Town v21",
+    title: "Western Frontier — Town v30",
     description: "Western Frontier 3D Game — Part 3: Town. A WebGL2 western town exploration game."
 };
 function RootLayout({ children }) {

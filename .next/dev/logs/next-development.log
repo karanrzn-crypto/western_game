@@ -1,11 +1,6 @@
-{"timestamp":"00:00:00.558","source":"Server","level":"WARN","message":"⚠ Turbopack's filesystem cache has been deleted because we previously detected an internal error in Turbopack. Builds or page loads may be slower as a result."}
-{"timestamp":"00:00:00.655","source":"Server","level":"LOG","message":""}
-{"timestamp":"00:00:03.856","source":"Server","level":"LOG","message":"○ Compiling / ..."}
-{"timestamp":"00:04:53.007","source":"Server","level":"LOG","message":"✓ Compiled in 174ms"}
-{"timestamp":"00:06:18.702","source":"Server","level":"LOG","message":"✓ Compiled in 183ms"}
-{"timestamp":"00:06:42.726","source":"Server","level":"LOG","message":"✓ Compiled in 157ms"}
-{"timestamp":"00:06:56.303","source":"Server","level":"LOG","message":"✓ Compiled in 137ms"}
-{"timestamp":"00:07:18.162","source":"Server","level":"LOG","message":"✓ Compiled in 157ms"}
-{"timestamp":"00:07:54.886","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"00:09:20.872","source":"Browser","level":"WARN","message":"Unexpected import of module [project]/src/game/western-frontier.js [app-client] (ecmascript) from module [project]/src/app/page.tsx [app-client] (ecmascript), which was deleted by an HMR update"}
-{"timestamp":"00:09:20.890","source":"Server","level":"WARN","message":"[browser] \"Unexpected import of module [project]/src/game/western-frontier.js [app-client] (ecmascript) from module [project]/src/app/page.tsx [app-client] (ecmascript), which was deleted by an HMR update\" \"(.next/dev/static/chunks/src_game_western-frontier_0cnj8bj.js:8:16)\""}
+{"timestamp":"00:00:00.681","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:39.397","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:01:04.160","source":"Server","level":"LOG","message":"✓ Compiled in 321ms"}
+{"timestamp":"00:01:23.245","source":"Server","level":"LOG","message":"✓ Compiled in 205ms"}
+{"timestamp":"00:01:43.341","source":"Server","level":"LOG","message":"✓ Compiled in 202ms"}
+{"timestamp":"00:01:49.546","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
