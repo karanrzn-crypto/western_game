@@ -62,28 +62,10 @@ export function drawDoor(ctx,d){
   ctx.pb(d.x-d.w/2-.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
   ctx.pb(d.x+d.w/2+.06,gy+1.2,d.z,.13,2.1,.16,frameColor);
   ctx.pb(d.x,gy+2.32,d.z,d.w+.25,.18,.14,frameColor);
-  // v34: for the saloon, draw two BAT-WING swinging doors (half-height, always
-  // half-open) so the entrance reads as a saloon entrance instead of a dark
-  // opening. These are short (1.2m) doors split in the middle, swung slightly
-  // open.
-  if(d.key==='saloon'){
-    const batH=1.20;                  // bat-wing door height (waist-to-chest)
-    const batW=(d.w-0.06)/2;          // half width each, small centre gap
-    const batLeaf=C.wood2;
-    const swing=0.6;                  // half-open angle (radians)
-    // Left bat-wing — hinges on the left post, swings open to the right.
-    ctx.pbHinge(d.x-d.w/2, gy+batH/2+.02, d.z, batW*.96, batH, .09, batLeaf, swing);
-    // Right bat-wing — hinges on the right post, swings open to the left.
-    ctx.pbHinge(d.x+d.w/2, gy+batH/2+.02, d.z, batW*.96, batH, .09, batLeaf, -swing);
-    // A couple of horizontal slats on each bat-wing for detail.
-    for(const off of [-batW/4, 0, batW/4]){
-      // Left wing slats — drawn at the un-rotated position (approximation).
-      ctx.pb(d.x-d.w/2+off, gy+batH/4+.02, d.z, .04, .04, .12, C.dark);
-      ctx.pb(d.x+d.w/2+off, gy+batH/4+.02, d.z, .04, .04, .12, C.dark);
-      ctx.pb(d.x-d.w/2+off, gy+batH*3/4+.02, d.z, .04, .04, .12, C.dark);
-      ctx.pb(d.x+d.w/2+off, gy+batH*3/4+.02, d.z, .04, .04, .12, C.dark);
-    }
-  }
+  // v35: REMOVED the bat-wing doors — they appeared as two strange objects at
+  // the doorway (the user saw them appear and disappear from certain angles).
+  // The saloon doorway is now a fully open frame (no door leaf at all),
+  // matching the classic Western saloon open entrance.
   // For the interior wood door, add plank seams on the closed leaf so it
   // reads clearly as a wooden door. The seams are drawn along the un-rotated
   // leaf axis (close enough at the low max swing of ~1.35 rad; the visual

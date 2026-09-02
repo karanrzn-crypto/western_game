@@ -146,16 +146,16 @@ export function drawSaloon(ctx){
   }
 
   // ========== BAR STOOLS ==========
-  // v34: enlarged bar stools (from 0.40 to 0.50 seat) so they're proportional
-  // to the now-larger tables and chairs.
+  // v35: raised the stools (taller legs) so they're not too short. Seat now
+  // at gy+0.62 (was gy+0.48), centre post + feet sized accordingly.
   for(const key of ['BarStool01','BarStool02','BarStool03','BarStool04']){
     const o=SALOON_LAYOUT[key];
     if(!o) continue;
     const [cx, cy, cz]=o.center;
-    const [sx, , sz]=o.size;  // use config size (now 0.50)
-    ctx.pb(cx, gy+.48, cz, sx, .06, sz, wd);       // seat
-    ctx.pb(cx, gy+.50, cz, sx+.04, .04, sz+.04, dk); // seat rim
-    ctx.pb(cx, gy+.24, cz, .08, .48, .08, dk);      // centre post
+    const [sx, , sz]=o.size;  // config size (0.50)
+    ctx.pb(cx, gy+.62, cz, sx, .06, sz, wd);       // seat (higher)
+    ctx.pb(cx, gy+.64, cz, sx+.04, .04, sz+.04, dk); // seat rim
+    ctx.pb(cx, gy+.32, cz, .08, .62, .08, dk);      // centre post (taller)
     ctx.pb(cx-.18, gy+.05, cz-.12, .06, .10, .06, dk); // feet
     ctx.pb(cx+.18, gy+.05, cz-.12, .06, .10, .06, dk);
     ctx.pb(cx, gy+.05, cz+.18, .06, .10, .06, dk);
@@ -190,7 +190,8 @@ export function drawSaloon(ctx){
   }
 
   // ========== SALOON CHAIRS ==========
-  // v34: chairs now 0.60m (from config), with proportional legs + backrest.
+  // v35: raised the chairs (taller legs) so they're not too short. Seat now
+  // at gy+0.55 (was gy+0.48), legs from gy+0.03 to gy+0.55 (0.52m legs).
   for(const key of ['SaloonChair01','SaloonChair02','SaloonChair03','SaloonChair04',
                     'SaloonChair05','SaloonChair06','SaloonChair07','SaloonChair08']){
     const o=SALOON_LAYOUT[key];
@@ -202,23 +203,23 @@ export function drawSaloon(ctx){
     else tableCentre=SALOON_LAYOUT.SaloonTable02.center;
     const [tcx, , tcz]=tableCentre;
     const dx=cx-tcx, dz=cz-tcz;
-    // Seat.
-    ctx.pb(cx, gy+.48, cz, sx, .06, sz, wd);
-    // Legs (4 corner legs, sized to the chair).
+    // Seat (raised).
+    ctx.pb(cx, gy+.55, cz, sx, .06, sz, wd);
+    // Legs (4 corner legs, taller — from gy+0.03 to gy+0.55).
     const legOff=sx/2-0.08;
-    ctx.pb(cx-legOff, gy+.24, cz-legOff, .06, .48, .06, dk);
-    ctx.pb(cx+legOff, gy+.24, cz-legOff, .06, .48, .06, dk);
-    ctx.pb(cx-legOff, gy+.24, cz+legOff, .06, .48, .06, dk);
-    ctx.pb(cx+legOff, gy+.24, cz+legOff, .06, .48, .06, dk);
+    ctx.pb(cx-legOff, gy+.29, cz-legOff, .06, .52, .06, dk);
+    ctx.pb(cx+legOff, gy+.29, cz-legOff, .06, .52, .06, dk);
+    ctx.pb(cx-legOff, gy+.29, cz+legOff, .06, .52, .06, dk);
+    ctx.pb(cx+legOff, gy+.29, cz+legOff, .06, .52, .06, dk);
     // Backrest on the OUTER side (away from the table) so a seated guest
-    // faces the table.
+    // faces the table. Raised to match the higher seat.
     const off=0.26;
     if(Math.abs(dx)>Math.abs(dz)){
       const sign=dx>0?1:-1;
-      ctx.pb(cx+sign*off, gy+.75, cz, .06, .54, sz, wd);
+      ctx.pb(cx+sign*off, gy+.85, cz, .06, .60, sz, wd);
     }else{
       const sign=dz>0?1:-1;
-      ctx.pb(cx, gy+.75, cz+sign*off, sx, .54, .06, wd);
+      ctx.pb(cx, gy+.85, cz+sign*off, sx, .60, .06, wd);
     }
   }
 
@@ -418,15 +419,9 @@ export function drawSaloon(ctx){
   }
 
   // ========== INTERIOR WALL DETAIL: wainscoting ==========
-  // A thin dark wooden band running around the lower part of all interior
-  // walls. Placed just INSIDE the wall surfaces (at x0+WT, x1-WT, z0+WT,
-  // z1-WT — the interior face of each wall) so it doesn't clip into the
-  // walls.
-  const wainscotY=gy+.60, wainscotH=.04, wainscotD=.04;
-  ctx.pb((x0+x1)/2, wainscotY, z0+WT+0.02, x1-x0-2*WT, wainscotH, wainscotD, dk);  // north
-  ctx.pb((x0+x1)/2, wainscotY, z1-WT-0.02, x1-x0-2*WT, wainscotH, wainscotD, dk);  // south
-  ctx.pb(x0+WT+0.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);  // west
-  ctx.pb(x1-WT-0.02, wainscotY, (z0+z1)/2, wainscotD, wainscotH, z1-z0-2*WT, dk);  // east
+  // v35: REMOVED. The wainscoting band (a thin dark strip around the lower
+  // walls at gy+0.60) appeared as a horizontal bar running around the room
+  // from certain angles. The walls are now plain wood.
 
   // ========== CEILING BEAMS ==========
   for(let bz=z0+1.5; bz<=z1-1.5; bz+=2.0){
