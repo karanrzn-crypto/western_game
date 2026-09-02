@@ -30,7 +30,7 @@ import { V3 } from '../math.js';
 import { drawPiano, drawPianoStool } from './piano.js';
 import { drawBatwingDoors } from './batwing.js';
 import { drawPokerTable } from './poker-table.js';
-import { saloonColliders } from './interior.js';
+import { buildSaloonColliders } from './interior-v2.js';
 
 // ---------------------------------------------------------------------------
 // saloonPlan — single source of truth for all saloon coordinates.
@@ -115,8 +115,8 @@ export function generateSaloon(ctx){
   const porchDepth=1.6;
   cam(x0-.4, z1-.1, x1+.4, z1+porchDepth+.3, P.gy+2.85, P.gy+2.6);
 
-  // v51: floor prop colliders (barrels, crates, stove, hat rack, etc.)
-  saloonColliders(ctx);
+  // v54: floor prop colliders + pillar colliders (from interior-v2.js)
+  buildSaloonColliders(ctx);
 }
 
 // ---------------------------------------------------------------------------
