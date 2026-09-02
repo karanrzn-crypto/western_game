@@ -445,6 +445,108 @@ export function drawSaloon(ctx){
   drawSaloonExterior(ctx, P);
 }
 
+// ---------------------------------------------------------------------------
+// drawSaloonBuilding — v40: draws the FULL saloon building exterior (walls +
+// flat roof + bat-wing doors) directly, NOT through bldWithDoor. This
+// avoids the dark-gap bug where bldWithDoor left an empty doorway that hid
+// the bat-wing doors.
+//
+// The bat-wing doors are drawn RIGHT IN the door gap, so they're always
+// visible (no dark rectangle hiding them). The door state (open/closed) is
+// read from the saloon door object in ctx.doors.
+// ---------------------------------------------------------------------------
+export function drawSaloonBuilding(ctx){
+  const P=saloonPlan();
+  const {b, x0, x1, z0, z1, gy, top, doorX, gapL, gapR, frontZ, backZ} = P;
+  const WT=WALL_T;
+  const wd=C.wood, dk=C.dark, pal=C.pale;
+
+  // ---- 4 EXTERIOR WALLS ----
+  // Front wall split around the door gap (no lintel above — bat-wing doors
+  // are the only thing in the gap).
+  const H=b.h+.03, cy=gy+H/2;
+  ctx.pb((x0+gapL)/2, cy, frontZ, gapL-x0, H, WT, wd);
+  ctx.pb((gapR+x1)/2, cy, frontZ, x1-gapR, H, WT, wd);
+  // West wall (full depth).
+  ctx.pb(x0+WT/2, cy, (z0+z1)/2, WT, H, z1-z0, wd);
+  // East wall (full depth).
+  ctx.pb(x1-WT/2, cy, (z0+z1)/2, WT, H, z1-z0, wd);
+  // Back wall (full width).
+  ctx.pb((x0+x1)/2, cy, backZ, b.w, H, WT, wd);
+
+  // ---- FLAT ROOF ----
+  ctx.pb((x0+x1)/2, top+.01, (z0+z1)/2, b.w+.06, .06, b.d+.06, dk);
+
+  // ---- BAT-WING DOORS (drawn directly in the gap) ----
+  // Find the saloon door object to read its swing state.
+  let saloonDoor=null;
+  for(const d of ctx.doors){ if(d.key==='saloon'){ saloonDoor=d; break; } }
+  if(saloonDoor){
+    drawSaloonBatwingDoorDirect(ctx, saloonDoor, gy);
+  }
+
+  // ---- FALSE FRONT PARAPET + SALOON SIGN + PORCH (the old drawSaloonExterior) ----
+  drawSaloonExterior(ctx, P);
+}
+
+// ---------------------------------------------------------------------------
+// drawSaloonBatwingDoorDirect — draws the bat-wing doors directly (not via
+// the drawDoor system). Same design as the reference image: 2 mirrored
+// half-height panels with vertical planks, horizontal rails, curved
+// top/bottom, iron hinges, ring pulls. The panels swing open based on
+// d.swing (0 = closed, 1 = open).
+// ---------------------------------------------------------------------------
+function drawSaloonBatwingDoorDirect(ctx, d, gy){
+  const batH = 1.10;
+  const batW = (d.w - 0.04) / 2;
+  const batY = gy + batH/2 + 0.05;
+  const panelT = 0.09;
+  const woodColor = [0.48, 0.38, 0.28];
+  const darkWood = [0.32, 0.24, 0.18];
+  const ironColor = [0.18, 0.16, 0.15];
+  const swing = d.swing * 1.0;
+  // v40: offset the doors south (toward the street, +z for saloon) so they
+  // sit in FRONT of the door gap, not inside it. This makes them clearly
+  // visible from the street instead of being hidden in the doorway shadow.
+  const doorZ = d.z + 0.40;
+
+  const drawPanel = (side) => {
+    const hingeX = d.x + side * d.w/2;
+    const panelCX = hingeX - side * batW/2;
+    // Panel slab (rotated by swing around the hinge).
+    ctx.pbHinge(hingeX, batY, doorZ, batW, batH, panelT, woodColor, side * swing);
+    // Vertical planks (9 per panel).
+    const plankN = 9;
+    const plankW = batW / plankN;
+    for (let i = 0; i < plankN; i++){
+      const localX = -batW/2 + plankW * (i + 0.5);
+      const px = panelCX + localX;
+      ctx.pb(px, batY, doorZ + panelT/2 + 0.01, plankW * 0.85, batH - 0.08, 0.02, darkWood);
+    }
+    // Horizontal rails (3: top, middle, bottom).
+    const railYs = [batY + batH*0.30, batY, batY - batH*0.30];
+    for (const ry of railYs){
+      ctx.pb(panelCX, ry, doorZ + panelT/2 + 0.02, batW - 0.04, 0.08, 0.03, woodColor);
+    }
+    // Curved top edge (arch).
+    ctx.pb(panelCX, batY + batH/2 + 0.04, doorZ + panelT/2 + 0.01, batW - 0.06, 0.08, 0.02, woodColor);
+    // Curved bottom edge (scallop).
+    ctx.pb(panelCX, batY - batH/2 - 0.02, doorZ + panelT/2 + 0.01, batW - 0.10, 0.06, 0.02, woodColor);
+    // Iron strap hinges (2 per panel, on the outer edge).
+    for (const hy of [batY + batH*0.30, batY - batH*0.30]){
+      ctx.pb(hingeX - side * 0.04, hy, doorZ + panelT/2 + 0.03, 0.18, 0.06, 0.02, ironColor);
+      ctx.pb(hingeX, hy, doorZ, 0.05, 0.05, 0.05, ironColor);
+    }
+    // Ring pull (handle) on the inner edge.
+    const innerX = panelCX - side * (batW/2 - 0.06);
+    ctx.pb(innerX, batY, doorZ + panelT/2 + 0.04, 0.04, 0.04, 0.03, ironColor);
+    ctx.pb(innerX, batY, doorZ + panelT/2 + 0.06, 0.08, 0.08, 0.02, ironColor);
+  };
+
+  drawPanel(-1);
+  drawPanel(+1);
+}
+
 // Helper: get the front (south, +z) edge z of the BarCounter for placing the
 // BarTowel on the customer-facing edge.
 function sz_edge(o){
