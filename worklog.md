@@ -179,3 +179,65 @@ Stage Summary:
   * VLM notes the chimney is hidden behind the false front from the direct front view — visible from the sides. This is architecturally correct.
   * The recurring .gitignore regression (cron commits re-adding .next/) should be watched; the next cron round must NOT `git add -A` blindly.
   * Future: could add swinging bat-wing saloon doors, a second-floor balcony on the false front, interior wanted posters / paintings / spittoon for more saloon atmosphere.
+
+---
+Task ID: 5
+Agent: main (user-driven round)
+Task: Saloon v31 — move bar code to a separate folder, fix door (gone into wall) + windows (in wall), add named interior props, build an upright piano per the user's reference image. Bump version per update.
+
+Work Log:
+- Read the user's piano reference image (upload/pasted_image_1788323555728.png) with VLM. It shows an upright piano with walnut/mahogany body, recessed back paneling (3 vertical sections with molding), integrated music rest, high-contrast ivory/black keyboard, 4 straight square-tapered block legs, ~1.3m tall x 1.5m wide x 0.65m deep.
+- Investigated the door bug: the v30 false front was a FULL-HEIGHT slab (from ground to parapet top) at z=z1 covering the entire front wall, including the door opening. This is why the door was 'gone into the wall'. Also the front windows at z1+WALL_T/2 sat inside this slab.
+- Bumped version v30 -> v31 in page.tsx, layout.tsx, engine.js.
+- Created the folder src/game/bar/ and moved the bar code there:
+  * bar/saloon.js — main (saloonPlan + generateSaloon + drawSaloon + drawSaloonExterior).
+  * bar/piano.js — drawPiano + drawPianoStool.
+  * bar/index.js — re-exports.
+- Deleted the old src/game/saloon.js and updated world-objects.js to import from './bar/index.js'.
+- Fixed the false front: changed it from a full-height slab to a PARAPET that sits ON TOP of the front wall (from y=top to y=ffTop). The regular front wall (with the door gap + windows) is now fully visible below the parapet. The door is no longer covered.
+- Fixed the false-front camera collider to only cover above the roof (from top to ffTop), not the full front wall, so the door + windows remain unobstructed for the camera.
+- Fixed the front windows: they stay on the regular front wall at z1+WALL_T/2 (the outer wall face), now clear of the parapet (which is only above the roof).
+- Fixed the SALOON sign: it was placed at ffZ-0.02..ffZ-0.14 (NORTH of / behind the parapet slab) so it was hidden behind the parapet. Moved it to signZ = ffZ+ffT/2+0.20 (0.20m PROUD of / south of the parapet front face) so it's clearly visible from the street.
+- Built the upright piano (bar/piano.js) per the reference:
+  * Walnut body (PIANO_BODY), darker walnut molding (PIANO_BODY_DARK), ivory natural keys, black sharp keys, red felt strip above keys, brass pedals + hinges.
+  * Recessed back paneling (3 vertical sections with raised molding frames).
+  * Integrated music rest with a sheet of music + dark "note" lines.
+  * 4 straight square-tapered block legs with small foot caps.
+  * 2 brass pedals on a lyre support.
+  * 2 brass hinges on the side.
+  * Keyboard pattern: 14 ivory natural keys with a simplified 5-sharps-per-octave pattern of black keys.
+- Placed the piano against the west wall (back at x0+WALL_T), near the front (z=z1-1.5), keyboard facing south. Added a PianoStool in front of it.
+- Enabled the piano via SALOON_INCLUDE_PIANO=true in config.js. Added a player collider for the piano so the player can't walk through it.
+- Added named interior props (each searchable in bar/saloon.js):
+  * Spittoon (brass, at the foot of the bar)
+  * WantedPoster01 / WantedPoster02 (on west + east walls, with red "WANTED" band + dark text lines + face silhouette)
+  * SaloonPainting (framed painting on the east wall, with horizon + sky + sun)
+  * AntlerMount (deer antler mount on the back wall above the upper shelf)
+  * CardDeck (deck of cards on the poker table, with red top + laid-out cards)
+  * PokerChips (red/white/blue chip stacks on the poker table)
+  * PokerTableCloth (green felt on SaloonTable01 marking it as the poker table)
+  * WhiskeyBottle (bottle + glass with amber liquid on SaloonTable02)
+  * BeerBarrel (wooden barrel behind the bar with staves, hoop bands, brass spigot)
+  * BarTowel (towel hanging on the bar counter edge)
+  * WallSconce01 / WallSconce02 (wall-mounted oil lamps with glass chimney + flame)
+
+Stage Summary:
+- **Files changed**: layout.tsx, page.tsx, engine.js (version bump), config.js (piano enabled), world-objects.js (import path), bar/saloon.js (NEW, moved + fixed), bar/piano.js (NEW), bar/index.js (NEW), saloon.js (DELETED).
+- **Build result**: lint clean (only pre-existing use-mobile.ts/use-toast.ts warnings). Page returns 200, no console errors.
+- **Runtime verification (agent-browser + VLM)**:
+  * Front door is now a visible dark opening (no longer covered by a slab). ✅
+  * Front windows visible on the front wall below the parapet. ✅
+  * False-front parapet sits above the flat roof (not full-height). ✅
+  * SALOON sign with gold border visible on the parapet (after the z-offset fix). ✅
+  * Upright piano (dark walnut body, white/black keys) visible against the west wall — VLM confirms "a classic upright piano shape, dark brown wood, keyboard with distinct white keys with black keys interspersed". ✅
+  * Interior "significantly more detailed and atmospheric" — poker table with green felt, card deck, chips, bottles, shelves, barrel, posters, painting, antler mount, wall sconces. ✅
+- **Named objects** (searchable in bar/saloon.js, bar/piano.js, config.js):
+  * Existing: BarCounter, BarStool01..04, SaloonTable01..02, SaloonChair01..08, BarShelfLower, BarShelfUpper, SaloonLamp01..02.
+  * New interior props: Spittoon, WantedPoster01, WantedPoster02, SaloonPainting, AntlerMount, CardDeck, PokerChips, PokerTableCloth, WhiskeyBottle, BeerBarrel, BarTowel, WallSconce01, WallSconce02.
+  * New: Piano, PianoStool (in bar/piano.js).
+  * Exterior: false front parapet, SALOON sign, porch posts, porch roof, front windows, shutters, porch railing, chimney.
+- **Unresolved / next-phase recommendations**:
+  * The SALOON sign letter slats are visible as gold bars but VLM can't read "SALOON" text (low-poly limitation). Could make the slats thicker / more distinct.
+  * The piano keyboard pattern is a simplified approximation (14 keys, 5 sharps/octave). Could expand to a fuller 88-key pattern if desired.
+  * The chimney is hidden behind the false front from the direct front view (architecturally correct — visible from the sides).
+  * Future: could add swinging bat-wing saloon doors, a second-floor balcony on the false front, a player interaction with the piano (play a sound), beer barrel interaction.
