@@ -12,16 +12,18 @@
 // rotates as a single rigid body.
 
 import { C } from '../config.js';
+import { SALOON_SCALE } from './config.js';
+const S = SALOON_SCALE;
 
 export const BATWING = {
-  bottom:  0.40,   // gap under the doors (boots visible) — classic look
-  height:  1.15,   // leaf height (waist -> chest)
-  gap:     0.05,   // centre gap between the two leaves
-  thick:   0.055,  // leaf thickness
+  bottom:  0.40*S,   // gap under the doors (boots visible) — classic look
+  height:  1.15*S,   // leaf height (waist -> chest)
+  gap:     0.05*S,   // centre gap between the two leaves
+  thick:   0.055*S,  // leaf thickness
   slats:   7,      // vertical planks per leaf
-  slatGap: 0.008,
-  archTop: 0.17,   // top edge drops this much toward the centre (curve)
-  archBot: 0.13,   // bottom edge rises this much toward the centre
+  slatGap: 0.008*S,
+  archTop: 0.17*S,   // top edge drops this much toward the centre (curve)
+  archBot: 0.13*S,   // bottom edge rises this much toward the centre
   maxSwing: 1.15,  // rad (~66 deg)
   wood:  [[0.52,0.41,0.30],[0.46,0.36,0.26],[0.57,0.45,0.33]], // weathered
   edge:  [0.30,0.23,0.17],

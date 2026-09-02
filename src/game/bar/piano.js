@@ -4,13 +4,15 @@
 // is exactly 1.52 wide x 0.65 deep, matching the collider in saloon.js.
 import { frame } from './frame.js';
 import { M } from './materials.js';
+import { SALOON_SCALE } from './config.js';
 
 const WALNUT=M.walnut, WALNUT_D=M.walnutD, WALNUT_L=M.walnutL, IVORY=M.ivory,
       IVORY_W=M.paperOld, BLACKKEY=M.soot, FELT=M.felt, SILK=M.silk, BRASS=M.brass,
       IRON=M.iron, WAX=M.wax, FLAME=M.flame;
+const S=SALOON_SCALE;
 
-const PW = 1.52, PD = 0.65, PH = 1.34; // width, depth, height
-const BD = 0.50;                       // cabinet depth (keybed adds the rest)
+const PW = 1.52*S, PD = 0.65*S, PH = 1.34*S; // width, depth, height (scaled)
+const BD = 0.50*S;                       // cabinet depth (keybed adds the rest)
 
 export function drawPiano(ctx, backX, backZ, gy, facing = 'S'){
   const f = frame(ctx, backX, backZ, facing);

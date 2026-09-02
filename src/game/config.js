@@ -1,11 +1,14 @@
 // SEC-07 Config: TOWN, doors, building colors, BANK, SHERIFF
 
+// v52: saloon scaled 1.5x
+export const SALOON_SCALE = 1.5;
+
 export const TOWN={
-  saloon:{x:-28.5,z:-7.5, w:13, d:8,  h:4.4, door:true, key:'saloon'},
-  store:{x:-11,  z:-6.75,w:11, d:7,  h:3.7, door:true, key:'store'},
-  /* sheriff removed — now handled by SHERIFF config (v27) */
-  stable:{x:-28.5,z:20.75,w:11, d:7,  h:3.5, door:false},
-  church:{x:-11, z:21,  w:7,  d:8,  h:3.9, door:false}
+ saloon:{x:-28.5,z:-7.5, w:13*SALOON_SCALE, d:8*SALOON_SCALE, h:4.4*SALOON_SCALE, door:true, key:'saloon'},
+ store:{x:-11,  z:-6.75,w:11, d:7,  h:3.7, door:true, key:'store'},
+ /* sheriff removed — now handled by SHERIFF_NEW config (v52) */
+ stable:{x:-28.5,z:20.75,w:11, d:7,  h:3.5, door:false},
+ church:{x:-11, z:21,  w:7,  d:8,  h:3.9, door:false}
 };
 export const DOOR_GAP=1.9,DOOR_H=2.15,WALL_T=.28,DOOR_TRIGGER=2.8,DOOR_SPEED=6,DOOR_CLOSE_SPEED=1.2,DOOR_OPEN_REMOVE=.15;
 export const CAM_MARGIN=.3;
@@ -186,3 +189,24 @@ export const SALOON_LAYOUT={
   Piano:          { center:[-34.50, 0.65, -4.50], size:[0.70, 1.30, 1.20], color:'dark'  },
 };
 export const SALOON_INCLUDE_PIANO=true;
+
+// SHERIFF v52 REBUILD — L-shaped building with office + cells
+export const SHERIFF_NEW = {
+ x: 4, z: -8.75,
+ w: 18,      // wide
+ d: 16,      // deep
+ h: 4.5,
+ doorW: DOOR_GAP,
+ office: { x0: -8, x1: 8, z0: -2, z1: 4 },      // south zone
+ cells: { x0: -8, x1: 8, z0: -7.5, z1: -2 },    // north zone
+};
+export const SH_MAT = {
+ pine: [0.52, 0.38, 0.25],
+ pineD: [0.44, 0.31, 0.20],
+ oak: [0.46, 0.33, 0.24],
+ oakD: [0.32, 0.22, 0.16],
+ iron: [0.21, 0.20, 0.22],
+ brass: [0.66, 0.52, 0.30],
+ leather: [0.33, 0.19, 0.15],
+ canvas: [0.64, 0.58, 0.48],
+};
