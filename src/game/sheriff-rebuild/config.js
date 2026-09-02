@@ -1,18 +1,18 @@
 // sheriff-rebuild/config.js — new sheriff office building (v54)
 export const SHERIFF_NEW = {
- x: 4, z: -8.75,
- w: 20, d: 18, h: 4.8,
+ x: 4, z: -10,       // moved south (was -8.75) to avoid overlapping store
+ w: 12, d: 14, h: 4.8,  // reduced width (was 20x18) — was too big
  // exterior
  porchW: 2.5, porchD: 1.8, porchH: 0.4,
  signH: 0.8,
  // interior zones
- entrance: {x0: -9.5, x1: -7, z0: 7.5, z1: 9},       // front entrance area
- desk: {x0: -9, x1: -6, z0: 5, z1: 8},              // sheriff desk zone
- notice: {x0: -9, x1: -8, z0: 4, z1: 8},            // wanted posters board
- evidence: {x0: -6, x1: 2, z0: 5.5, z1: 9},         // evidence storage
- central: {x0: -6, x1: 8, z0: -3, z1: 5.5},         // main floor
- cells: {x0: -6, x1: 8, z0: -8, z1: -3},            // jail cells area
- weapons: {x0: 8, x1: 9.5, z0: 4, z1: 8},           // weapon rack
+ entrance: {x0: -5, x1: -3, z0: 5, z1: 7},       // front entrance area
+ desk: {x0: -5, x1: -2, z0: 3, z1: 7},          // sheriff desk zone
+ notice: {x0: -5, x1: -4, z0: 2, z1: 7},        // wanted posters board
+ evidence: {x0: -2, x1: 3, z0: 4, z1: 7},       // evidence storage
+ central: {x0: -2, x1: 5, z0: -2, z1: 4},       // main floor
+ cells: {x0: -2, x1: 5, z0: -6, z1: -2},        // jail cells area
+ weapons: {x0: 5, x1: 6, z0: 3, z1: 7},         // weapon rack
 };
 
 export const SH_MATERIALS = {

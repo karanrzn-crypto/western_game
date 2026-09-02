@@ -106,17 +106,16 @@ export class WorldObjects{
     const B=BANK,x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
     if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return 'bank';
 
-    // ---- SHERIFF v54: rectangular building (from sheriff-rebuild/config.js) ----
-    const SN={x:4,z:-8.75,w:20,d:18,h:4.8};
-    const sx0=SN.x-SN.w/2, sx1=SN.x+SN.w/2;
-    const sz0=SN.z-SN.d/2, sz1=SN.z+SN.d/2;
+    // ---- SHERIFF v54: rectangular building (sheriff-rebuild) ----
+    const sx0=4-6, sx1=4+6;       // w=12
+    const sz0=-10-7, sz1=-10+7;   // d=14
     if(player.pos.x>sx0 && player.pos.x<sx1 && player.pos.z>sz0 && player.pos.z<sz1) return 'sheriff';
     return null;
   }
   // v54: simple rectangular sheriff interior test
   _sheriffInside(px,pz){
-    const sx0=4-10, sx1=4+10;
-    const sz0=-8.75-9, sz1=-8.75+9;
+    const sx0=4-6, sx1=4+6;
+    const sz0=-10-7, sz1=-10+7;
     if(px>sx0 && px<sx1 && pz>sz0 && pz<sz1) return 'sheriff';
     return null;
   }
@@ -127,7 +126,7 @@ export class WorldObjects{
   interiorCeilingY(x,z,key){
     const gy=this.g(x,z);
     if(key==='sheriff'){
-      return gy+4.8-.15;
+      return gy+4.8-.15;  // SHERIFF_NEW.h = 4.8
     }
     if(key==='bank'){
       return gy+BANK.h-.15;
