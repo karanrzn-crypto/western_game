@@ -138,12 +138,14 @@ export class WorldObjects{
     return null;
   }
   pb(x,y,z,sx,sy,sz,c,ry=0,rx=0,rz=0){
+    if(!c||c===undefined)c=[0.5,0.5,0.5];  // guard: undefined color → grey
     mat4YPR(this.tmpModel,new V3(x,y,z),new V3(sx*.5,sy*.5,sz*.5),ry,rx,rz);
     this._gl.uniformMatrix4fv(this._loc.model,false,this.tmpModel);
     this._gl.uniform3f(this._loc.color,c[0],c[1],c[2]);
     this.box.draw();
   }
   pbHinge(hingeX,y,hingeZ,w,h,d,color,ry){
+    if(!color||color===undefined)color=[0.5,0.5,0.5];  // guard
     const m=this.tmpModel;
     m.fill(0);
     const cy=Math.cos(ry),sy=Math.sin(ry);
@@ -157,6 +159,7 @@ export class WorldObjects{
     this.box.draw();
   }
   pc(x,y,z,r,h,c){
+    if(!c||c===undefined)c=[0.5,0.5,0.5];  // guard: undefined color → grey
     mat4YPR(this.tmpModel,new V3(x,y,z),new V3(r,h/2,r),0,0,0);
     this._gl.uniformMatrix4fv(this._loc.model,false,this.tmpModel);
     this._gl.uniform3f(this._loc.color,c[0],c[1],c[2]);
