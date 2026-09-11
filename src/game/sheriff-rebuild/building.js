@@ -1,5 +1,5 @@
 // sheriff-rebuild/building.js
-// Sheriff Office — shell, exterior and collision layout.
+// Sheriff Office — compact shell and collision system
 
 import {
   SHERIFF_NEW as S,
@@ -12,33 +12,29 @@ import {
 } from '../config.js';
 
 
-// ------------------------------------------------------------
-// DEBUG LABEL
-// ------------------------------------------------------------
+// ----------------------------------------------------------
+// OPTIONAL DEBUG LABEL
+// ----------------------------------------------------------
 
-function debugLabel(target, text, x, y, z) {
+function label(target, text, x, y, z) {
   try {
     if (target && typeof target.label === 'function') {
       target.label(text, x, y, z);
-      return;
-    }
-
-    if (target && typeof target.debugLabel === 'function') {
+    } else if (target && typeof target.debugLabel === 'function') {
       target.debugLabel(text, x, y, z);
-      return;
     }
   } catch (_) {
-    // Labels are optional. Never allow debug labels
-    // to break the actual building.
+    // Label is debug-only.
   }
 }
 
 
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 // PLAN
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 
 export function sheriffPlan() {
+
   const b = S;
 
   const gy = 0;
@@ -53,10 +49,12 @@ export function sheriffPlan() {
     b,
 
     gy,
+
     top: gy + b.h,
 
     ox0,
     ox1,
+
     oz0,
     oz1,
 
@@ -68,11 +66,12 @@ export function sheriffPlan() {
 }
 
 
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 // EXTERIOR
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 
 export function drawSheriffExterior(ctx) {
+
   const P = sheriffPlan();
 
   const {
@@ -91,8 +90,17 @@ export function drawSheriffExterior(ctx) {
 
   const cx = S.x;
 
-  const doorW = S.door.width;
-  const doorH = Math.min(S.door.height, DOOR_H);
+  // --------------------------------------------------------
+  // FRONT = +Z
+  // --------------------------------------------------------
+
+  const frontZ = oz1;
+
+  const doorW = S.entrance.width;
+  const doorH = Math.min(
+    S.entrance.height,
+    DOOR_H
+  );
 
   const doorX = cx;
 
@@ -100,69 +108,59 @@ export function drawSheriffExterior(ctx) {
   const gapR = doorX + doorW / 2;
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // FRONT WALL — LEFT OF DOOR
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
-  const leftWidth = gapL - ox0;
-
-  if (leftWidth > 0.01) {
-    ctx.pb(
-      (ox0 + gapL) / 2,
-      gy + H / 2,
-      oz0 + WT / 2,
-      leftWidth,
-      H,
-      WT,
-      M.oak
-    );
-  }
+  ctx.pb(
+    (ox0 + gapL) / 2,
+    H / 2,
+    frontZ - WT / 2,
+    gapL - ox0,
+    H,
+    WT,
+    M.oak
+  );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // FRONT WALL — RIGHT OF DOOR
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
-  const rightWidth = ox1 - gapR;
-
-  if (rightWidth > 0.01) {
-    ctx.pb(
-      (gapR + ox1) / 2,
-      gy + H / 2,
-      oz0 + WT / 2,
-      rightWidth,
-      H,
-      WT,
-      M.oak
-    );
-  }
+  ctx.pb(
+    (gapR + ox1) / 2,
+    H / 2,
+    frontZ - WT / 2,
+    ox1 - gapR,
+    H,
+    WT,
+    M.oak
+  );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // FRONT WALL ABOVE DOOR
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
-  if (top > gy + doorH + 0.02) {
-    ctx.pb(
-      doorX,
-      gy + doorH + (top - doorH) / 2,
-      oz0 + WT / 2,
-      doorW,
-      top - doorH,
-      WT,
-      M.oak
-    );
-  }
+  ctx.pb(
+    doorX,
+    doorH + (H - doorH) / 2,
+    frontZ - WT / 2,
+    doorW,
+    H - doorH,
+    WT,
+    M.oak
+  );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // BACK WALL
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   ctx.pb(
     cx,
-    gy + H / 2,
-    oz1 - WT / 2,
+    H / 2,
+    oz0 + WT / 2,
     W,
     H,
     WT,
@@ -170,13 +168,13 @@ export function drawSheriffExterior(ctx) {
   );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // LEFT WALL
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   ctx.pb(
     ox0 + WT / 2,
-    gy + H / 2,
+    H / 2,
     S.z,
     WT,
     H,
@@ -185,13 +183,13 @@ export function drawSheriffExterior(ctx) {
   );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // RIGHT WALL
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   ctx.pb(
     ox1 - WT / 2,
-    gy + H / 2,
+    H / 2,
     S.z,
     WT,
     H,
@@ -200,195 +198,153 @@ export function drawSheriffExterior(ctx) {
   );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // ROOF
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   ctx.pb(
     cx,
     top,
     S.z,
-    W + 0.15,
+    W + 0.12,
     0.10,
-    D + 0.15,
+    D + 0.12,
     M.oakDark
   );
 
 
-  // ----------------------------------------------------------
-  // PORCH
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
+  // FRONT PORCH
+  // --------------------------------------------------------
 
-  const porchZ = oz0 - S.porch.depth / 2 + 0.05;
+  const porchZ =
+    frontZ +
+    S.porch.depth / 2 -
+    0.03;
 
   ctx.pb(
     cx,
-    gy + S.porch.height / 2,
+    S.porch.height / 2,
     porchZ,
-    W - S.porch.sideInset * 2,
+    W - 1.0,
     S.porch.height,
     S.porch.depth,
     M.oak
   );
 
 
-  // Porch posts
-  const postX = W / 2 - 1.10;
+  // --------------------------------------------------------
+  // PORCH POSTS
+  // --------------------------------------------------------
 
   for (const side of [-1, 1]) {
+
     ctx.pb(
-      cx + side * postX,
-      gy + 1.35,
-      porchZ,
-      0.22,
-      2.70,
-      0.22,
+      cx + side * 3.25,
+      1.25,
+      frontZ + 0.40,
+      0.18,
+      2.50,
+      0.18,
       M.oakDark
     );
   }
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // STAIRS
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   for (let i = 0; i < 3; i++) {
-    const stepZ =
-      oz0 -
-      0.10 -
-      i * 0.34;
 
     ctx.pb(
       cx,
-      0.08 + i * 0.12,
-      stepZ,
-      5.50,
+      0.08 + i * 0.11,
+      frontZ + 0.30 + i * 0.34,
+      3.20,
       0.16,
-      0.32,
+      0.30,
       M.oak
     );
   }
 
 
-  // ----------------------------------------------------------
-  // SHERIFF SIGN
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
+  // SIGN
+  // --------------------------------------------------------
 
-  const signZ = oz0 - 0.16;
-  const signY = top + 0.55;
+  const signY = top + 0.50;
 
   ctx.pb(
     cx,
     signY,
-    signZ,
+    frontZ + 0.02,
     S.sign.width,
     S.sign.height,
     0.10,
     M.oakDark
   );
 
-  ctx.pb(
-    cx,
-    signY,
-    signZ - 0.055,
-    S.sign.width - 0.18,
-    S.sign.height - 0.16,
-    0.025,
-    M.paper
-  );
-
-  debugLabel(
+  label(
     ctx,
     'SHERIFF',
     cx,
-    signY + 0.05,
-    signZ - 0.09
+    signY,
+    frontZ + 0.10
   );
 
 
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
   // DOOR FRAME
-  // ----------------------------------------------------------
+  // --------------------------------------------------------
 
   ctx.pb(
-    gapL - 0.07,
-    gy + doorH / 2,
-    oz0,
-    0.14,
+    gapL - 0.06,
+    doorH / 2,
+    frontZ,
+    0.12,
     doorH,
-    0.18,
-    M.oakDark
-  );
-
-  ctx.pb(
-    gapR + 0.07,
-    gy + doorH / 2,
-    oz0,
-    0.14,
-    doorH,
-    0.18,
-    M.oakDark
-  );
-
-  ctx.pb(
-    cx,
-    gy + doorH,
-    oz0,
-    doorW + 0.28,
     0.16,
-    0.18,
+    M.oakDark
+  );
+
+  ctx.pb(
+    gapR + 0.06,
+    doorH / 2,
+    frontZ,
+    0.12,
+    doorH,
+    0.16,
+    M.oakDark
+  );
+
+  ctx.pb(
+    doorX,
+    doorH,
+    frontZ,
+    doorW + 0.24,
+    0.16,
+    0.16,
     M.oakDark
   );
 
 
-  // ----------------------------------------------------------
-  // EXTERIOR LANTERNS
-  // ----------------------------------------------------------
-
-  for (const side of [-1, 1]) {
-    const lx = cx + side * 2.40;
-
-    ctx.pb(
-      lx,
-      gy + 2.85,
-      oz0 + 0.18,
-      0.30,
-      0.42,
-      0.30,
-      M.brass
-    );
-
-    ctx.pb(
-      lx,
-      gy + 2.85,
-      oz0 + 0.01,
-      0.16,
-      0.20,
-      0.16,
-      M.paper
-    );
-  }
-
-
-  // ----------------------------------------------------------
-  // DEBUG FRONT MARKER
-  // ----------------------------------------------------------
-
-  debugLabel(
+  label(
     ctx,
-    'FRONT DOOR',
-    S.x,
-    gy + 1.20,
-    oz0 - 0.25
+    'MAIN ENTRANCE',
+    doorX,
+    1.10,
+    frontZ + 0.15
   );
 }
 
 
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 // COLLIDERS
-// ------------------------------------------------------------
+// ----------------------------------------------------------
 
 export function generateSheriffColliders(ctx) {
+
   const P = sheriffPlan();
 
   const {
@@ -396,13 +352,13 @@ export function generateSheriffColliders(ctx) {
     ox1,
     oz0,
     oz1,
-    gy,
     top,
     WT,
   } = P;
 
-  const doorW = S.door.width;
-  const doorH = Math.min(S.door.height, DOOR_H);
+  const doorW = S.entrance.width;
+
+  const frontZ = oz1;
 
   const doorX = S.x;
 
@@ -410,35 +366,35 @@ export function generateSheriffColliders(ctx) {
   const gapR = doorX + doorW / 2;
 
 
-  // ==========================================================
-  // OUTER WALL COLLIDERS
-  // ==========================================================
+  // ========================================================
+  // EXTERIOR WALLS
+  // ========================================================
 
-  // North / front left
+  // Front left
   ctx.boxCol(
     ox0,
-    oz0 - WT,
+    frontZ - WT,
     gapL,
-    oz0 + WT
+    frontZ + WT
   );
 
-  // North / front right
+  // Front right
   ctx.boxCol(
     gapR,
+    frontZ - WT,
+    ox1,
+    frontZ + WT
+  );
+
+  // Back
+  ctx.boxCol(
+    ox0,
     oz0 - WT,
     ox1,
     oz0 + WT
   );
 
-  // South
-  ctx.boxCol(
-    ox0,
-    oz1 - WT,
-    ox1,
-    oz1 + WT
-  );
-
-  // West
+  // Left
   ctx.boxCol(
     ox0 - WT,
     oz0,
@@ -446,7 +402,7 @@ export function generateSheriffColliders(ctx) {
     oz1
   );
 
-  // East
+  // Right
   ctx.boxCol(
     ox1 - WT,
     oz0,
@@ -455,34 +411,32 @@ export function generateSheriffColliders(ctx) {
   );
 
 
-  // ==========================================================
-  // CAMERA WALLS
-  // ==========================================================
-
-  const camH = top + 0.15;
+  // ========================================================
+  // CAMERA COLLISION
+  // ========================================================
 
   ctx.cam(
     ox0,
-    oz0 - WT,
+    frontZ - WT,
     gapL,
-    oz0 + WT,
-    camH
+    frontZ + WT,
+    top + 0.1
   );
 
   ctx.cam(
     gapR,
-    oz0 - WT,
+    frontZ - WT,
     ox1,
-    oz0 + WT,
-    camH
+    frontZ + WT,
+    top + 0.1
   );
 
   ctx.cam(
     ox0,
-    oz1 - WT,
+    oz0 - WT,
     ox1,
-    oz1 + WT,
-    camH
+    oz0 + WT,
+    top + 0.1
   );
 
   ctx.cam(
@@ -490,7 +444,7 @@ export function generateSheriffColliders(ctx) {
     oz0,
     ox0 + WT,
     oz1,
-    camH
+    top + 0.1
   );
 
   ctx.cam(
@@ -498,46 +452,49 @@ export function generateSheriffColliders(ctx) {
     oz0,
     ox1 + WT,
     oz1,
-    camH
+    top + 0.1
   );
 
 
-  // Roof camera blocker
+  // Roof
   ctx.cam(
-    ox0 - 0.15,
-    oz0 - 0.15,
-    ox1 + 0.15,
-    oz1 + 0.15,
-    top + 0.20,
+    ox0 - 0.10,
+    oz0 - 0.10,
+    ox1 + 0.10,
+    oz1 + 0.10,
+    top + 0.15,
     top - 0.05
   );
 
 
-  // ==========================================================
+  // ========================================================
   // FLOOR
-  // ==========================================================
+  // ========================================================
 
   ctx.floors.push({
     x0: ox0 + WT,
     x1: ox1 - WT,
+
     z0: oz0 + WT,
     z1: oz1 - WT,
-    y: gy + 0.008,
+
+    y: 0.008,
   });
 
 
-  // ==========================================================
-  // FRONT DOOR
-  // ==========================================================
+  // ========================================================
+  // MAIN DOOR
+  // ========================================================
 
-  const d = {
+  const mainDoor = {
+
     x: doorX,
-    z: oz0,
+    z: frontZ,
 
     w: doorW,
-    h: doorH,
+    h: S.entrance.height,
 
-    side: -1,
+    side: 1,
 
     open: 0,
     target: 0,
@@ -553,47 +510,66 @@ export function generateSheriffColliders(ctx) {
 
     manualOnly: true,
 
-    swingSign: -1,
+    swingSign: 1,
   };
 
 
-  d.col = {
+  mainDoor.col = {
     x0: gapL,
     x1: gapR,
-    z0: oz0 - 0.10,
-    z1: oz0 + 0.10,
+
+    z0: frontZ - 0.10,
+    z1: frontZ + 0.10,
+
     door: true,
     off: false,
   };
 
 
-  d.inside = {
+  mainDoor.inside = {
     x0: ox0 + WT,
     x1: ox1 - WT,
+
     z0: oz0 + WT,
     z1: oz1 - WT,
   };
 
 
-  ctx.doors.push(d);
+  ctx.doors.push(mainDoor);
 
 
-  // ==========================================================
-  // INTERNAL PARTITION
+  // ========================================================
+  // JAIL PARTITION
+  // ========================================================
   //
-  // Separates the public room from the back office/cells.
-  // Contains one controlled doorway.
-  // ==========================================================
+  // The cells are at the BACK of the building.
+  //
+  // Front room:
+  //   +Z
+  //
+  // Jail:
+  //   -Z
+  // ========================================================
 
-  const partitionZ = S.z + 6.0;
+  const partitionZ =
+    S.z - 2.00;
 
-  const partitionDoorWidth = 1.50;
-  const partitionDoorX = S.x + 0.85;
+  // Opening for access to jail corridor
+  const corridorDoorX =
+    S.x + 0.90;
 
-  const pL = partitionDoorX - partitionDoorWidth / 2;
-  const pR = partitionDoorX + partitionDoorWidth / 2;
+  const corridorDoorW = 1.20;
+
+  const pL =
+    corridorDoorX -
+    corridorDoorW / 2;
+
+  const pR =
+    corridorDoorX +
+    corridorDoorW / 2;
 
 
+  // Left partition wall
   ctx.boxCol(
     ox0 + WT,
     partitionZ - WT / 2,
@@ -602,6 +578,7 @@ export function generateSheriffColliders(ctx) {
   );
 
 
+  // Right partition wall
   ctx.boxCol(
     pR,
     partitionZ - WT / 2,
@@ -610,159 +587,95 @@ export function generateSheriffColliders(ctx) {
   );
 
 
-  debugLabel(
-    ctx,
-    'MAIN / JAIL PARTITION',
-    S.x,
-    1.10,
+  // ========================================================
+  // CELL DIVIDER
+  // ========================================================
+
+  ctx.boxCol(
+    S.x - WT / 2,
+    oz0 + WT,
+    S.x + WT / 2,
     partitionZ
   );
 
 
-  // ==========================================================
-  // PRIVATE OFFICE SIDE WALL
-  // ==========================================================
+  // ========================================================
+  // CELL BACK WALL
+  // ========================================================
 
-  const officeX = S.x - 4.70;
-
-  ctx.boxCol(
-    officeX - WT / 2,
-    S.z + 1.15,
-    officeX + WT / 2,
-    S.z + 6.0
-  );
-
-
-  // ==========================================================
-  // OBJECT COLLIDERS
-  //
-  // Only actual solid furniture gets a collider.
-  // Chairs intentionally remain non-blocking.
-  // ==========================================================
-
-  // Sheriff desk
-  const desk = S.objects.sheriffDesk;
-
-  ctx.boxCol(
-    desk.x - 0.95,
-    S.z + desk.z - 0.45,
-    desk.x + 0.95,
-    S.z + desk.z + 0.45
-  );
-
-
-  // Evidence cabinets
-  for (const obj of [
-    S.objects.evidenceCabinet1,
-    S.objects.evidenceCabinet2,
-  ]) {
-    ctx.boxCol(
-      obj.x - 0.45,
-      S.z + obj.z - 0.35,
-      obj.x + 0.45,
-      S.z + obj.z + 0.35
-    );
-  }
-
-
-  // Weapon racks
-  for (const obj of [
-    S.objects.weaponRack1,
-    S.objects.weaponRack2,
-  ]) {
-    ctx.boxCol(
-      obj.x - 0.40,
-      S.z + obj.z - 0.15,
-      obj.x + 0.40,
-      S.z + obj.z + 0.15
-    );
-  }
-
-
-  // ==========================================================
-  // CELL WALLS
-  // ==========================================================
-
-  const jailBackZ = S.z + 8.70;
-  const cellSplitX = S.x;
-
-
-  // Cell back wall
   ctx.boxCol(
     ox0 + WT,
-    jailBackZ - WT,
+    oz0 + WT,
     ox1 - WT,
-    jailBackZ
+    oz0 + WT * 2
   );
 
 
-  // Cell dividing wall
-  ctx.boxCol(
-    cellSplitX - WT / 2,
-    S.z + 6.0,
-    cellSplitX + WT / 2,
-    jailBackZ
-  );
+  // ========================================================
+  // CELL DOOR COLLIDERS — TWO SEPARATE DOORS
+  // ========================================================
 
+  const cellDoorWidth = 1.25;
 
-  // ==========================================================
-  // CELL DOOR COLLIDERS
-  // ==========================================================
-
-  for (const door of [
-    S.objects.cellDoor1,
-    S.objects.cellDoor2,
+  for (const obj of [
+    S.objects.cell1Door,
+    S.objects.cell2Door,
   ]) {
+
     ctx.boxCol(
-      door.x - 0.75,
-      S.z + door.z - 0.08,
-      door.x + 0.75,
-      S.z + door.z + 0.08
+      S.x + obj.x - cellDoorWidth / 2,
+      S.z + obj.z - 0.08,
+      S.x + obj.x + cellDoorWidth / 2,
+      S.z + obj.z + 0.08
     );
   }
 
 
-  // ==========================================================
-  // DEBUG LABELS
-  // ==========================================================
+  // ========================================================
+  // DESK COLLIDER
+  // ========================================================
 
-  debugLabel(
-    ctx,
-    'SHERIFF DESK',
-    S.x + S.objects.sheriffDesk.x,
-    1.15,
-    S.z + S.objects.sheriffDesk.z
-  );
+  {
+    const o = S.objects.sheriffDesk;
 
-  debugLabel(
-    ctx,
-    'EVIDENCE',
-    S.x - 0.30,
-    1.10,
-    S.z + 3.10
-  );
+    ctx.boxCol(
+      S.x + o.x - 0.90,
+      S.z + o.z - 0.45,
+      S.x + o.x + 0.90,
+      S.z + o.z + 0.45
+    );
+  }
 
-  debugLabel(
-    ctx,
-    'WEAPONS',
-    S.x + 4.80,
-    1.10,
-    S.z + 3.10
-  );
 
-  debugLabel(
-    ctx,
-    'CELL 1',
-    S.x - 3.35,
-    1.10,
-    S.z + 7.10
-  );
+  // ========================================================
+  // EVIDENCE COLLIDERS
+  // ========================================================
 
-  debugLabel(
-    ctx,
-    'CELL 2',
-    S.x + 3.35,
-    1.10,
-    S.z + 7.10
-  );
+  for (const key of ['evidence1', 'evidence2']) {
+
+    const o = S.objects[key];
+
+    ctx.boxCol(
+      S.x + o.x - 0.40,
+      S.z + o.z - 0.32,
+      S.x + o.x + 0.40,
+      S.z + o.z + 0.32
+    );
+  }
+
+
+  // ========================================================
+  // WEAPON RACK COLLIDER
+  // ========================================================
+
+  {
+    const o = S.objects.weaponRack;
+
+    ctx.boxCol(
+      S.x + o.x - 0.30,
+      S.z + o.z - 0.15,
+      S.x + o.x + 0.30,
+      S.z + o.z + 0.15
+    );
+  }
 }
