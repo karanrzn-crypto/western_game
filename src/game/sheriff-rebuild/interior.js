@@ -493,7 +493,7 @@ export function buildSheriffInterior(t) {
       3.80,
       1.80,
       2.60,
-      M.debug.cell
+      M.oak
     );
 
     label(
@@ -530,7 +530,7 @@ export function buildSheriffInterior(t) {
       1.25,
       1.80,
       0.10,
-      M.debug.door
+      M.iron
     );
 
     label(
@@ -604,7 +604,7 @@ export function buildSheriffInterior(t) {
       3.80,
       1.80,
       2.60,
-      M.debug.cell
+      M.oak
     );
 
     label(
@@ -641,7 +641,7 @@ export function buildSheriffInterior(t) {
       1.25,
       1.80,
       0.10,
-      M.debug.door
+      M.iron
     );
 
     label(

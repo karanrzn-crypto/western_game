@@ -169,7 +169,7 @@ export function jailCell(
     w,
     1.80,
     d,
-    M.debug.cell
+    M.oak
   );
 }
 
@@ -189,7 +189,7 @@ export function jailDoor(
     w,
     1.80,
     0.10,
-    M.debug.door
+    M.iron
   );
 }
 
