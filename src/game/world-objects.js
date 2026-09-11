@@ -6,7 +6,7 @@ import {createDrawContext} from './draw-context.js';
 import {nearestDoor as _nearestDoor,isInside as _isInside,playerInDoorway as _playerInDoorway,updateDoors as _updateDoors,drawDoor as _drawDoor} from './doors.js';
 import {generateTown as _generateTown,drawChurch as _drawChurch,drawStable as _drawStable,bldWithDoor as _bldWithDoor,drawProps as _drawProps} from './town-buildings.js';
 import {generateBank as _generateBank,drawBank as _drawBank} from './bank.js';
-import {drawSheriffExterior as _drawSheriffExteriorNew, generateSheriffColliders as _generateSheriffCollidersNew} from './sheriff-rebuild/building.js';
+import {drawSheriffExterior as _drawSheriffExteriorNew, generateSheriffColliders as _generateSheriffCollidersNew, sheriffPlan as _sheriffPlan} from './sheriff-rebuild/building.js';
 import {buildSheriffInterior as _buildSheriffInterior} from './sheriff-rebuild/interior.js';
 import {generateSaloon as _generateSaloon,drawSaloon as _drawSaloon,drawSaloonBuilding as _drawSaloonBuilding,buildSaloonInterior as _buildSaloonInterior} from './bar/index.js';
 
@@ -106,17 +106,16 @@ export class WorldObjects{
     const B=BANK,x0=B.x-B.w/2,x1=B.x+B.w/2,z0=B.z-B.d/2,z1=B.z+B.d/2;
     if(player.pos.x>x0&&player.pos.x<x1&&player.pos.z>z0&&player.pos.z<z1)return 'bank';
 
-    // ---- SHERIFF v54: rectangular building (sheriff-rebuild) ----
-    const sx0=4-6, sx1=4+6;       // w=12
-    const sz0=-10-7, sz1=-10+7;   // d=14
-    if(player.pos.x>sx0 && player.pos.x<sx1 && player.pos.z>sz0 && player.pos.z<sz1) return 'sheriff';
+    // ---- SHERIFF v54: use sheriffPlan interiorBounds ----
+    const SP=_sheriffPlan();
+    const ib=SP.interiorBounds;
+    if(player.pos.x>ib.x0 && player.pos.x<ib.x1 && player.pos.z>ib.z0 && player.pos.z<ib.z1) return 'sheriff';
     return null;
   }
-  // v54: simple rectangular sheriff interior test
   _sheriffInside(px,pz){
-    const sx0=4-6, sx1=4+6;
-    const sz0=-10-7, sz1=-10+7;
-    if(px>sx0 && px<sx1 && pz>sz0 && pz<sz1) return 'sheriff';
+    const SP=_sheriffPlan();
+    const ib=SP.interiorBounds;
+    if(px>ib.x0 && px<ib.x1 && pz>ib.z0 && pz<ib.z1) return 'sheriff';
     return null;
   }
   // Returns the ceiling height (world Y) of the interior region that contains
@@ -126,7 +125,8 @@ export class WorldObjects{
   interiorCeilingY(x,z,key){
     const gy=this.g(x,z);
     if(key==='sheriff'){
-      return gy+4.8-.15;  // SHERIFF_NEW.h = 4.8
+      const SP=_sheriffPlan();
+      return SP.interiorBounds.y1-.15;
     }
     if(key==='bank'){
       return gy+BANK.h-.15;

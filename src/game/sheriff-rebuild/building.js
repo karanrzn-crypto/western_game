@@ -62,6 +62,16 @@ export function sheriffPlan() {
     cz: b.z,
 
     WT: b.wallT,
+
+    // v54: interior bounds for camera clamp + player-inside test
+    interiorBounds: {
+      x0: ox0 + b.wallT,
+      x1: ox1 - b.wallT,
+      z0: oz0 + b.wallT,
+      z1: oz1 - b.wallT,
+      y0: gy,
+      y1: gy + b.h,
+    },
   };
 }
 

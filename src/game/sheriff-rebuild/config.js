@@ -179,24 +179,14 @@ export const SHERIFF_NEW = {
 
 
 export const SH_MATERIALS = {
-
   oakDark:  [0.32, 0.22, 0.16],
   oak:      [0.46, 0.33, 0.24],
   oakLight: [0.62, 0.48, 0.34],
-
+  pine:     [0.55, 0.42, 0.28],
   brick:    [0.54, 0.38, 0.30],
   plaster:  [0.72, 0.68, 0.64],
-
   iron:     [0.21, 0.20, 0.22],
   brass:    [0.66, 0.52, 0.30],
-
   leather:  [0.33, 0.19, 0.15],
   paper:    [0.86, 0.82, 0.70],
-
-  debug: {
-    building: [0.40, 0.40, 0.40],
-    furniture: [0.60, 0.42, 0.20],
-    cell: [0.50, 0.25, 0.25],
-    door: [0.25, 0.40, 0.60],
-  },
 };
