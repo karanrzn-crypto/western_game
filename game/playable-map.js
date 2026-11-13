@@ -2713,9 +2713,9 @@ var Box3 = class {
   clone() {
     return new this.constructor().copy(this);
   }
-  copy(box4) {
-    this.min.copy(box4.min);
-    this.max.copy(box4.max);
+  copy(box5) {
+    this.min.copy(box5.min);
+    this.max.copy(box5.max);
     return this;
   }
   makeEmpty() {
@@ -2787,8 +2787,8 @@ var Box3 = class {
   containsPoint(point) {
     return point.x < this.min.x || point.x > this.max.x || point.y < this.min.y || point.y > this.max.y || point.z < this.min.z || point.z > this.max.z ? false : true;
   }
-  containsBox(box4) {
-    return this.min.x <= box4.min.x && box4.max.x <= this.max.x && this.min.y <= box4.min.y && box4.max.y <= this.max.y && this.min.z <= box4.min.z && box4.max.z <= this.max.z;
+  containsBox(box5) {
+    return this.min.x <= box5.min.x && box5.max.x <= this.max.x && this.min.y <= box5.min.y && box5.max.y <= this.max.y && this.min.z <= box5.min.z && box5.max.z <= this.max.z;
   }
   getParameter(point, target) {
     return target.set(
@@ -2797,8 +2797,8 @@ var Box3 = class {
       (point.z - this.min.z) / (this.max.z - this.min.z)
     );
   }
-  intersectsBox(box4) {
-    return box4.max.x < this.min.x || box4.min.x > this.max.x || box4.max.y < this.min.y || box4.min.y > this.max.y || box4.max.z < this.min.z || box4.min.z > this.max.z ? false : true;
+  intersectsBox(box5) {
+    return box5.max.x < this.min.x || box5.min.x > this.max.x || box5.max.y < this.min.y || box5.min.y > this.max.y || box5.max.z < this.min.z || box5.min.z > this.max.z ? false : true;
   }
   intersectsSphere(sphere) {
     this.clampPoint(sphere.center, _vector$b);
@@ -2896,16 +2896,16 @@ var Box3 = class {
     }
     return target;
   }
-  intersect(box4) {
-    this.min.max(box4.min);
-    this.max.min(box4.max);
+  intersect(box5) {
+    this.min.max(box5.min);
+    this.max.min(box5.max);
     if (this.isEmpty())
       this.makeEmpty();
     return this;
   }
-  union(box4) {
-    this.min.min(box4.min);
-    this.max.max(box4.max);
+  union(box5) {
+    this.min.min(box5.min);
+    this.max.max(box5.max);
     return this;
   }
   applyMatrix4(matrix) {
@@ -2927,8 +2927,8 @@ var Box3 = class {
     this.max.add(offset);
     return this;
   }
-  equals(box4) {
-    return box4.min.equals(this.min) && box4.max.equals(this.max);
+  equals(box5) {
+    return box5.min.equals(this.min) && box5.max.equals(this.max);
   }
 };
 var _points = [
@@ -3017,8 +3017,8 @@ var Sphere = class {
     const radiusSum = this.radius + sphere.radius;
     return sphere.center.distanceToSquared(this.center) <= radiusSum * radiusSum;
   }
-  intersectsBox(box4) {
-    return box4.intersectsSphere(this);
+  intersectsBox(box5) {
+    return box5.intersectsSphere(this);
   }
   intersectsPlane(plane2) {
     return Math.abs(plane2.distanceToPoint(this.center)) <= this.radius;
@@ -3250,23 +3250,23 @@ var Ray = class {
     }
     return false;
   }
-  intersectBox(box4, target) {
+  intersectBox(box5, target) {
     let tmin, tmax, tymin, tymax, tzmin, tzmax;
     const invdirx = 1 / this.direction.x, invdiry = 1 / this.direction.y, invdirz = 1 / this.direction.z;
     const origin = this.origin;
     if (invdirx >= 0) {
-      tmin = (box4.min.x - origin.x) * invdirx;
-      tmax = (box4.max.x - origin.x) * invdirx;
+      tmin = (box5.min.x - origin.x) * invdirx;
+      tmax = (box5.max.x - origin.x) * invdirx;
     } else {
-      tmin = (box4.max.x - origin.x) * invdirx;
-      tmax = (box4.min.x - origin.x) * invdirx;
+      tmin = (box5.max.x - origin.x) * invdirx;
+      tmax = (box5.min.x - origin.x) * invdirx;
     }
     if (invdiry >= 0) {
-      tymin = (box4.min.y - origin.y) * invdiry;
-      tymax = (box4.max.y - origin.y) * invdiry;
+      tymin = (box5.min.y - origin.y) * invdiry;
+      tymax = (box5.max.y - origin.y) * invdiry;
     } else {
-      tymin = (box4.max.y - origin.y) * invdiry;
-      tymax = (box4.min.y - origin.y) * invdiry;
+      tymin = (box5.max.y - origin.y) * invdiry;
+      tymax = (box5.min.y - origin.y) * invdiry;
     }
     if (tmin > tymax || tymin > tmax)
       return null;
@@ -3275,11 +3275,11 @@ var Ray = class {
     if (tymax < tmax || isNaN(tmax))
       tmax = tymax;
     if (invdirz >= 0) {
-      tzmin = (box4.min.z - origin.z) * invdirz;
-      tzmax = (box4.max.z - origin.z) * invdirz;
+      tzmin = (box5.min.z - origin.z) * invdirz;
+      tzmax = (box5.max.z - origin.z) * invdirz;
     } else {
-      tzmin = (box4.max.z - origin.z) * invdirz;
-      tzmax = (box4.min.z - origin.z) * invdirz;
+      tzmin = (box5.max.z - origin.z) * invdirz;
+      tzmax = (box5.min.z - origin.z) * invdirz;
     }
     if (tmin > tzmax || tzmin > tmax)
       return null;
@@ -3291,8 +3291,8 @@ var Ray = class {
       return null;
     return this.at(tmin >= 0 ? tmin : tmax, target);
   }
-  intersectsBox(box4) {
-    return this.intersectBox(box4, _vector$a) !== null;
+  intersectsBox(box5) {
+    return this.intersectBox(box5, _vector$a) !== null;
   }
   intersectTriangle(a, b, c, backfaceCulling, target) {
     _edge1.subVectors(b, a);
@@ -5016,8 +5016,8 @@ var Triangle = class _Triangle {
   isFrontFacing(direction) {
     return _Triangle.isFrontFacing(this.a, this.b, this.c, direction);
   }
-  intersectsBox(box4) {
-    return box4.intersectsTriangle(this);
+  intersectsBox(box5) {
+    return box5.intersectsTriangle(this);
   }
   closestPointToPoint(p, target) {
     const a = this.a, b = this.b, c = this.c;
@@ -7824,8 +7824,8 @@ var Plane = class {
     const endSign = this.distanceToPoint(line.end);
     return startSign < 0 && endSign > 0 || endSign < 0 && startSign > 0;
   }
-  intersectsBox(box4) {
-    return box4.intersectsPlane(this);
+  intersectsBox(box5) {
+    return box5.intersectsPlane(this);
   }
   intersectsSphere(sphere) {
     return sphere.intersectsPlane(this);
@@ -7926,13 +7926,13 @@ var Frustum = class {
     }
     return true;
   }
-  intersectsBox(box4) {
+  intersectsBox(box5) {
     const planes = this.planes;
     for (let i = 0; i < 6; i++) {
       const plane2 = planes[i];
-      _vector$7.x = plane2.normal.x > 0 ? box4.max.x : box4.min.x;
-      _vector$7.y = plane2.normal.y > 0 ? box4.max.y : box4.min.y;
-      _vector$7.z = plane2.normal.z > 0 ? box4.max.z : box4.min.z;
+      _vector$7.x = plane2.normal.x > 0 ? box5.max.x : box5.min.x;
+      _vector$7.y = plane2.normal.y > 0 ? box5.max.y : box5.min.y;
+      _vector$7.z = plane2.normal.z > 0 ? box5.max.z : box5.min.z;
       if (plane2.distanceToPoint(_vector$7) < 0) {
         return false;
       }
@@ -18416,6 +18416,136 @@ var Scene = class extends Object3D {
     return data;
   }
 };
+var InstancedBufferAttribute = class extends BufferAttribute {
+  constructor(array, itemSize, normalized, meshPerAttribute = 1) {
+    super(array, itemSize, normalized);
+    this.isInstancedBufferAttribute = true;
+    this.meshPerAttribute = meshPerAttribute;
+  }
+  copy(source) {
+    super.copy(source);
+    this.meshPerAttribute = source.meshPerAttribute;
+    return this;
+  }
+  toJSON() {
+    const data = super.toJSON();
+    data.meshPerAttribute = this.meshPerAttribute;
+    data.isInstancedBufferAttribute = true;
+    return data;
+  }
+};
+var _instanceLocalMatrix = /* @__PURE__ */ new Matrix4();
+var _instanceWorldMatrix = /* @__PURE__ */ new Matrix4();
+var _instanceIntersects = [];
+var _box3 = /* @__PURE__ */ new Box3();
+var _identity = /* @__PURE__ */ new Matrix4();
+var _mesh$1 = /* @__PURE__ */ new Mesh();
+var _sphere$3 = /* @__PURE__ */ new Sphere();
+var InstancedMesh = class extends Mesh {
+  constructor(geometry, material, count) {
+    super(geometry, material);
+    this.isInstancedMesh = true;
+    this.instanceMatrix = new InstancedBufferAttribute(new Float32Array(count * 16), 16);
+    this.instanceColor = null;
+    this.count = count;
+    this.boundingBox = null;
+    this.boundingSphere = null;
+    for (let i = 0; i < count; i++) {
+      this.setMatrixAt(i, _identity);
+    }
+  }
+  computeBoundingBox() {
+    const geometry = this.geometry;
+    const count = this.count;
+    if (this.boundingBox === null) {
+      this.boundingBox = new Box3();
+    }
+    if (geometry.boundingBox === null) {
+      geometry.computeBoundingBox();
+    }
+    this.boundingBox.makeEmpty();
+    for (let i = 0; i < count; i++) {
+      this.getMatrixAt(i, _instanceLocalMatrix);
+      _box3.copy(geometry.boundingBox).applyMatrix4(_instanceLocalMatrix);
+      this.boundingBox.union(_box3);
+    }
+  }
+  computeBoundingSphere() {
+    const geometry = this.geometry;
+    const count = this.count;
+    if (this.boundingSphere === null) {
+      this.boundingSphere = new Sphere();
+    }
+    if (geometry.boundingSphere === null) {
+      geometry.computeBoundingSphere();
+    }
+    this.boundingSphere.makeEmpty();
+    for (let i = 0; i < count; i++) {
+      this.getMatrixAt(i, _instanceLocalMatrix);
+      _sphere$3.copy(geometry.boundingSphere).applyMatrix4(_instanceLocalMatrix);
+      this.boundingSphere.union(_sphere$3);
+    }
+  }
+  copy(source, recursive) {
+    super.copy(source, recursive);
+    this.instanceMatrix.copy(source.instanceMatrix);
+    if (source.instanceColor !== null)
+      this.instanceColor = source.instanceColor.clone();
+    this.count = source.count;
+    if (source.boundingBox !== null)
+      this.boundingBox = source.boundingBox.clone();
+    if (source.boundingSphere !== null)
+      this.boundingSphere = source.boundingSphere.clone();
+    return this;
+  }
+  getColorAt(index, color) {
+    color.fromArray(this.instanceColor.array, index * 3);
+  }
+  getMatrixAt(index, matrix) {
+    matrix.fromArray(this.instanceMatrix.array, index * 16);
+  }
+  raycast(raycaster, intersects2) {
+    const matrixWorld = this.matrixWorld;
+    const raycastTimes = this.count;
+    _mesh$1.geometry = this.geometry;
+    _mesh$1.material = this.material;
+    if (_mesh$1.material === void 0)
+      return;
+    if (this.boundingSphere === null)
+      this.computeBoundingSphere();
+    _sphere$3.copy(this.boundingSphere);
+    _sphere$3.applyMatrix4(matrixWorld);
+    if (raycaster.ray.intersectsSphere(_sphere$3) === false)
+      return;
+    for (let instanceId = 0; instanceId < raycastTimes; instanceId++) {
+      this.getMatrixAt(instanceId, _instanceLocalMatrix);
+      _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix);
+      _mesh$1.matrixWorld = _instanceWorldMatrix;
+      _mesh$1.raycast(raycaster, _instanceIntersects);
+      for (let i = 0, l = _instanceIntersects.length; i < l; i++) {
+        const intersect = _instanceIntersects[i];
+        intersect.instanceId = instanceId;
+        intersect.object = this;
+        intersects2.push(intersect);
+      }
+      _instanceIntersects.length = 0;
+    }
+  }
+  setColorAt(index, color) {
+    if (this.instanceColor === null) {
+      this.instanceColor = new InstancedBufferAttribute(new Float32Array(this.instanceMatrix.count * 3), 3);
+    }
+    color.toArray(this.instanceColor.array, index * 3);
+  }
+  setMatrixAt(index, matrix) {
+    matrix.toArray(this.instanceMatrix.array, index * 16);
+  }
+  updateMorphTargets() {
+  }
+  dispose() {
+    this.dispatchEvent({ type: "dispose" });
+  }
+};
 var LineBasicMaterial = class extends Material {
   constructor(parameters) {
     super();
@@ -22809,23 +22939,23 @@ var GridHelper = class extends LineSegments {
   }
 };
 var Box3Helper = class extends LineSegments {
-  constructor(box4, color = 16776960) {
+  constructor(box5, color = 16776960) {
     const indices = new Uint16Array([0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7]);
     const positions = [1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1];
     const geometry = new BufferGeometry();
     geometry.setIndex(new BufferAttribute(indices, 1));
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     super(geometry, new LineBasicMaterial({ color, toneMapped: false }));
-    this.box = box4;
+    this.box = box5;
     this.type = "Box3Helper";
     this.geometry.computeBoundingSphere();
   }
   updateMatrixWorld(force) {
-    const box4 = this.box;
-    if (box4.isEmpty())
+    const box5 = this.box;
+    if (box5.isEmpty())
       return;
-    box4.getCenter(this.position);
-    box4.getSize(this.scale);
+    box5.getCenter(this.position);
+    box5.getSize(this.scale);
     this.scale.multiplyScalar(0.5);
     super.updateMatrixWorld(force);
   }
@@ -23114,7 +23244,7 @@ function configure(patch) {
   }
   currentConfig = next;
 }
-var WORLD_GROUND_SIZE = 120;
+var WORLD_GROUND_SIZE = 280;
 var WORLD_HALF_SIZE = WORLD_GROUND_SIZE / 2;
 var WORLD_WALL_INSET = 0.5;
 var WORLD_PLAYABLE_HALF = WORLD_HALF_SIZE - WORLD_WALL_INSET - 1;
@@ -24527,9 +24657,9 @@ function buildSaloonMapObjects(originX, originZ) {
     rotation: identity(),
     scale: unitScale()
   });
-  const defs2 = [];
+  const defs3 = [];
   const push = (uuid, assetType, name, transform, metadata) => {
-    defs2.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
+    defs3.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
   };
   push(SALOON_OBJECT_IDS.building, "saloon-building", "\u0633\u0627\u0644\u0648\u0646 \u2014 \u0628\u062F\u0646\u0647 \u0633\u0627\u062E\u062A\u0645\u0627\u0646", at(0, 0, 0), {
     collider: false,
@@ -24707,7 +24837,7 @@ function buildSaloonMapObjects(originX, originZ) {
     rotation: { x: deg, y: 90, z: deg },
     scale: unitScale()
   }, { collider: false });
-  return defs2;
+  return defs3;
 }
 
 // src/assets/saloon/SaloonMaterials.ts
@@ -24850,13 +24980,13 @@ function mesh(parent, geometry, material, x, y, z, name) {
   parent.add(m);
   return m;
 }
-function buildSaloonBottle(kind, M3, cache, opts = {}) {
+function buildSaloonBottle(kind, M5, cache, opts = {}) {
   const g = new Group();
   g.name = `saloon-bottle-${kind}`;
   const spec = {
-    whiskey: { bT: 0.042, bB: 0.046, bH: 0.19, sT: 0.016, sH: 0.055, nT: 0.0145, nH: 0.07, lipR: 0.018, lipH: 0.014, corkR: 0.0125, corkH: 0.026, seg: 10, mat: M3.bottleBrown },
-    tall: { bT: 0.03, bB: 0.034, bH: 0.26, sT: 0.012, sH: 0.05, nT: 0.011, nH: 0.06, lipR: 0.0135, lipH: 0.012, corkR: 9e-3, corkH: 0.022, seg: 10, mat: M3.bottleGreen },
-    short: { bT: 0.05, bB: 0.054, bH: 0.13, sT: 0.02, sH: 0.045, nT: 0.016, nH: 0.035, lipR: 0.02, lipH: 0.012, corkR: 0.0135, corkH: 0.02, seg: 8, mat: M3.bottleOlive }
+    whiskey: { bT: 0.042, bB: 0.046, bH: 0.19, sT: 0.016, sH: 0.055, nT: 0.0145, nH: 0.07, lipR: 0.018, lipH: 0.014, corkR: 0.0125, corkH: 0.026, seg: 10, mat: M5.bottleBrown },
+    tall: { bT: 0.03, bB: 0.034, bH: 0.26, sT: 0.012, sH: 0.05, nT: 0.011, nH: 0.06, lipR: 0.0135, lipH: 0.012, corkR: 9e-3, corkH: 0.022, seg: 10, mat: M5.bottleGreen },
+    short: { bT: 0.05, bB: 0.054, bH: 0.13, sT: 0.02, sH: 0.045, nT: 0.016, nH: 0.035, lipR: 0.02, lipH: 0.012, corkR: 0.0135, corkH: 0.02, seg: 8, mat: M5.bottleOlive }
   }[kind];
   const k = kind;
   const E = 3e-3;
@@ -24871,7 +25001,7 @@ function buildSaloonBottle(kind, M3, cache, opts = {}) {
   mesh(g, geo(cache, `${k}.neck`, () => new CylinderGeometry(spec.nT, spec.sT, spec.nH, 8)), spec.mat, 0, shoulderTop - E + spec.nH / 2, 0, "bottle-neck");
   mesh(g, geo(cache, `${k}.lip`, () => new CylinderGeometry(spec.lipR, spec.lipR, spec.lipH, 8)), spec.mat, 0, neckTop - E + spec.lipH / 2, 0, "bottle-lip");
   const lipTop = neckTop - E + spec.lipH;
-  mesh(g, geo(cache, `${k}.cork`, () => new CylinderGeometry(spec.corkR, spec.corkR + 1e-3, spec.corkH, 8)), M3.cork, 0, lipTop - 5e-3 + spec.corkH / 2, 0, "bottle-cork");
+  mesh(g, geo(cache, `${k}.cork`, () => new CylinderGeometry(spec.corkR, spec.corkR + 1e-3, spec.corkH, 8)), M5.cork, 0, lipTop - 5e-3 + spec.corkH / 2, 0, "bottle-cork");
   if (opts.label) {
     const labelW = kind === "short" ? 0.05 : kind === "tall" ? 0.04 : 0.055;
     const bodyFront = kind === "short" ? 0.052 : kind === "tall" ? 0.032 : 0.044;
@@ -24879,7 +25009,7 @@ function buildSaloonBottle(kind, M3, cache, opts = {}) {
     mesh(
       g,
       geo(cache, `${k}.label`, () => new BoxGeometry(labelW, kind === "tall" ? 0.06 : 0.07, 0.016)),
-      M3.paper,
+      M5.paper,
       0,
       kind === "tall" ? 0.13 : 0.1,
       labelZ,
@@ -24889,7 +25019,7 @@ function buildSaloonBottle(kind, M3, cache, opts = {}) {
       mesh(
         g,
         geo(cache, `${k}.band`, () => new BoxGeometry(labelW + 4e-3, 0.018, 0.016)),
-        M3.ink,
+        M5.ink,
         0,
         kind === "tall" ? 0.085 : 0.055,
         labelZ,
@@ -24899,59 +25029,59 @@ function buildSaloonBottle(kind, M3, cache, opts = {}) {
   }
   return g;
 }
-function buildDecanter(M3, cache) {
+function buildDecanter(M5, cache) {
   const g = new Group();
   g.name = "saloon-decanter";
-  mesh(g, geo(cache, "dec.body", () => new CylinderGeometry(0.058, 0.062, 0.12, 12)), M3.glass, 0, 0.06, 0, "decanter-body");
-  mesh(g, geo(cache, "dec.liquid", () => new CylinderGeometry(0.05, 0.054, 0.08, 12)), M3.amber, 0, 0.044, 0, "decanter-liquid");
-  mesh(g, geo(cache, "dec.shoulder", () => new CylinderGeometry(0.02, 0.058, 0.05, 12)), M3.glass, 0, 0.142, 0, "decanter-shoulder");
-  mesh(g, geo(cache, "dec.neck", () => new CylinderGeometry(0.018, 0.02, 0.045, 10)), M3.glass, 0, 0.1865, 0, "decanter-neck");
-  mesh(g, geo(cache, "dec.stop", () => new CylinderGeometry(0.022, 0.017, 0.018, 10)), M3.glass, 0, 0.218, 0, "decanter-stopper");
-  mesh(g, geo(cache, "dec.knob", () => new SphereGeometry(0.015, 10, 8)), M3.glass, 0, 0.234, 0, "decanter-stopper-knob");
+  mesh(g, geo(cache, "dec.body", () => new CylinderGeometry(0.058, 0.062, 0.12, 12)), M5.glass, 0, 0.06, 0, "decanter-body");
+  mesh(g, geo(cache, "dec.liquid", () => new CylinderGeometry(0.05, 0.054, 0.08, 12)), M5.amber, 0, 0.044, 0, "decanter-liquid");
+  mesh(g, geo(cache, "dec.shoulder", () => new CylinderGeometry(0.02, 0.058, 0.05, 12)), M5.glass, 0, 0.142, 0, "decanter-shoulder");
+  mesh(g, geo(cache, "dec.neck", () => new CylinderGeometry(0.018, 0.02, 0.045, 10)), M5.glass, 0, 0.1865, 0, "decanter-neck");
+  mesh(g, geo(cache, "dec.stop", () => new CylinderGeometry(0.022, 0.017, 0.018, 10)), M5.glass, 0, 0.218, 0, "decanter-stopper");
+  mesh(g, geo(cache, "dec.knob", () => new SphereGeometry(0.015, 10, 8)), M5.glass, 0, 0.234, 0, "decanter-stopper-knob");
   return g;
 }
-function buildCarafe(M3, cache) {
+function buildCarafe(M5, cache) {
   const g = new Group();
   g.name = "saloon-carafe";
-  mesh(g, geo(cache, "car.body", () => new CylinderGeometry(0.048, 0.052, 0.13, 10)), M3.glass, 0, 0.065, 0, "carafe-body");
-  mesh(g, geo(cache, "car.liquid", () => new CylinderGeometry(0.04, 0.044, 0.06, 10)), M3.wine, 0, 0.034, 0, "carafe-liquid");
-  mesh(g, geo(cache, "car.lip", () => new CylinderGeometry(0.056, 0.048, 0.03, 10)), M3.glass, 0, 0.145, 0, "carafe-lip");
+  mesh(g, geo(cache, "car.body", () => new CylinderGeometry(0.048, 0.052, 0.13, 10)), M5.glass, 0, 0.065, 0, "carafe-body");
+  mesh(g, geo(cache, "car.liquid", () => new CylinderGeometry(0.04, 0.044, 0.06, 10)), M5.wine, 0, 0.034, 0, "carafe-liquid");
+  mesh(g, geo(cache, "car.lip", () => new CylinderGeometry(0.056, 0.048, 0.03, 10)), M5.glass, 0, 0.145, 0, "carafe-lip");
   return g;
 }
-function buildTumbler(M3, cache, opts = {}) {
+function buildTumbler(M5, cache, opts = {}) {
   const g = new Group();
   g.name = "saloon-tumbler";
-  mesh(g, geo(cache, "tum.shell", () => new CylinderGeometry(0.033, 0.028, 0.078, 10)), M3.glass, 0, 0.039, 0, "glass-shell");
-  mesh(g, geo(cache, "tum.base", () => new CylinderGeometry(0.024, 0.026, 0.016, 10)), M3.glassDark, 0, 9e-3, 0, "glass-base");
+  mesh(g, geo(cache, "tum.shell", () => new CylinderGeometry(0.033, 0.028, 0.078, 10)), M5.glass, 0, 0.039, 0, "glass-shell");
+  mesh(g, geo(cache, "tum.base", () => new CylinderGeometry(0.024, 0.026, 0.016, 10)), M5.glassDark, 0, 9e-3, 0, "glass-base");
   if (opts.whiskey) {
-    mesh(g, geo(cache, "tum.liquid", () => new CylinderGeometry(0.023, 0.026, 0.032, 10)), M3.amber, 0, 0.03, 0, "glass-liquid");
+    mesh(g, geo(cache, "tum.liquid", () => new CylinderGeometry(0.023, 0.026, 0.032, 10)), M5.amber, 0, 0.03, 0, "glass-liquid");
   }
   return g;
 }
-function buildTallGlass(M3, cache, opts = {}) {
+function buildTallGlass(M5, cache, opts = {}) {
   const g = new Group();
   g.name = "saloon-tall-glass";
-  mesh(g, geo(cache, "tall.shell", () => new CylinderGeometry(0.026, 0.023, 0.115, 10)), M3.glass, 0, 0.0575, 0, "glass-shell");
-  mesh(g, geo(cache, "tall.base", () => new CylinderGeometry(0.019, 0.021, 0.012, 10)), M3.glassDark, 0, 7e-3, 0, "glass-base");
+  mesh(g, geo(cache, "tall.shell", () => new CylinderGeometry(0.026, 0.023, 0.115, 10)), M5.glass, 0, 0.0575, 0, "glass-shell");
+  mesh(g, geo(cache, "tall.base", () => new CylinderGeometry(0.019, 0.021, 0.012, 10)), M5.glassDark, 0, 7e-3, 0, "glass-base");
   if (opts.liquid) {
-    mesh(g, geo(cache, "tall.liquid", () => new CylinderGeometry(0.019, 0.021, 0.055, 10)), opts.liquid === "amber" ? M3.amber : M3.wine, 0, 0.0315, 0, "glass-liquid");
+    mesh(g, geo(cache, "tall.liquid", () => new CylinderGeometry(0.019, 0.021, 0.055, 10)), opts.liquid === "amber" ? M5.amber : M5.wine, 0, 0.0315, 0, "glass-liquid");
   }
   return g;
 }
-function buildWineGlass(M3, cache, fill = "half") {
+function buildWineGlass(M5, cache, fill = "half") {
   const g = new Group();
   g.name = "saloon-wine-glass";
   const R = 0.048;
   const rimTheta = 0.42 * Math.PI;
   const botTheta = 0.92 * Math.PI;
-  mesh(g, geo(cache, "wg.foot", () => new CylinderGeometry(0.032, 0.038, 8e-3, 12)), M3.glass, 0, 4e-3, 0, "glass-foot");
-  mesh(g, geo(cache, "wg.stem", () => new CylinderGeometry(5e-3, 7e-3, 0.058, 8)), M3.glass, 0, 0.035, 0, "glass-stem");
+  mesh(g, geo(cache, "wg.foot", () => new CylinderGeometry(0.032, 0.038, 8e-3, 12)), M5.glass, 0, 4e-3, 0, "glass-foot");
+  mesh(g, geo(cache, "wg.stem", () => new CylinderGeometry(5e-3, 7e-3, 0.058, 8)), M5.glass, 0, 0.035, 0, "glass-stem");
   const bowlBottom = 0.062;
   const bowlCy = bowlBottom + R * 0.9686;
   mesh(
     g,
     geo(cache, "wg.bowl", () => new SphereGeometry(R, 12, 10, 0, Math.PI * 2, rimTheta, botTheta - rimTheta)),
-    M3.glass,
+    M5.glass,
     0,
     bowlCy,
     0,
@@ -24963,7 +25093,7 @@ function buildWineGlass(M3, cache, fill = "half") {
     mesh(
       g,
       geo(cache, `wg.liquid.${fill}`, () => new CylinderGeometry(rTop, 0.026, h, 12)),
-      M3.wine,
+      M5.wine,
       0,
       bowlBottom + 0.014 + h / 2,
       0,
@@ -24972,15 +25102,15 @@ function buildWineGlass(M3, cache, fill = "half") {
   }
   return g;
 }
-function buildShotGlass(M3, cache) {
+function buildShotGlass(M5, cache) {
   const g = new Group();
   g.name = "saloon-shot-glass";
-  mesh(g, geo(cache, "shot.shell", () => new CylinderGeometry(0.022, 0.017, 0.048, 8)), M3.glass, 0, 0.024, 0, "glass-shell");
-  mesh(g, geo(cache, "shot.base", () => new CylinderGeometry(0.015, 0.017, 0.014, 8)), M3.glassDark, 0, 8e-3, 0, "glass-base");
+  mesh(g, geo(cache, "shot.shell", () => new CylinderGeometry(0.022, 0.017, 0.048, 8)), M5.glass, 0, 0.024, 0, "glass-shell");
+  mesh(g, geo(cache, "shot.base", () => new CylinderGeometry(0.015, 0.017, 0.014, 8)), M5.glassDark, 0, 8e-3, 0, "glass-base");
   return g;
 }
-function buildInvertedTumbler(M3, cache) {
-  const inner = buildTumbler(M3, cache);
+function buildInvertedTumbler(M5, cache) {
+  const inner = buildTumbler(M5, cache);
   inner.rotation.x = Math.PI;
   inner.position.y = 0.078;
   const g = new Group();
@@ -25046,95 +25176,95 @@ function plane(parent, m, w, h, x, y, z, name) {
   return mesh5;
 }
 function buildBarCounter(opts = {}) {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-bar-counter";
   const length = opts.barCounterLength ?? 4;
   const height = 1.1;
   const depth = 0.7;
-  box(g, M3.woodMed, length, height, depth, 0, height / 2, 0, "bar-body");
-  box(g, M3.woodLight, length + 0.1, 0.06, depth + 0.12, 0, height + 0.03, 0, "bar-countertop");
+  box(g, M5.woodMed, length, height, depth, 0, height / 2, 0, "bar-body");
+  box(g, M5.woodLight, length + 0.1, 0.06, depth + 0.12, 0, height + 0.03, 0, "bar-countertop");
   const topHalfDepth = (depth + 0.12) / 2;
-  box(g, M3.woodDark, length + 0.1, 0.12, 0.06, 0, height + 0.12, -topHalfDepth + 0.03, "bar-back-lip");
+  box(g, M5.woodDark, length + 0.1, 0.12, 0.06, 0, height + 0.12, -topHalfDepth + 0.03, "bar-back-lip");
   const railZ = depth / 2 + 0.03;
-  cyl(g, M3.brass, 0.02, 0.02, length - 0.2, 10, 0, 0.25, railZ, "bar-foot-rail", { rz: Math.PI / 2 });
+  cyl(g, M5.brass, 0.02, 0.02, length - 0.2, 10, 0, 0.25, railZ, "bar-foot-rail", { rz: Math.PI / 2 });
   for (const bx of [-length / 3, 0, length / 3]) {
-    box(g, M3.iron, 0.03, 0.03, 0.08, bx, 0.25, depth / 2 + 5e-3, "bar-rail-bracket");
+    box(g, M5.iron, 0.03, 0.03, 0.08, bx, 0.25, depth / 2 + 5e-3, "bar-rail-bracket");
   }
   const slatCount = Math.max(3, Math.round(length / 0.5));
   for (let i = 0; i < slatCount; i += 1) {
     const t = (i + 0.5) / slatCount - 0.5;
-    box(g, M3.woodDark, 0.04, height * 0.7, 0.02, t * (length - 0.1), height * 0.42, depth / 2 + 0.01, `bar-slat-${i}`);
+    box(g, M5.woodDark, 0.04, height * 0.7, 0.02, t * (length - 0.1), height * 0.42, depth / 2 + 0.01, `bar-slat-${i}`);
   }
   const topY = height + 0.06;
   const G = createGlasswareGeoCache();
-  const register = buildCashRegister(M3);
+  const register = buildCashRegister(M5);
   register.position.set(-length / 2 + 0.4, topY, -0.05);
   g.add(register);
   const tray = new Group();
   tray.name = "bar-bottle-tray";
-  box(tray, M3.woodDark, 0.36, 0.018, 0.18, 0, 9e-3, 0, "tray-board");
-  box(tray, M3.woodDark, 0.36, 0.025, 0.012, 0, 0.0305, 0.084, "tray-rail-front");
-  box(tray, M3.woodDark, 0.36, 0.025, 0.012, 0, 0.0305, -0.084, "tray-rail-back");
+  box(tray, M5.woodDark, 0.36, 0.018, 0.18, 0, 9e-3, 0, "tray-board");
+  box(tray, M5.woodDark, 0.36, 0.025, 0.012, 0, 0.0305, 0.084, "tray-rail-front");
+  box(tray, M5.woodDark, 0.36, 0.025, 0.012, 0, 0.0305, -0.084, "tray-rail-back");
   tray.position.set(-0.7, topY, -0.22);
   g.add(tray);
-  const cb1 = buildSaloonBottle("whiskey", M3, G, { label: "cream" });
+  const cb1 = buildSaloonBottle("whiskey", M5, G, { label: "cream" });
   cb1.position.set(-0.09, 0, 0);
-  const cb2 = buildSaloonBottle("whiskey", M3, G, { label: "band" });
+  const cb2 = buildSaloonBottle("whiskey", M5, G, { label: "band" });
   cb2.position.set(0.09, 0, 0);
   tray.add(cb1, cb2);
-  const cd = buildDecanter(M3, G);
+  const cd = buildDecanter(M5, G);
   cd.position.set(-0.32, topY, -0.18);
   g.add(cd);
-  const cg1 = buildTallGlass(M3, G);
+  const cg1 = buildTallGlass(M5, G);
   cg1.position.set(-0.45, topY, 0.05);
   g.add(cg1);
-  const cg2 = buildTumbler(M3, G, { whiskey: true });
+  const cg2 = buildTumbler(M5, G, { whiskey: true });
   cg2.position.set(-0.18, topY, 0.08);
   g.add(cg2);
-  box(g, M3.paper, 0.22, 0.03, 0.16, 0.5, topY + 0.015, 0.1, "bar-towel", { cast: false });
-  cyl(g, M3.woodDark, 0.045, 0.045, 6e-3, 10, 0.95, topY + 3e-3, 0.02, "bar-coaster-1", { cast: false });
-  cyl(g, M3.paper, 0.045, 0.045, 6e-3, 10, 1.05, topY + 3e-3, 0.1, "bar-coaster-2", { cast: false });
+  box(g, M5.paper, 0.22, 0.03, 0.16, 0.5, topY + 0.015, 0.1, "bar-towel", { cast: false });
+  cyl(g, M5.woodDark, 0.045, 0.045, 6e-3, 10, 0.95, topY + 3e-3, 0.02, "bar-coaster-1", { cast: false });
+  cyl(g, M5.paper, 0.045, 0.045, 6e-3, 10, 1.05, topY + 3e-3, 0.1, "bar-coaster-2", { cast: false });
   for (const [i, [cx, cz]] of [[-0.05, 0.18], [0.06, 0.22], [0.13, 0.15]].entries()) {
-    cyl(g, M3.cork, 0.011, 0.011, 0.02, 6, cx, topY + 0.01, cz, `bar-cork-${i}`, { cast: false, rz: 0.4 * i });
+    cyl(g, M5.cork, 0.011, 0.011, 0.02, 6, cx, topY + 0.01, cz, `bar-cork-${i}`, { cast: false, rz: 0.4 * i });
   }
-  cyl(g, M3.iron, 0.05, 0.05, 0.07, 10, 1.45, topY + 0.035, -0.25, "bar-tin");
-  cyl(g, M3.brass, 0.028, 0.028, 8e-3, 10, 1.75, topY + 4e-3, -0.1, "bar-bell-base");
-  const bellDome = new Mesh(new SphereGeometry(0.026, 10, 8), M3.brass);
+  cyl(g, M5.iron, 0.05, 0.05, 0.07, 10, 1.45, topY + 0.035, -0.25, "bar-tin");
+  cyl(g, M5.brass, 0.028, 0.028, 8e-3, 10, 1.75, topY + 4e-3, -0.1, "bar-bell-base");
+  const bellDome = new Mesh(new SphereGeometry(0.026, 10, 8), M5.brass);
   bellDome.name = "bar-bell-dome";
   bellDome.position.set(1.75, topY + 0.016, -0.1);
   bellDome.castShadow = false;
   g.add(bellDome);
-  const bellKnob = new Mesh(new SphereGeometry(6e-3, 6, 6), M3.brass);
+  const bellKnob = new Mesh(new SphereGeometry(6e-3, 6, 6), M5.brass);
   bellKnob.name = "bar-bell-knob";
   bellKnob.position.set(1.75, topY + 0.044, -0.1);
   bellKnob.castShadow = false;
   g.add(bellKnob);
   return g;
 }
-function buildCashRegister(M3) {
+function buildCashRegister(M5) {
   const g = new Group();
   g.name = "saloon-cash-register";
-  box(g, M3.iron, 0.3, 0.16, 0.24, 0, 0.08, 0, "register-body");
-  box(g, M3.iron, 0.3, 0.07, 0.12, 0, 0.195, -0.06, "register-top");
-  box(g, M3.brass, 0.24, 0.05, 0.03, 0, 0.055, 0.135, "register-drawer");
-  box(g, M3.paper, 0.24, 0.012, 0.07, 0, 0.166, 0.055, "register-keys");
-  cyl(g, M3.brass, 7e-3, 7e-3, 0.05, 8, 0.165, 0.19, 0.02, "register-crank", { rz: Math.PI / 2 });
-  cyl(g, M3.paper, 0.022, 0.022, 0.05, 8, 0, 0.255, -0.06, "register-roll", { cast: false });
+  box(g, M5.iron, 0.3, 0.16, 0.24, 0, 0.08, 0, "register-body");
+  box(g, M5.iron, 0.3, 0.07, 0.12, 0, 0.195, -0.06, "register-top");
+  box(g, M5.brass, 0.24, 0.05, 0.03, 0, 0.055, 0.135, "register-drawer");
+  box(g, M5.paper, 0.24, 0.012, 0.07, 0, 0.166, 0.055, "register-keys");
+  cyl(g, M5.brass, 7e-3, 7e-3, 0.05, 8, 0.165, 0.19, 0.02, "register-crank", { rz: Math.PI / 2 });
+  cyl(g, M5.paper, 0.022, 0.022, 0.05, 8, 0, 0.255, -0.06, "register-roll", { cast: false });
   return g;
 }
-function buildMantleClock(M3) {
+function buildMantleClock(M5) {
   const g = new Group();
   g.name = "saloon-mantle-clock";
-  box(g, M3.woodDark, 0.12, 0.03, 0.06, 0, 0.015, 0, "clock-base");
-  cyl(g, M3.paper, 0.06, 0.06, 0.025, 14, 0, 0.09, 0, "clock-face", { rx: Math.PI / 2 });
-  torus(g, M3.brass, 0.06, 8e-3, 16, 0, 0.09, 0.014, "clock-ring", { cast: false });
-  box(g, M3.ink, 6e-3, 0.03, 4e-3, 0, 0.098, 0.014, "clock-hand-hour", { cast: false });
-  box(g, M3.ink, 5e-3, 0.04, 4e-3, 8e-3, 0.105, 0.016, "clock-hand-minute", { cast: false, rz: 2.1 });
+  box(g, M5.woodDark, 0.12, 0.03, 0.06, 0, 0.015, 0, "clock-base");
+  cyl(g, M5.paper, 0.06, 0.06, 0.025, 14, 0, 0.09, 0, "clock-face", { rx: Math.PI / 2 });
+  torus(g, M5.brass, 0.06, 8e-3, 16, 0, 0.09, 0.014, "clock-ring", { cast: false });
+  box(g, M5.ink, 6e-3, 0.03, 4e-3, 0, 0.098, 0.014, "clock-hand-hour", { cast: false });
+  box(g, M5.ink, 5e-3, 0.04, 4e-3, 8e-3, 0.105, 0.016, "clock-hand-minute", { cast: false, rz: 2.1 });
   return g;
 }
 function buildBackBar(opts = {}) {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const G = createGlasswareGeoCache();
   const g = new Group();
   g.name = "saloon-back-bar";
@@ -25142,21 +25272,21 @@ function buildBackBar(opts = {}) {
   const depth = 0.42;
   const panelH = 2.6;
   const shelfTops = [1.44, 1.9, 2.34];
-  box(g, M3.woodDark, width, panelH, 0.04, 0, panelH / 2, -depth / 2 + 0.02, "backbar-back-panel");
-  box(g, M3.woodDark, width, 0.92, depth, 0, 0.46, 0, "backbar-base-cabinet");
+  box(g, M5.woodDark, width, panelH, 0.04, 0, panelH / 2, -depth / 2 + 0.02, "backbar-back-panel");
+  box(g, M5.woodDark, width, 0.92, depth, 0, 0.46, 0, "backbar-base-cabinet");
   const plankW = (width - 0.3) / 3;
   for (let i = 0; i < 3; i += 1) {
     const px2 = -width / 2 + 0.15 + plankW * (i + 0.5);
-    box(g, M3.woodMed, plankW - 0.02, 0.7, 0.02, px2, 0.41, depth / 2 + 0.01, `backbar-plank-${i}`);
-    cyl(g, M3.brass, 0.012, 0.012, 0.02, 8, px2, 0.72, depth / 2 + 0.03, `backbar-knob-${i}`, { rx: Math.PI / 2 });
+    box(g, M5.woodMed, plankW - 0.02, 0.7, 0.02, px2, 0.41, depth / 2 + 0.01, `backbar-plank-${i}`);
+    cyl(g, M5.brass, 0.012, 0.012, 0.02, 8, px2, 0.72, depth / 2 + 0.03, `backbar-knob-${i}`, { rx: Math.PI / 2 });
   }
-  box(g, M3.brass, width, 0.03, 0.02, 0, 0.875, depth / 2 + 0.01, "backbar-brass-band");
-  box(g, M3.woodLight, width + 0.1, 0.05, depth + 0.08, 0, 0.945, 0.02, "backbar-countertop");
+  box(g, M5.brass, width, 0.03, 0.02, 0, 0.875, depth / 2 + 0.01, "backbar-brass-band");
+  box(g, M5.woodLight, width + 0.1, 0.05, depth + 0.08, 0, 0.945, 0.02, "backbar-countertop");
   const counterY = 0.97;
   for (const side of [-1, 1]) {
     box(
       g,
-      M3.woodDark,
+      M5.woodDark,
       0.06,
       panelH - 0.97,
       depth,
@@ -25166,28 +25296,28 @@ function buildBackBar(opts = {}) {
       `backbar-side-panel-${side < 0 ? "l" : "r"}`
     );
   }
-  box(g, M3.mirror, 2.4, 1.05, 0.03, 0, 1.95, -depth / 2 + 0.055, "backbar-mirror", { cast: false });
+  box(g, M5.mirror, 2.4, 1.05, 0.03, 0, 1.95, -depth / 2 + 0.055, "backbar-mirror", { cast: false });
   const mz = -depth / 2 + 0.065;
-  box(g, M3.woodLight, 2.56, 0.05, 0.02, 0, 2.5, mz, "backbar-mirror-trim-top", { cast: false });
-  box(g, M3.woodLight, 2.56, 0.05, 0.02, 0, 1.4, mz, "backbar-mirror-trim-bottom", { cast: false });
-  box(g, M3.woodLight, 0.05, 1.05, 0.02, -1.225, 1.95, mz, "backbar-mirror-trim-left", { cast: false });
-  box(g, M3.woodLight, 0.05, 1.05, 0.02, 1.225, 1.95, mz, "backbar-mirror-trim-right", { cast: false });
+  box(g, M5.woodLight, 2.56, 0.05, 0.02, 0, 2.5, mz, "backbar-mirror-trim-top", { cast: false });
+  box(g, M5.woodLight, 2.56, 0.05, 0.02, 0, 1.4, mz, "backbar-mirror-trim-bottom", { cast: false });
+  box(g, M5.woodLight, 0.05, 1.05, 0.02, -1.225, 1.95, mz, "backbar-mirror-trim-left", { cast: false });
+  box(g, M5.woodLight, 0.05, 1.05, 0.02, 1.225, 1.95, mz, "backbar-mirror-trim-right", { cast: false });
   shelfTops.forEach((top, i) => {
-    box(g, M3.woodMed, width - 0.12, 0.035, 0.3, 0, top - 0.0175, 0.04, `backbar-shelf-${i}`);
-    box(g, M3.brass, width - 0.12, 0.025, 0.04, 0, top + 0.0125, 0.185, `backbar-shelf-strip-${i}`);
+    box(g, M5.woodMed, width - 0.12, 0.035, 0.3, 0, top - 0.0175, 0.04, `backbar-shelf-${i}`);
+    box(g, M5.brass, width - 0.12, 0.025, 0.04, 0, top + 0.0125, 0.185, `backbar-shelf-strip-${i}`);
   });
-  box(g, M3.woodDark, width + 0.12, 0.14, depth + 0.06, 0, panelH + 0.07, -0.01, "backbar-crown");
+  box(g, M5.woodDark, width + 0.12, 0.14, depth + 0.06, 0, panelH + 0.07, -0.01, "backbar-crown");
   for (const side of [-1, 1]) {
     const px2 = side * 1.5;
-    box(g, M3.paper, 0.28, 0.36, 0.015, px2, 1.63, -depth / 2 + 0.035, `backbar-placard-${side < 0 ? "l" : "r"}`, { cast: false });
-    box(g, M3.ink, 0.2, 0.02, 0.01, px2, 1.72, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-0`, { cast: false });
-    box(g, M3.ink, 0.16, 0.02, 0.01, px2, 1.63, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-1`, { cast: false });
-    box(g, M3.ink, 0.18, 0.02, 0.01, px2, 1.54, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-2`, { cast: false });
+    box(g, M5.paper, 0.28, 0.36, 0.015, px2, 1.63, -depth / 2 + 0.035, `backbar-placard-${side < 0 ? "l" : "r"}`, { cast: false });
+    box(g, M5.ink, 0.2, 0.02, 0.01, px2, 1.72, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-0`, { cast: false });
+    box(g, M5.ink, 0.16, 0.02, 0.01, px2, 1.63, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-1`, { cast: false });
+    box(g, M5.ink, 0.18, 0.02, 0.01, px2, 1.54, -depth / 2 + 0.042, `backbar-placard-line-${side < 0 ? "l" : "r"}-2`, { cast: false });
   }
-  const register = buildCashRegister(M3);
+  const register = buildCashRegister(M5);
   register.position.set(-1.35, counterY, 0);
   g.add(register);
-  const clock2 = buildMantleClock(M3);
+  const clock2 = buildMantleClock(M5);
   clock2.position.set(1.35, counterY, 0);
   g.add(clock2);
   const shelfPlan = [
@@ -25202,25 +25332,25 @@ function buildBackBar(opts = {}) {
   ];
   shelfPlan.forEach((row, si) => {
     row.forEach((b, bi) => {
-      const bottle = buildSaloonBottle(b.kind, M3, G, { label: b.label });
+      const bottle = buildSaloonBottle(b.kind, M5, G, { label: b.label });
       bottle.name = `backbar-bottle-${si}-${bi}`;
       bottle.position.set(shelfXs[si][bi], shelfTops[si], -0.045);
       g.add(bottle);
     });
   });
-  const dec = buildDecanter(M3, G);
+  const dec = buildDecanter(M5, G);
   dec.position.set(0.55, counterY, 0.02);
   g.add(dec);
-  const car = buildCarafe(M3, G);
+  const car = buildCarafe(M5, G);
   car.position.set(0.85, counterY, 0.06);
   g.add(car);
-  const w1 = buildWineGlass(M3, G, "half");
+  const w1 = buildWineGlass(M5, G, "half");
   w1.position.set(0.15, counterY, 0.08);
   g.add(w1);
-  const w2 = buildWineGlass(M3, G, "full");
+  const w2 = buildWineGlass(M5, G, "full");
   w2.position.set(0.32, counterY, 0.04);
   g.add(w2);
-  const wt = buildTumbler(M3, G, { whiskey: true });
+  const wt = buildTumbler(M5, G, { whiskey: true });
   wt.position.set(0.02, counterY, 0.05);
   g.add(wt);
   const shelfGlass = (item, x, top, i) => {
@@ -25228,80 +25358,80 @@ function buildBackBar(opts = {}) {
     item.position.set(x, top, 0.1);
     g.add(item);
   };
-  shelfGlass(buildTumbler(M3, G), -0.75, shelfTops[0], 0);
-  shelfGlass(buildTumbler(M3, G, { whiskey: true }), -0.6, shelfTops[0], 1);
-  shelfGlass(buildTumbler(M3, G), 0.6, shelfTops[0], 2);
-  shelfGlass(buildShotGlass(M3, G), 0.75, shelfTops[0], 3);
-  shelfGlass(buildShotGlass(M3, G), 0.85, shelfTops[0], 4);
-  shelfGlass(buildWineGlass(M3, G, "empty"), -0.7, shelfTops[1], 5);
-  shelfGlass(buildWineGlass(M3, G, "half"), 0.6, shelfTops[1], 6);
-  shelfGlass(buildWineGlass(M3, G, "full"), 0.75, shelfTops[1], 7);
-  shelfGlass(buildInvertedTumbler(M3, G), -0.65, shelfTops[2], 8);
-  shelfGlass(buildInvertedTumbler(M3, G), 0.6, shelfTops[2], 9);
-  shelfGlass(buildInvertedTumbler(M3, G), 0.75, shelfTops[2], 10);
+  shelfGlass(buildTumbler(M5, G), -0.75, shelfTops[0], 0);
+  shelfGlass(buildTumbler(M5, G, { whiskey: true }), -0.6, shelfTops[0], 1);
+  shelfGlass(buildTumbler(M5, G), 0.6, shelfTops[0], 2);
+  shelfGlass(buildShotGlass(M5, G), 0.75, shelfTops[0], 3);
+  shelfGlass(buildShotGlass(M5, G), 0.85, shelfTops[0], 4);
+  shelfGlass(buildWineGlass(M5, G, "empty"), -0.7, shelfTops[1], 5);
+  shelfGlass(buildWineGlass(M5, G, "half"), 0.6, shelfTops[1], 6);
+  shelfGlass(buildWineGlass(M5, G, "full"), 0.75, shelfTops[1], 7);
+  shelfGlass(buildInvertedTumbler(M5, G), -0.65, shelfTops[2], 8);
+  shelfGlass(buildInvertedTumbler(M5, G), 0.6, shelfTops[2], 9);
+  shelfGlass(buildInvertedTumbler(M5, G), 0.75, shelfTops[2], 10);
   return g;
 }
 function buildBarStool() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-bar-stool";
   const seatH = 0.75;
-  cyl(g, M3.woodMed, 0.16, 0.16, 0.04, 16, 0, seatH, 0, "stool-seat");
-  cyl(g, M3.iron, 0.03, 0.03, seatH - 0.02, 8, 0, (seatH - 0.02) / 2, 0, "stool-pole");
-  torus(g, M3.iron, 0.14, 0.015, 16, 0, 0.28, 0, "stool-footring", { rx: Math.PI / 2 });
-  cyl(g, M3.iron, 0.09, 0.09, 0.02, 16, 0, 0.01, 0, "stool-base");
+  cyl(g, M5.woodMed, 0.16, 0.16, 0.04, 16, 0, seatH, 0, "stool-seat");
+  cyl(g, M5.iron, 0.03, 0.03, seatH - 0.02, 8, 0, (seatH - 0.02) / 2, 0, "stool-pole");
+  torus(g, M5.iron, 0.14, 0.015, 16, 0, 0.28, 0, "stool-footring", { rx: Math.PI / 2 });
+  cyl(g, M5.iron, 0.09, 0.09, 0.02, 16, 0, 0.01, 0, "stool-base");
   return g;
 }
 function buildPokerTable() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-poker-table";
   const radius = 0.88;
   const FELT_TOP = 0.72;
-  cyl(g, M3.woodDark, 0.37, 0.42, 0.09, 14, 0, 0.045, 0, "poker-pedestal-lower");
-  cyl(g, M3.woodMed, 0.29, 0.345, 0.06, 12, 0, 0.12, 0, "poker-pedestal-upper");
-  cyl(g, M3.woodMed, 0.1, 0.12, 0.4, 10, 0, 0.33, 0, "poker-column");
-  cyl(g, M3.woodDark, 0.14, 0.16, 0.06, 10, 0, 0.23, 0, "poker-collar-low");
-  cyl(g, M3.woodDark, 0.14, 0.16, 0.06, 10, 0, 0.52, 0, "poker-collar-high");
-  cyl(g, M3.woodMed, 0.19, 0.21, 0.09, 10, 0, 0.59, 0, "poker-capital");
-  cyl(g, M3.woodMed, radius, radius, 0.075, 24, 0, 0.6725, 0, "poker-tabletop");
-  cyl(g, M3.felt, radius - 0.08, radius - 0.08, 0.018, 24, 0, 0.711, 0, "poker-baize");
-  torus(g, M3.leather, radius - 0.045, 0.055, 24, 0, FELT_TOP, 0, "poker-armrest", { rx: Math.PI / 2 });
+  cyl(g, M5.woodDark, 0.37, 0.42, 0.09, 14, 0, 0.045, 0, "poker-pedestal-lower");
+  cyl(g, M5.woodMed, 0.29, 0.345, 0.06, 12, 0, 0.12, 0, "poker-pedestal-upper");
+  cyl(g, M5.woodMed, 0.1, 0.12, 0.4, 10, 0, 0.33, 0, "poker-column");
+  cyl(g, M5.woodDark, 0.14, 0.16, 0.06, 10, 0, 0.23, 0, "poker-collar-low");
+  cyl(g, M5.woodDark, 0.14, 0.16, 0.06, 10, 0, 0.52, 0, "poker-collar-high");
+  cyl(g, M5.woodMed, 0.19, 0.21, 0.09, 10, 0, 0.59, 0, "poker-capital");
+  cyl(g, M5.woodMed, radius, radius, 0.075, 24, 0, 0.6725, 0, "poker-tabletop");
+  cyl(g, M5.felt, radius - 0.08, radius - 0.08, 0.018, 24, 0, 0.711, 0, "poker-baize");
+  torus(g, M5.leather, radius - 0.045, 0.055, 24, 0, FELT_TOP, 0, "poker-armrest", { rx: Math.PI / 2 });
   for (let i = 0; i < 24; i += 1) {
     const angle = i / 24 * Math.PI * 2;
     const r = radius - 0.108;
-    cyl(g, M3.brass, 0.012, 0.012, 0.018, 8, Math.cos(angle) * r, FELT_TOP + 6e-3, Math.sin(angle) * r, `poker-stud-${i}`);
+    cyl(g, M5.brass, 0.012, 0.012, 0.018, 8, Math.cos(angle) * r, FELT_TOP + 6e-3, Math.sin(angle) * r, `poker-stud-${i}`);
   }
   for (let i = 0; i < 5; i += 1) {
-    box(g, M3.ivory, 0.12, 8e-3, 0.18, -0.3 + i * 0.15, FELT_TOP + 3e-3, 0.02, `poker-card-${i}`, {
+    box(g, M5.ivory, 0.12, 8e-3, 0.18, -0.3 + i * 0.15, FELT_TOP + 3e-3, 0.02, `poker-card-${i}`, {
       ry: (i - 2) * 0.05,
       cast: false
     });
   }
-  box(g, M3.leatherDark, 0.11, 0.028, 0.16, -0.52, FELT_TOP + 0.011, -0.25, "poker-deck", { cast: false });
-  cyl(g, M3.ivory, 0.055, 0.055, 0.018, 12, 0.52, FELT_TOP + 6e-3, -0.25, "poker-dealer-button", { cast: false });
+  box(g, M5.leatherDark, 0.11, 0.028, 0.16, -0.52, FELT_TOP + 0.011, -0.25, "poker-deck", { cast: false });
+  cyl(g, M5.ivory, 0.055, 0.055, 0.018, 12, 0.52, FELT_TOP + 6e-3, -0.25, "poker-dealer-button", { cast: false });
   const stacks = [
-    { x: 0.28, z: 0.32, count: 8, mat: M3.brass },
-    { x: 0.44, z: 0.28, count: 6, mat: M3.iron },
-    { x: 0.15, z: 0.43, count: 10, mat: M3.ivory }
+    { x: 0.28, z: 0.32, count: 8, mat: M5.brass },
+    { x: 0.44, z: 0.28, count: 6, mat: M5.iron },
+    { x: 0.15, z: 0.43, count: 10, mat: M5.ivory }
   ];
   for (const [si, stack] of stacks.entries()) {
     for (let i = 0; i < stack.count; i += 1) {
       cyl(g, stack.mat, 0.042, 0.042, 0.011, 10, stack.x, FELT_TOP + 25e-4 + 55e-4 + i * 0.011, stack.z, `poker-chip-${si}-${i}`, { cast: false });
     }
   }
-  cyl(g, M3.whiskeyGlass, 0.052, 0.047, 0.09, 10, -0.62, FELT_TOP + 0.043, 0.28, "poker-whiskey-glass", { cast: false });
-  cyl(g, M3.amber, 0.042, 0.046, 0.055, 10, -0.62, FELT_TOP + 0.0255, 0.28, "poker-whiskey", { cast: false });
-  cyl(g, M3.iron, 0.07, 0.065, 0.018, 10, 0.62, FELT_TOP + 7e-3, 0.34, "poker-ashtray", { cast: false });
+  cyl(g, M5.whiskeyGlass, 0.052, 0.047, 0.09, 10, -0.62, FELT_TOP + 0.043, 0.28, "poker-whiskey-glass", { cast: false });
+  cyl(g, M5.amber, 0.042, 0.046, 0.055, 10, -0.62, FELT_TOP + 0.0255, 0.28, "poker-whiskey", { cast: false });
+  cyl(g, M5.iron, 0.07, 0.065, 0.018, 10, 0.62, FELT_TOP + 7e-3, 0.34, "poker-ashtray", { cast: false });
   return g;
 }
 function buildSaloonChair() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-chair";
   const seatH = 0.45;
   const size = 0.4;
-  box(g, M3.woodMed, size, 0.04, size, 0, seatH, 0, "chair-seat");
+  box(g, M5.woodMed, size, 0.04, size, 0, seatH, 0, "chair-seat");
   const legXZ = size / 2 - 0.03;
   const legPositions = [
     [legXZ, legXZ],
@@ -25310,12 +25440,12 @@ function buildSaloonChair() {
     [-legXZ, -legXZ]
   ];
   legPositions.forEach(([x, z], i) => {
-    cyl(g, M3.woodDark, 0.02, 0.02, seatH, 8, x, seatH / 2, z, `chair-leg-${i}`);
+    cyl(g, M5.woodDark, 0.02, 0.02, seatH, 8, x, seatH / 2, z, `chair-leg-${i}`);
   });
   for (const side of [-1, 1]) {
     cyl(
       g,
-      M3.woodDark,
+      M5.woodDark,
       0.02,
       0.02,
       0.45,
@@ -25327,33 +25457,33 @@ function buildSaloonChair() {
     );
   }
   for (let i = 0; i < 3; i += 1) {
-    box(g, M3.woodMed, size - 0.06, 0.03, 0.02, 0, seatH + 0.08 + i * 0.14, -size / 2 + 0.03, `chair-slat-${i}`);
+    box(g, M5.woodMed, size - 0.06, 0.03, 0.02, 0, seatH + 0.08 + i * 0.14, -size / 2 + 0.03, `chair-slat-${i}`);
   }
   return g;
 }
 function buildPiano() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-piano";
   const w = 1.52;
   const d = 0.65;
-  box(g, M3.woodDark, w, 0.12, 0.5, 0, 0.06, -0.075, "piano-bottom-board");
-  box(g, M3.woodMed, w - 0.04, 0.92, 0.5, 0, 0.58, -0.075, "piano-cabinet");
-  box(g, M3.woodDark, w, 0.24, 0.52, 0, 1.16, -0.06, "piano-top-band");
-  box(g, M3.woodDark, w + 0.05, 0.06, d + 0.05, 0, 1.31, 0, "piano-lid");
+  box(g, M5.woodDark, w, 0.12, 0.5, 0, 0.06, -0.075, "piano-bottom-board");
+  box(g, M5.woodMed, w - 0.04, 0.92, 0.5, 0, 0.58, -0.075, "piano-cabinet");
+  box(g, M5.woodDark, w, 0.24, 0.52, 0, 1.16, -0.06, "piano-top-band");
+  box(g, M5.woodDark, w + 0.05, 0.06, d + 0.05, 0, 1.31, 0, "piano-lid");
   for (const side of [-1, 1]) {
-    box(g, M3.woodLight, 0.09, 1.13, 0.52, side * 0.68, 0.665, -0.045, `piano-pilaster-${side < 0 ? "l" : "r"}`);
+    box(g, M5.woodLight, 0.09, 1.13, 0.52, side * 0.68, 0.665, -0.045, `piano-pilaster-${side < 0 ? "l" : "r"}`);
   }
-  box(g, M3.silk, w - 0.22, 0.22, 0.03, 0, 1.16, 0.205, "piano-silk-panel", { cast: false });
+  box(g, M5.silk, w - 0.22, 0.22, 0.03, 0, 1.16, 0.205, "piano-silk-panel", { cast: false });
   for (let i = 0; i < 9; i += 1) {
-    box(g, M3.woodLight, 0.025, 0.18, 0.025, -0.47 + i * 0.118, 1.16, 0.2325, `piano-lattice-${i}`, { cast: false });
+    box(g, M5.woodLight, 0.025, 0.18, 0.025, -0.47 + i * 0.118, 1.16, 0.2325, `piano-lattice-${i}`, { cast: false });
   }
-  box(g, M3.woodLight, w - 0.16, 0.15, 0.1, 0, 0.84, 0.21, "piano-fallboard");
-  box(g, M3.woodDark, w - 0.02, 0.13, 0.28, 0, 0.66, 0.31, "piano-keybed");
+  box(g, M5.woodLight, w - 0.16, 0.15, 0.1, 0, 0.84, 0.21, "piano-fallboard");
+  box(g, M5.woodDark, w - 0.02, 0.13, 0.28, 0, 0.66, 0.31, "piano-keybed");
   const keyW = (w - 0.2) / 21;
   for (let i = 0; i < 21; i += 1) {
     const x = -w / 2 + 0.1 + keyW * (i + 0.5);
-    box(g, M3.ivory, keyW * 0.9, 0.025, 0.17, x, 0.735, 0.43, `piano-key-white-${i}`, { cast: false });
+    box(g, M5.ivory, keyW * 0.9, 0.025, 0.17, x, 0.735, 0.43, `piano-key-white-${i}`, { cast: false });
   }
   const pattern = [0, 1, 3, 4, 5];
   for (let octave = 0; octave < 3; octave += 1) {
@@ -25362,35 +25492,35 @@ function buildPiano() {
       if (index >= 20)
         continue;
       const x = -w / 2 + 0.1 + keyW * (index + 1);
-      box(g, M3.ink, keyW * 0.55, 0.03, 0.11, x, 0.76, 0.4, `piano-key-black-${index}`, { cast: false });
+      box(g, M5.ink, keyW * 0.55, 0.03, 0.11, x, 0.76, 0.4, `piano-key-black-${index}`, { cast: false });
     }
   }
-  box(g, M3.woodLight, 0.95, 0.035, 0.22, 0, 0.99, 0.28, "piano-music-desk");
-  plane(g, M3.paper, 0.38, 0.21, 0, 1.09, 0.3, "piano-music-paper");
+  box(g, M5.woodLight, 0.95, 0.035, 0.22, 0, 0.99, 0.28, "piano-music-desk");
+  plane(g, M5.paper, 0.38, 0.21, 0, 1.09, 0.3, "piano-music-paper");
   for (const side of [-1, 1]) {
-    box(g, M3.woodDark, 0.06, 0.49, 0.05, side * 0.11, 0.245, 0.2, `piano-lyre-leg-${side < 0 ? "l" : "r"}`);
+    box(g, M5.woodDark, 0.06, 0.49, 0.05, side * 0.11, 0.245, 0.2, `piano-lyre-leg-${side < 0 ? "l" : "r"}`);
   }
   for (const [i, x] of [-0.055, 0, 0.055].entries()) {
-    cyl(g, M3.brass, 0.022, 0.022, 0.13, 8, x, 0.11, 0.2, `piano-pedal-${i}`);
+    cyl(g, M5.brass, 0.022, 0.022, 0.13, 8, x, 0.11, 0.2, `piano-pedal-${i}`);
   }
   for (const side of [-1, 1]) {
     const x = side * 0.7;
-    cyl(g, M3.brass, 0.02, 0.02, 0.17, 8, x, 0.945, 0.22, `piano-sconce-${side < 0 ? "l" : "r"}`);
-    box(g, M3.flame, 0.02, 0.05, 0.02, x, 1.055, 0.22, `piano-flame-${side < 0 ? "l" : "r"}`, { cast: false });
+    cyl(g, M5.brass, 0.02, 0.02, 0.17, 8, x, 0.945, 0.22, `piano-sconce-${side < 0 ? "l" : "r"}`);
+    box(g, M5.flame, 0.02, 0.05, 0.02, x, 1.055, 0.22, `piano-flame-${side < 0 ? "l" : "r"}`, { cast: false });
   }
   return g;
 }
 function buildPianoStool() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-piano-stool";
-  cyl(g, M3.leather, 0.2, 0.2, 0.07, 14, 0, 0.525, 0, "pianostool-seat");
-  cyl(g, M3.woodMed, 0.055, 0.065, 0.5, 10, 0, 0.28, 0, "pianostool-pole");
-  cyl(g, M3.iron, 0.16, 0.16, 0.025, 12, 0, 0.0125, 0, "pianostool-foot");
+  cyl(g, M5.leather, 0.2, 0.2, 0.07, 14, 0, 0.525, 0, "pianostool-seat");
+  cyl(g, M5.woodMed, 0.055, 0.065, 0.5, 10, 0, 0.28, 0, "pianostool-pole");
+  cyl(g, M5.iron, 0.16, 0.16, 0.025, 12, 0, 0.0125, 0, "pianostool-foot");
   return g;
 }
 function buildSwingingDoors() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-swinging-doors";
   const doorH = 2.24;
@@ -25404,13 +25534,13 @@ function buildSwingingDoors() {
     hinge.userData.dynamic = true;
     g.add(hinge);
     const dir = -side;
-    box(hinge, M3.woodMed, leafW, doorH, leafT, dir * leafW / 2, doorH / 2, 0, `door-leaf-${side === -1 ? "l" : "r"}`);
+    box(hinge, M5.woodMed, leafW, doorH, leafT, dir * leafW / 2, doorH / 2, 0, `door-leaf-${side === -1 ? "l" : "r"}`);
     for (const sz of [-1, 1]) {
-      box(hinge, M3.woodDark, leafW - 0.24, doorH - 0.5, 0.012, dir * leafW / 2, doorH / 2, sz * (leafT / 2 + 9e-3), `door-panel-frame-${side === -1 ? "l" : "r"}-${sz < 0 ? "in" : "out"}`);
-      box(hinge, M3.woodLight, leafW - 0.34, doorH - 0.62, 8e-3, dir * leafW / 2, doorH / 2, sz * (leafT / 2 + 2e-3), `door-panel-field-${side === -1 ? "l" : "r"}-${sz < 0 ? "in" : "out"}`);
+      box(hinge, M5.woodDark, leafW - 0.24, doorH - 0.5, 0.012, dir * leafW / 2, doorH / 2, sz * (leafT / 2 + 9e-3), `door-panel-frame-${side === -1 ? "l" : "r"}-${sz < 0 ? "in" : "out"}`);
+      box(hinge, M5.woodLight, leafW - 0.34, doorH - 0.62, 8e-3, dir * leafW / 2, doorH / 2, sz * (leafT / 2 + 2e-3), `door-panel-field-${side === -1 ? "l" : "r"}-${sz < 0 ? "in" : "out"}`);
     }
-    box(hinge, M3.woodDark, 0.52, 0.09, 0.02, dir * (leafW - 0.14), 1.05, leafT / 2 + 0.02, `door-bar-front-${side === -1 ? "l" : "r"}`);
-    box(hinge, M3.woodDark, 0.52, 0.09, 0.02, dir * (leafW - 0.14), 1.05, -(leafT / 2 + 0.02), `door-bar-back-${side === -1 ? "l" : "r"}`);
+    box(hinge, M5.woodDark, 0.52, 0.09, 0.02, dir * (leafW - 0.14), 1.05, leafT / 2 + 0.02, `door-bar-front-${side === -1 ? "l" : "r"}`);
+    box(hinge, M5.woodDark, 0.52, 0.09, 0.02, dir * (leafW - 0.14), 1.05, -(leafT / 2 + 0.02), `door-bar-back-${side === -1 ? "l" : "r"}`);
   };
   buildLeaf(-1);
   buildLeaf(1);
@@ -25426,26 +25556,26 @@ function setSaloonDoorsOpen(root, t) {
   }
 }
 function buildChandelier(opts = {}) {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-chandelier";
   const radius = 0.5;
   const lanternCount = opts.lanterns ?? 6;
   const realLights = Math.max(0, Math.min(1, opts.lights ?? 1));
-  cyl(g, M3.iron, 0.012, 0.012, 0.45, 6, 0, 0.225, 0, "chandelier-chain", { cast: false });
-  torus(g, M3.woodDark, radius, 0.04, 16, 0, 0, 0, "chandelier-wheel", { rx: Math.PI / 2 });
+  cyl(g, M5.iron, 0.012, 0.012, 0.45, 6, 0, 0.225, 0, "chandelier-chain", { cast: false });
+  torus(g, M5.woodDark, radius, 0.04, 16, 0, 0, 0, "chandelier-wheel", { rx: Math.PI / 2 });
   for (let i = 0; i < lanternCount; i += 1) {
     const angle = i / lanternCount * Math.PI * 2;
     const cx = Math.cos(angle);
     const sz = Math.sin(angle);
-    cyl(g, M3.woodDark, 0.015, 0.015, radius, 6, cx * radius * 0.5, 0, sz * radius * 0.5, `chandelier-spoke-${i}`, {
+    cyl(g, M5.woodDark, 0.015, 0.015, radius, 6, cx * radius * 0.5, 0, sz * radius * 0.5, `chandelier-spoke-${i}`, {
       rz: Math.PI / 2,
       ry: -angle,
       cast: false
     });
-    cyl(g, M3.iron, 6e-3, 6e-3, 0.05, 6, cx * radius, -0.045, sz * radius, `chandelier-rod-${i}`, { cast: false });
-    cyl(g, M3.lampGlass, 0.032, 0.032, 0.09, 8, cx * radius, -0.115, sz * radius, `chandelier-lantern-${i}`, { cast: false });
-    box(g, M3.flame, 0.016, 0.03, 0.016, cx * radius, -0.155, sz * radius, `chandelier-flame-${i}`, { cast: false });
+    cyl(g, M5.iron, 6e-3, 6e-3, 0.05, 6, cx * radius, -0.045, sz * radius, `chandelier-rod-${i}`, { cast: false });
+    cyl(g, M5.lampGlass, 0.032, 0.032, 0.09, 8, cx * radius, -0.115, sz * radius, `chandelier-lantern-${i}`, { cast: false });
+    box(g, M5.flame, 0.016, 0.03, 0.016, cx * radius, -0.155, sz * radius, `chandelier-flame-${i}`, { cast: false });
   }
   if (realLights > 0) {
     const light = new PointLight(16756838, 1.1, 7, 2);
@@ -25456,38 +25586,38 @@ function buildChandelier(opts = {}) {
   return g;
 }
 function buildSpittoon() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-spittoon";
-  cyl(g, M3.brass, 0.05, 0.042, 0.035, 12, 0, 0.0175, 0, "spittoon-base");
-  cyl(g, M3.brass, 0.09, 0.055, 0.083, 12, 0, 0.0765, 0, "spittoon-bowl");
-  cyl(g, M3.brassDark, 0.082, 0.075, 0.014, 12, 0, 0.125, 0, "spittoon-interior", { cast: false });
-  torus(g, M3.brass, 0.088, 0.016, 14, 0, 0.132, 0, "spittoon-rim", { rx: Math.PI / 2 });
+  cyl(g, M5.brass, 0.05, 0.042, 0.035, 12, 0, 0.0175, 0, "spittoon-base");
+  cyl(g, M5.brass, 0.09, 0.055, 0.083, 12, 0, 0.0765, 0, "spittoon-bowl");
+  cyl(g, M5.brassDark, 0.082, 0.075, 0.014, 12, 0, 0.125, 0, "spittoon-interior", { cast: false });
+  torus(g, M5.brass, 0.088, 0.016, 14, 0, 0.132, 0, "spittoon-rim", { rx: Math.PI / 2 });
   return g;
 }
 function buildWhiskeyBarrel() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   const gname = "saloon-whiskey-barrel";
   g.name = gname;
   const rBottom = 0.24;
   const rTop = 0.28;
   const h = 0.6;
-  cyl(g, M3.woodMed, rTop, rBottom, h, 16, 0, h / 2, 0, "barrel-body");
+  cyl(g, M5.woodMed, rTop, rBottom, h, 16, 0, h / 2, 0, "barrel-body");
   for (const y of [0.12, 0.3, 0.48]) {
     const rAt = rBottom + (rTop - rBottom) * y / h;
-    torus(g, M3.iron, rAt - 5e-3, 0.018, 16, 0, y, 0, `barrel-hoop-${y}`, { rx: Math.PI / 2 });
+    torus(g, M5.iron, rAt - 5e-3, 0.018, 16, 0, y, 0, `barrel-hoop-${y}`, { rx: Math.PI / 2 });
   }
   return g;
 }
 function buildWantedPoster() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-wanted-poster";
-  plane(g, M3.paper, 0.35, 0.5, 0, 0, 0, "poster-board");
-  plane(g, M3.ink, 0.3, 0.06, 0, 0.19, 0.01, "poster-header");
-  plane(g, M3.glassDark, 0.2, 0.2, 0, -0.02, 0.01, "poster-portrait");
-  plane(g, M3.ink, 0.28, 0.03, 0, -0.19, 0.01, "poster-footer");
+  plane(g, M5.paper, 0.35, 0.5, 0, 0, 0, "poster-board");
+  plane(g, M5.ink, 0.3, 0.06, 0, 0.19, 0.01, "poster-header");
+  plane(g, M5.glassDark, 0.2, 0.2, 0, -0.02, 0.01, "poster-portrait");
+  plane(g, M5.ink, 0.28, 0.03, 0, -0.19, 0.01, "poster-footer");
   return g;
 }
 
@@ -25524,7 +25654,7 @@ function shellDimsOf(definition) {
   };
 }
 function buildSaloonWindowAssembly(side, offset) {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = `saloon-window-${side < 0 ? "w" : "e"}${offset}`;
   const win = SALOON_LAYOUT.window;
@@ -25535,18 +25665,18 @@ function buildSaloonWindowAssembly(side, offset) {
   const stripZ = wallFaceZ + 0.02 + stripD / 2;
   const glassZ = wallFaceZ + 0.025;
   const barZ = wallFaceZ + 0.065;
-  addBox(g, M3.glassDark, win.width, win.height, 0.05, 0, glassY, glassZ, "saloon-window-glass");
-  addBox(g, M3.woodLight, win.width + 0.24, 0.12, stripD, 0, glassY + glassHalfH + 0.06, stripZ, "saloon-window-frame-top");
-  addBox(g, M3.woodLight, win.width + 0.24, 0.12, stripD, 0, win.sillY - 0.06, stripZ, "saloon-window-frame-bottom");
-  addBox(g, M3.woodLight, 0.12, win.height, stripD, -(win.width / 2 + 0.06), glassY, stripZ, "saloon-window-frame-left");
-  addBox(g, M3.woodLight, 0.12, win.height, stripD, win.width / 2 + 0.06, glassY, stripZ, "saloon-window-frame-right");
-  addBox(g, M3.woodLight, 0.05, win.height, 0.03, 0, glassY, barZ, "saloon-window-cross-v");
-  addBox(g, M3.woodLight, win.width, 0.05, 0.03, 0, glassY, barZ, "saloon-window-cross-h");
-  addBox(g, M3.woodDark, win.width + 0.24, 0.06, 0.14, 0, win.sillY - 0.15, wallFaceZ + 0.06, "saloon-window-sill");
+  addBox(g, M5.glassDark, win.width, win.height, 0.05, 0, glassY, glassZ, "saloon-window-glass");
+  addBox(g, M5.woodLight, win.width + 0.24, 0.12, stripD, 0, glassY + glassHalfH + 0.06, stripZ, "saloon-window-frame-top");
+  addBox(g, M5.woodLight, win.width + 0.24, 0.12, stripD, 0, win.sillY - 0.06, stripZ, "saloon-window-frame-bottom");
+  addBox(g, M5.woodLight, 0.12, win.height, stripD, -(win.width / 2 + 0.06), glassY, stripZ, "saloon-window-frame-left");
+  addBox(g, M5.woodLight, 0.12, win.height, stripD, win.width / 2 + 0.06, glassY, stripZ, "saloon-window-frame-right");
+  addBox(g, M5.woodLight, 0.05, win.height, 0.03, 0, glassY, barZ, "saloon-window-cross-v");
+  addBox(g, M5.woodLight, win.width, 0.05, 0.03, 0, glassY, barZ, "saloon-window-cross-h");
+  addBox(g, M5.woodDark, win.width + 0.24, 0.06, 0.14, 0, win.sillY - 0.15, wallFaceZ + 0.06, "saloon-window-sill");
   return g;
 }
 function buildSaloonSignAssembly() {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-sign";
   const wallFaceZ = SALOON_LAYOUT.depth / 2 + SALOON_LAYOUT.wallThickness / 2;
@@ -25555,36 +25685,36 @@ function buildSaloonSignAssembly() {
   const ffTop = SALOON_LAYOUT.falseFrontTop;
   const signY = ffBottom + (ffTop - ffBottom) * 0.42;
   const boardZ = wallFaceZ + 0.09;
-  addBox(g, M3.woodDark, 5.2, 0.7, 0.1, 0, 0, boardZ + 0.05 - 0.02, "saloon-sign-board");
+  addBox(g, M5.woodDark, 5.2, 0.7, 0.1, 0, 0, boardZ + 0.05 - 0.02, "saloon-sign-board");
   const boardFrontZ = boardZ + 0.08;
-  addBox(g, M3.paper, 4.6, 0.34, 0.06, 0, 0, boardFrontZ + 0.01, "saloon-sign-band");
+  addBox(g, M5.paper, 4.6, 0.34, 0.06, 0, 0, boardFrontZ + 0.01, "saloon-sign-band");
   const bandFrontZ = boardFrontZ + 0.04;
   const letters = 6;
   for (let i = 0; i < letters; i += 1) {
     const x = -1.8 + i * 0.72;
-    addBox(g, M3.ink, 0.18, 0.22, 0.05, x, 0, bandFrontZ + 5e-3, `saloon-sign-letter-${i}`);
+    addBox(g, M5.ink, 0.18, 0.22, 0.05, x, 0, bandFrontZ + 5e-3, `saloon-sign-letter-${i}`);
   }
   return g;
 }
 function buildSaloonShell(dims) {
-  const M3 = createSaloonMaterials();
+  const M5 = createSaloonMaterials();
   const g = new Group();
   g.name = "saloon-building";
   const { width: w, depth: d, height: h } = dims;
   const roofOverhang = SALOON_LAYOUT.roofOverhang;
   const roofTop = h + 0.18;
-  addBox(g, M3.woodMed, w - 0.06, 0.04, d - 0.06, 0, 0.03, 0, "saloon-floor");
-  addBox(g, M3.woodDark, w + roofOverhang * 2, 0.18, d + roofOverhang * 2, 0, h + 0.09, 0, "saloon-roof");
+  addBox(g, M5.woodMed, w - 0.06, 0.04, d - 0.06, 0, 0.03, 0, "saloon-floor");
+  addBox(g, M5.woodDark, w + roofOverhang * 2, 0.18, d + roofOverhang * 2, 0, h + 0.09, 0, "saloon-roof");
   const roofHalfD = d / 2 + roofOverhang;
-  addBox(g, M3.woodLight, w + roofOverhang * 2, 0.22, 0.06, 0, h + 0.05, -(roofHalfD + 0.03), "saloon-fascia-rear");
-  addBox(g, M3.woodLight, 0.06, 0.22, d + roofOverhang * 2 + 0.12, -(w / 2 + roofOverhang + 0.03), h + 0.05, 0, "saloon-fascia-west");
-  addBox(g, M3.woodLight, 0.06, 0.22, d + roofOverhang * 2 + 0.12, w / 2 + roofOverhang + 0.03, h + 0.05, 0, "saloon-fascia-east");
+  addBox(g, M5.woodLight, w + roofOverhang * 2, 0.22, 0.06, 0, h + 0.05, -(roofHalfD + 0.03), "saloon-fascia-rear");
+  addBox(g, M5.woodLight, 0.06, 0.22, d + roofOverhang * 2 + 0.12, -(w / 2 + roofOverhang + 0.03), h + 0.05, 0, "saloon-fascia-west");
+  addBox(g, M5.woodLight, 0.06, 0.22, d + roofOverhang * 2 + 0.12, w / 2 + roofOverhang + 0.03, h + 0.05, 0, "saloon-fascia-east");
   const wallFaceZ = d / 2 + SALOON_LAYOUT.wallThickness / 2;
   const ffBottom = roofTop;
   const ffTop = SALOON_LAYOUT.falseFrontTop;
   addBox(
     g,
-    M3.woodLight,
+    M5.woodLight,
     w + 0.24,
     ffTop - ffBottom,
     0.14,
@@ -25594,16 +25724,16 @@ function buildSaloonShell(dims) {
     // center = face − 0.05 + 0.14/2 → front at face+0.09
     "saloon-false-front"
   );
-  addBox(g, M3.woodMed, w + 0.6, 0.09, SALOON_LAYOUT.porchDepth, 0, 0.045, wallFaceZ + SALOON_LAYOUT.porchDepth / 2, "saloon-porch-deck");
+  addBox(g, M5.woodMed, w + 0.6, 0.09, SALOON_LAYOUT.porchDepth, 0, 0.045, wallFaceZ + SALOON_LAYOUT.porchDepth / 2, "saloon-porch-deck");
   const postH = SALOON_LAYOUT.porchRoofTopY - 0.12 - 0.09;
   const postXs = [-w / 2 - 0.1, -1.8, 1.8, w / 2 + 0.1];
   postXs.forEach((px2, i) => {
-    addCyl(g, M3.woodDark, 0.08, 0.09, postH, 8, px2, 0.09 + postH / 2, wallFaceZ + SALOON_LAYOUT.porchDepth - 0.2, `saloon-porch-post-${i}`);
+    addCyl(g, M5.woodDark, 0.08, 0.09, postH, 8, px2, 0.09 + postH / 2, wallFaceZ + SALOON_LAYOUT.porchDepth - 0.2, `saloon-porch-post-${i}`);
   });
-  addBox(g, M3.woodDark, w + 0.9, 0.12, SALOON_LAYOUT.porchDepth + 0.2, 0, SALOON_LAYOUT.porchRoofTopY - 0.06, wallFaceZ + SALOON_LAYOUT.porchDepth / 2, "saloon-porch-roof");
+  addBox(g, M5.woodDark, w + 0.9, 0.12, SALOON_LAYOUT.porchDepth + 0.2, 0, SALOON_LAYOUT.porchRoofTopY - 0.06, wallFaceZ + SALOON_LAYOUT.porchDepth / 2, "saloon-porch-roof");
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      addBox(g, M3.woodDark, 0.24, h + 0.16, 0.56, sx * (w / 2), (h + 0.04) / 2, sz * (d / 2), `saloon-corner-post-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
+      addBox(g, M5.woodDark, 0.24, h + 0.16, 0.56, sx * (w / 2), (h + 0.04) / 2, sz * (d / 2), `saloon-corner-post-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
     }
   }
   const caseT = 0.1;
@@ -25611,9 +25741,9 @@ function buildSaloonShell(dims) {
   const caseW = 0.16;
   const doorH = SALOON_LAYOUT.doorHeight;
   const deckTop = 0.09;
-  addBox(g, M3.woodDark, caseW, doorH, caseT, -(SALOON_LAYOUT.doorWidth / 2 + caseW / 2), deckTop + doorH / 2, caseZ, "saloon-door-casing-jamb-w");
-  addBox(g, M3.woodDark, caseW, doorH, caseT, SALOON_LAYOUT.doorWidth / 2 + caseW / 2, deckTop + doorH / 2, caseZ, "saloon-door-casing-jamb-e");
-  addBox(g, M3.woodDark, SALOON_LAYOUT.doorWidth + caseW * 2, caseW, caseT, 0, deckTop + doorH + caseW / 2, caseZ, "saloon-door-casing-header");
+  addBox(g, M5.woodDark, caseW, doorH, caseT, -(SALOON_LAYOUT.doorWidth / 2 + caseW / 2), deckTop + doorH / 2, caseZ, "saloon-door-casing-jamb-w");
+  addBox(g, M5.woodDark, caseW, doorH, caseT, SALOON_LAYOUT.doorWidth / 2 + caseW / 2, deckTop + doorH / 2, caseZ, "saloon-door-casing-jamb-e");
+  addBox(g, M5.woodDark, SALOON_LAYOUT.doorWidth + caseW * 2, caseW, caseT, 0, deckTop + doorH + caseW / 2, caseZ, "saloon-door-casing-header");
   return g;
 }
 var SaloonWindowFactory = class {
@@ -25636,8 +25766,8 @@ var SaloonBuildingFactory = class {
 };
 var SaloonWallFactory = class {
   create(_definition) {
-    const M3 = createSaloonMaterials();
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.woodMed);
+    const M5 = createSaloonMaterials();
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.woodMed);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "saloon-wall-segment";
@@ -26144,9 +26274,9 @@ function buildBankMapObjects(originX, originZ) {
   const L2 = BANK_LAYOUT;
   const floorY = L2.floorTop;
   const t = L2.wallThickness;
-  const defs2 = [];
+  const defs3 = [];
   const push = (uuid, assetType, name, transform, metadata) => {
-    defs2.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
+    defs3.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
   };
   push(BANK_OBJECT_IDS.building, "bank-building", "\u0628\u0627\u0646\u06A9 \u2014 \u0628\u062F\u0646\u0647 \u0633\u0627\u062E\u062A\u0645\u0627\u0646", {
     position: { x: originX, y: 0, z: originZ },
@@ -26466,7 +26596,7 @@ function buildBankMapObjects(originX, originZ) {
     rotation: { x: 0, y: 40, z: 0 },
     scale: { x: 1, y: 1, z: 1 }
   }, { collider: false });
-  return defs2;
+  return defs3;
 }
 
 // src/assets/bank/BankExterior.ts
@@ -26510,7 +26640,7 @@ function applyMap(mat, tex) {
   mat.needsUpdate = true;
 }
 function buildBankShell(dims) {
-  const M3 = createBankMaterials();
+  const M5 = createBankMaterials();
   const g = new Group();
   g.name = "bank-building";
   const { width: w, depth: d, height: h } = dims;
@@ -26522,7 +26652,7 @@ function buildBankShell(dims) {
   const roofZmax = d / 2 + L2.wallThickness / 2 - 0.18;
   addBox2(
     g,
-    M3.roof,
+    M5.roof,
     w + L2.roofOverhang * 2,
     roofTop - h,
     roofZmax - roofZmin,
@@ -26535,16 +26665,16 @@ function buildBankShell(dims) {
   const corY = 4.82;
   const corZmax = d / 2 + L2.wallThickness / 2 + 0.08;
   const corZmin = -(d / 2 + L2.wallThickness / 2);
-  addBox2(g, M3.stoneCream, 0.08, corH, corZmax - corZmin, w / 2 + L2.wallThickness / 2 + 0.04, corY, (corZmin + corZmax) / 2, "bank-cornice-east");
-  addBox2(g, M3.stoneCream, 0.08, corH, corZmax - corZmin, -(w / 2 + L2.wallThickness / 2 + 0.04), corY, (corZmin + corZmax) / 2, "bank-cornice-west");
-  addBox2(g, M3.stoneCream, w + L2.wallThickness + 0.16, corH, 0.08, 0, corY, -(d / 2 + L2.wallThickness / 2 + 0.04), "bank-cornice-rear");
+  addBox2(g, M5.stoneCream, 0.08, corH, corZmax - corZmin, w / 2 + L2.wallThickness / 2 + 0.04, corY, (corZmin + corZmax) / 2, "bank-cornice-east");
+  addBox2(g, M5.stoneCream, 0.08, corH, corZmax - corZmin, -(w / 2 + L2.wallThickness / 2 + 0.04), corY, (corZmin + corZmax) / 2, "bank-cornice-west");
+  addBox2(g, M5.stoneCream, w + L2.wallThickness + 0.16, corH, 0.08, 0, corY, -(d / 2 + L2.wallThickness / 2 + 0.04), "bank-cornice-rear");
   const E = L2.entablature;
-  addBox2(g, M3.stoneCream, E.halfWidth * 2, 0.3, 1.4, 0, 5.35, 5.1, "bank-architrave");
-  addBox2(g, M3.walnut, E.halfWidth * 2, E.friezeTopY - 5.5, 1.38, 0, (5.5 + E.friezeTopY) / 2, 5.09, "bank-frieze");
-  addBox2(g, M3.stoneCream, E.halfWidth * 2 + 0.2, E.topY - E.friezeTopY, 1.55, 0, (E.friezeTopY + E.topY) / 2, 5.125, "bank-entablature-cornice");
+  addBox2(g, M5.stoneCream, E.halfWidth * 2, 0.3, 1.4, 0, 5.35, 5.1, "bank-architrave");
+  addBox2(g, M5.walnut, E.halfWidth * 2, E.friezeTopY - 5.5, 1.38, 0, (5.5 + E.friezeTopY) / 2, 5.09, "bank-frieze");
+  addBox2(g, M5.stoneCream, E.halfWidth * 2 + 0.2, E.topY - E.friezeTopY, 1.55, 0, (E.friezeTopY + E.topY) / 2, 5.125, "bank-entablature-cornice");
   const letterXs = [-1.02, -0.34, 0.34, 1.02];
   letterXs.forEach((lx, i) => {
-    addBox2(g, M3.gold, 0.42, 0.42, 0.06, lx, 5.72, 5.79, `bank-sign-letter-${i}`);
+    addBox2(g, M5.gold, 0.42, 0.42, 0.06, lx, 5.72, 5.79, `bank-sign-letter-${i}`);
   });
   const P = L2.pediment;
   const shape = new Shape();
@@ -26553,17 +26683,17 @@ function buildBankShell(dims) {
   shape.lineTo(0, P.apexHeight);
   shape.closePath();
   const prismGeo = new ExtrudeGeometry(shape, { depth: P.zFront - P.zBack, bevelEnabled: false });
-  const prism = new Mesh(prismGeo, M3.stoneCream);
+  const prism = new Mesh(prismGeo, M5.stoneCream);
   prism.position.set(0, E.topY, P.zBack);
   prism.castShadow = true;
   prism.receiveShadow = true;
   prism.name = "bank-pediment";
   g.add(prism);
-  addBox2(g, M3.stoneCreamDark, P.halfWidth * 2 + 0.1, 0.16, 0.2, 0, E.topY + 0.08, 5.9, "bank-pediment-base-band");
+  addBox2(g, M5.stoneCreamDark, P.halfWidth * 2 + 0.1, 0.16, 0.2, 0, E.topY + 0.08, 5.9, "bank-pediment-base-band");
   const slopeAngle = Math.atan2(P.apexHeight, P.halfWidth);
   const slopeLen = Math.hypot(P.halfWidth, P.apexHeight) - 0.06;
   for (const side of [-1, 1]) {
-    const rake = new Mesh(new BoxGeometry(slopeLen, 0.18, 0.14), M3.stoneCream);
+    const rake = new Mesh(new BoxGeometry(slopeLen, 0.18, 0.14), M5.stoneCream);
     rake.position.set(side * P.halfWidth / 2, E.topY + P.apexHeight / 2, 6.03);
     rake.rotation.z = -side * slopeAngle;
     rake.castShadow = true;
@@ -26571,12 +26701,12 @@ function buildBankShell(dims) {
     rake.name = `bank-pediment-rake-${side < 0 ? "w" : "e"}`;
     g.add(rake);
   }
-  addCyl2(g, M3.brassDark, 0.3, 0.3, 0.05, 24, 0, E.topY + 0.42, 6, "bank-crest-disc").rotation.x = Math.PI / 2;
-  const crestRing = new Mesh(new TorusGeometry(0.3, 0.02, 8, 24), M3.brass);
+  addCyl2(g, M5.brassDark, 0.3, 0.3, 0.05, 24, 0, E.topY + 0.42, 6, "bank-crest-disc").rotation.x = Math.PI / 2;
+  const crestRing = new Mesh(new TorusGeometry(0.3, 0.02, 8, 24), M5.brass);
   crestRing.position.set(0, E.topY + 0.42, 6.03);
   crestRing.name = "bank-crest-ring";
   g.add(crestRing);
-  const crestDiamond = addBox2(g, M3.gold, 0.16, 0.16, 0.04, 0, E.topY + 0.42, 6.05, "bank-crest-diamond");
+  const crestDiamond = addBox2(g, M5.gold, 0.16, 0.16, 0.04, 0, E.topY + 0.42, 6.05, "bank-crest-diamond");
   crestDiamond.rotation.z = Math.PI / 4;
   const C = L2.columns;
   C.xs.forEach((cx, i) => {
@@ -26584,48 +26714,48 @@ function buildBankShell(dims) {
     col.name = `bank-column-${i}`;
     col.position.set(cx, floorTop, C.z);
     g.add(col);
-    addBox2(col, M3.stoneCreamDark, C.plinthSize, C.plinthHeight, C.plinthSize, 0, C.plinthHeight / 2, 0, `bank-column-${i}-plinth`);
-    addBox2(col, M3.stoneCreamDark, 0.56, 0.1, 0.56, 0, C.plinthHeight + 0.05, 0, `bank-column-${i}-base`);
-    addCyl2(col, M3.stoneCream, C.shaftRadius, C.shaftRadius, 3.65, 24, 0, C.plinthHeight + 0.1 + 1.825, 0, `bank-column-${i}-shaft`);
+    addBox2(col, M5.stoneCreamDark, C.plinthSize, C.plinthHeight, C.plinthSize, 0, C.plinthHeight / 2, 0, `bank-column-${i}-plinth`);
+    addBox2(col, M5.stoneCreamDark, 0.56, 0.1, 0.56, 0, C.plinthHeight + 0.05, 0, `bank-column-${i}-base`);
+    addCyl2(col, M5.stoneCream, C.shaftRadius, C.shaftRadius, 3.65, 24, 0, C.plinthHeight + 0.1 + 1.825, 0, `bank-column-${i}-shaft`);
     for (let f = 0; f < C.flutes; f += 1) {
       const a = f / C.flutes * Math.PI * 2;
-      const flute = new Mesh(new BoxGeometry(0.018, 3.45, 0.018), M3.stoneCreamDark);
+      const flute = new Mesh(new BoxGeometry(0.018, 3.45, 0.018), M5.stoneCreamDark);
       flute.position.set(Math.cos(a) * C.shaftRadius * 0.985, C.plinthHeight + 0.2 + 1.725, Math.sin(a) * C.shaftRadius * 0.985);
       flute.rotation.y = -a;
       flute.castShadow = true;
       flute.name = `bank-column-${i}-flute-${f}`;
       col.add(flute);
     }
-    addCyl2(col, M3.stoneCream, 0.36, C.shaftRadius, 0.25, 24, 0, C.plinthHeight + 0.1 + 3.65 + 0.125, 0, `bank-column-${i}-capital`);
-    addBox2(col, M3.stoneCream, 0.98, 0.1, 0.98, 0, C.plinthHeight + 0.1 + 3.65 + 0.25 + 0.05, 0, `bank-column-${i}-abacus`);
+    addCyl2(col, M5.stoneCream, 0.36, C.shaftRadius, 0.25, 24, 0, C.plinthHeight + 0.1 + 3.65 + 0.125, 0, `bank-column-${i}-capital`);
+    addBox2(col, M5.stoneCream, 0.98, 0.1, 0.98, 0, C.plinthHeight + 0.1 + 3.65 + 0.25 + 0.05, 0, `bank-column-${i}-abacus`);
   });
   const doorH = floorTop + L2.doorHeight;
   const jambX = dims.doorWidth / 2 - 0.02;
   for (const side of [-1, 1]) {
-    addBox2(g, M3.stoneCream, 0.25, L2.doorHeight + 0.05, 0.24, side * (jambX + 0.125), floorTop + (L2.doorHeight + 0.05) / 2, wallFaceZ, `bank-door-jamb-${side < 0 ? "w" : "e"}`);
+    addBox2(g, M5.stoneCream, 0.25, L2.doorHeight + 0.05, 0.24, side * (jambX + 0.125), floorTop + (L2.doorHeight + 0.05) / 2, wallFaceZ, `bank-door-jamb-${side < 0 ? "w" : "e"}`);
   }
-  addBox2(g, M3.stoneCream, dims.doorWidth + 0.5, 0.3, 0.24, 0, doorH + 0.2, wallFaceZ, "bank-door-lintel");
-  const arch = new Mesh(new TorusGeometry(dims.doorWidth / 2 + 0.25, 0.07, 8, 32, Math.PI), M3.stoneCreamDark);
+  addBox2(g, M5.stoneCream, dims.doorWidth + 0.5, 0.3, 0.24, 0, doorH + 0.2, wallFaceZ, "bank-door-lintel");
+  const arch = new Mesh(new TorusGeometry(dims.doorWidth / 2 + 0.25, 0.07, 8, 32, Math.PI), M5.stoneCreamDark);
   arch.position.set(0, doorH + 0.35, wallFaceZ + 0.06);
   arch.scale.y = 0.32;
   arch.castShadow = true;
   arch.name = "bank-door-arch";
   g.add(arch);
-  addBox2(g, M3.stoneCream, 0.16, 0.34, 0.1, 0, doorH + 0.8, wallFaceZ + 0.165, "bank-door-keystone");
+  addBox2(g, M5.stoneCream, 0.16, 0.34, 0.1, 0, doorH + 0.8, wallFaceZ + 0.165, "bank-door-keystone");
   const W = L2.window;
   for (const side of [-1, 1]) {
     for (const off of W.centersFromDoor) {
       const wx = side * off;
       const tag = `${side < 0 ? "w" : "e"}${off}`;
       const glassY = W.sillY + W.height / 2;
-      addBox2(g, M3.glassDark, W.width, W.height, 0.05, wx, glassY, wallFaceZ + 0.025, `bank-window-glass-front-${tag}`);
-      addBox2(g, M3.stoneCream, W.width + 0.24, 0.12, 0.07, wx, glassY + W.height / 2 + 0.06, wallFaceZ + 0.085, `bank-window-frame-top-${tag}`);
-      addBox2(g, M3.stoneCream, W.width + 0.24, 0.12, 0.07, wx, W.sillY - 0.06, wallFaceZ + 0.085, `bank-window-frame-bottom-${tag}`);
-      addBox2(g, M3.stoneCream, 0.12, W.height, 0.07, wx - (W.width / 2 + 0.06), glassY, wallFaceZ + 0.085, `bank-window-frame-left-${tag}`);
-      addBox2(g, M3.stoneCream, 0.12, W.height, 0.07, wx + (W.width / 2 + 0.06), glassY, wallFaceZ + 0.085, `bank-window-frame-right-${tag}`);
-      addBox2(g, M3.stoneCream, 0.05, W.height, 0.03, wx, glassY, wallFaceZ + 0.065, `bank-window-mullion-v-${tag}`);
-      addBox2(g, M3.stoneCream, W.width, 0.05, 0.03, wx, glassY, wallFaceZ + 0.065, `bank-window-mullion-h-${tag}`);
-      addBox2(g, M3.stoneCreamDark, W.width + 0.4, 0.07, 0.14, wx, W.sillY - 0.045, wallFaceZ + 0.07, `bank-window-sill-${tag}`);
+      addBox2(g, M5.glassDark, W.width, W.height, 0.05, wx, glassY, wallFaceZ + 0.025, `bank-window-glass-front-${tag}`);
+      addBox2(g, M5.stoneCream, W.width + 0.24, 0.12, 0.07, wx, glassY + W.height / 2 + 0.06, wallFaceZ + 0.085, `bank-window-frame-top-${tag}`);
+      addBox2(g, M5.stoneCream, W.width + 0.24, 0.12, 0.07, wx, W.sillY - 0.06, wallFaceZ + 0.085, `bank-window-frame-bottom-${tag}`);
+      addBox2(g, M5.stoneCream, 0.12, W.height, 0.07, wx - (W.width / 2 + 0.06), glassY, wallFaceZ + 0.085, `bank-window-frame-left-${tag}`);
+      addBox2(g, M5.stoneCream, 0.12, W.height, 0.07, wx + (W.width / 2 + 0.06), glassY, wallFaceZ + 0.085, `bank-window-frame-right-${tag}`);
+      addBox2(g, M5.stoneCream, 0.05, W.height, 0.03, wx, glassY, wallFaceZ + 0.065, `bank-window-mullion-v-${tag}`);
+      addBox2(g, M5.stoneCream, W.width, 0.05, 0.03, wx, glassY, wallFaceZ + 0.065, `bank-window-mullion-h-${tag}`);
+      addBox2(g, M5.stoneCreamDark, W.width + 0.4, 0.07, 0.14, wx, W.sillY - 0.045, wallFaceZ + 0.07, `bank-window-sill-${tag}`);
     }
   }
   const S2 = L2.sideWindow;
@@ -26634,14 +26764,14 @@ function buildBankShell(dims) {
       const tag = `${sx < 0 ? "w" : "e"}${cz < 0 ? "n" : "s"}`;
       const faceX = sx * (w / 2 + L2.wallThickness / 2);
       const glassY = S2.sillY + S2.height / 2;
-      addBox2(g, M3.glassDark, 0.05, S2.height, S2.width, sx * (w / 2 + L2.wallThickness / 2 + 0.025), glassY, cz, `bank-window-glass-side-${tag}`);
-      addBox2(g, M3.stoneCream, 0.07, 0.12, S2.width + 0.24, faceX + sx * 0.085, glassY + S2.height / 2 + 0.06, cz, `bank-window-frame-top-${tag}`);
-      addBox2(g, M3.stoneCream, 0.07, 0.12, S2.width + 0.24, faceX + sx * 0.085, S2.sillY - 0.06, cz, `bank-window-frame-bottom-${tag}`);
-      addBox2(g, M3.stoneCream, 0.07, S2.height, 0.12, faceX + sx * 0.085, glassY, cz - (S2.width / 2 + 0.06), `bank-window-frame-left-${tag}`);
-      addBox2(g, M3.stoneCream, 0.07, S2.height, 0.12, faceX + sx * 0.085, glassY, cz + (S2.width / 2 + 0.06), `bank-window-frame-right-${tag}`);
-      addBox2(g, M3.stoneCream, 0.03, S2.height, 0.05, faceX + sx * 0.065, glassY, cz, `bank-window-mullion-v-${tag}`);
-      addBox2(g, M3.stoneCream, 0.03, 0.05, S2.width, faceX + sx * 0.065, glassY, cz, `bank-window-mullion-h-${tag}`);
-      addBox2(g, M3.stoneCreamDark, 0.14, 0.07, S2.width + 0.4, faceX + sx * 0.07, S2.sillY - 0.045, cz, `bank-window-sill-${tag}`);
+      addBox2(g, M5.glassDark, 0.05, S2.height, S2.width, sx * (w / 2 + L2.wallThickness / 2 + 0.025), glassY, cz, `bank-window-glass-side-${tag}`);
+      addBox2(g, M5.stoneCream, 0.07, 0.12, S2.width + 0.24, faceX + sx * 0.085, glassY + S2.height / 2 + 0.06, cz, `bank-window-frame-top-${tag}`);
+      addBox2(g, M5.stoneCream, 0.07, 0.12, S2.width + 0.24, faceX + sx * 0.085, S2.sillY - 0.06, cz, `bank-window-frame-bottom-${tag}`);
+      addBox2(g, M5.stoneCream, 0.07, S2.height, 0.12, faceX + sx * 0.085, glassY, cz - (S2.width / 2 + 0.06), `bank-window-frame-left-${tag}`);
+      addBox2(g, M5.stoneCream, 0.07, S2.height, 0.12, faceX + sx * 0.085, glassY, cz + (S2.width / 2 + 0.06), `bank-window-frame-right-${tag}`);
+      addBox2(g, M5.stoneCream, 0.03, S2.height, 0.05, faceX + sx * 0.065, glassY, cz, `bank-window-mullion-v-${tag}`);
+      addBox2(g, M5.stoneCream, 0.03, 0.05, S2.width, faceX + sx * 0.065, glassY, cz, `bank-window-mullion-h-${tag}`);
+      addBox2(g, M5.stoneCreamDark, 0.14, 0.07, S2.width + 0.4, faceX + sx * 0.07, S2.sillY - 0.045, cz, `bank-window-sill-${tag}`);
     }
   }
   const quoinRows = 5;
@@ -26653,7 +26783,7 @@ function buildBankShell(dims) {
       const cy = 0.51 + r * 0.88;
       addBox2(
         g,
-        M3.stoneCream,
+        M5.stoneCream,
         0.63,
         0.82,
         qzMax - qzMin,
@@ -26679,7 +26809,7 @@ function bankFrontDoorMetaOf(definition) {
   };
 }
 function buildBankFrontDoor(meta) {
-  const M3 = createBankMaterials();
+  const M5 = createBankMaterials();
   const g = new Group();
   g.name = "bank-front-door";
   const dw = meta.width;
@@ -26699,20 +26829,20 @@ function buildBankFrontDoor(meta) {
     hinge.userData.openDeg = meta.openDeg;
     g.add(hinge);
     const dir = -side;
-    addBox2(hinge, M3.walnut, leafW, leafH, leafT, dir * leafW / 2, leafH / 2, 0, `bank-front-door-leaf-${tag}`);
+    addBox2(hinge, M5.walnut, leafW, leafH, leafT, dir * leafW / 2, leafH / 2, 0, `bank-front-door-leaf-${tag}`);
     [0.62, 1.62].forEach((py2, pi) => {
-      addBox2(hinge, M3.walnutLight, leafW - 0.22, 0.78, 0.014, dir * leafW / 2, py2, leafT / 2 + 8e-3, `bank-front-door-panel-${tag}-${pi}`);
+      addBox2(hinge, M5.walnutLight, leafW - 0.22, 0.78, 0.014, dir * leafW / 2, py2, leafT / 2 + 8e-3, `bank-front-door-panel-${tag}-${pi}`);
     });
     const handleX = dir * (leafW - 0.1);
-    addCyl2(hinge, M3.brass, 0.02, 0.02, 0.34, 10, handleX, 1.28, leafT / 2 + 0.024, `bank-front-door-handle-${tag}`).rotation.x = Math.PI / 2;
-    addCyl2(hinge, M3.brass, 0.045, 0.045, 0.014, 10, handleX, 1.28, leafT / 2 + 0.019, `bank-front-door-handle-rose-${tag}`).rotation.x = Math.PI / 2;
-    addCyl2(hinge, M3.brassDark, 0.02, 0.02, 0.34, 10, handleX, 1.28, -leafT / 2 - 0.024, `bank-front-door-handle-in-${tag}`).rotation.x = Math.PI / 2;
-    addCyl2(hinge, M3.brassDark, 0.045, 0.045, 0.014, 10, handleX, 1.28, -leafT / 2 - 8e-3, `bank-front-door-handle-rose-in-${tag}`).rotation.x = Math.PI / 2;
+    addCyl2(hinge, M5.brass, 0.02, 0.02, 0.34, 10, handleX, 1.28, leafT / 2 + 0.024, `bank-front-door-handle-${tag}`).rotation.x = Math.PI / 2;
+    addCyl2(hinge, M5.brass, 0.045, 0.045, 0.014, 10, handleX, 1.28, leafT / 2 + 0.019, `bank-front-door-handle-rose-${tag}`).rotation.x = Math.PI / 2;
+    addCyl2(hinge, M5.brassDark, 0.02, 0.02, 0.34, 10, handleX, 1.28, -leafT / 2 - 0.024, `bank-front-door-handle-in-${tag}`).rotation.x = Math.PI / 2;
+    addCyl2(hinge, M5.brassDark, 0.045, 0.045, 0.014, 10, handleX, 1.28, -leafT / 2 - 8e-3, `bank-front-door-handle-rose-in-${tag}`).rotation.x = Math.PI / 2;
   }
   for (const side of [-1, 1]) {
     const hx = side * (dw / 2 - hingeOffX);
     [bottomLift + 0.4, bottomLift + leafH - 0.4].forEach((sy, i) => {
-      const knuckle = addCyl2(g, M3.brassDark, 0.022, 0.022, 0.1, 10, hx, sy, 0, `bank-front-door-knuckle-${side < 0 ? "w" : "e"}-${i === 0 ? "low" : "high"}`);
+      const knuckle = addCyl2(g, M5.brassDark, 0.022, 0.022, 0.1, 10, hx, sy, 0, `bank-front-door-knuckle-${side < 0 ? "w" : "e"}-${i === 0 ? "low" : "high"}`);
       knuckle.rotation.z = Math.PI / 2;
     });
   }
@@ -26730,15 +26860,15 @@ function setBankFrontDoorOpen(root, t) {
 }
 var BankWallFactory = class {
   create(definition) {
-    const M3 = createBankMaterials();
+    const M5 = createBankMaterials();
     const meta = definition.metadata;
     const repeat = Array.isArray(meta.brickRepeat) ? meta.brickRepeat : [8, 8];
     if (meta.plaster === true) {
-      applyMap(M3.stoneCream, stoneTexture(repeat[0] ?? 4, repeat[1] ?? 4));
+      applyMap(M5.stoneCream, stoneTexture(repeat[0] ?? 4, repeat[1] ?? 4));
     } else {
-      applyMap(M3.brick, brickTexture(repeat[0] ?? 8, repeat[1] ?? 8));
+      applyMap(M5.brick, brickTexture(repeat[0] ?? 8, repeat[1] ?? 8));
     }
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.brick);
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.brick);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "bank-wall-segment";
@@ -26747,11 +26877,11 @@ var BankWallFactory = class {
 };
 var BankStairFactory = class {
   create(definition) {
-    const M3 = createBankMaterials();
+    const M5 = createBankMaterials();
     const meta = definition.metadata;
     const repeat = Array.isArray(meta.stoneRepeat) ? meta.stoneRepeat : [4, 1];
-    applyMap(M3.stoneCream, stoneTexture(repeat[0] ?? 4, repeat[1] ?? 1));
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.stoneCream);
+    applyMap(M5.stoneCream, stoneTexture(repeat[0] ?? 4, repeat[1] ?? 1));
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.stoneCream);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "bank-stair-block";
@@ -26760,11 +26890,11 @@ var BankStairFactory = class {
 };
 var BankFloorFactory = class {
   create(definition) {
-    const M3 = createBankMaterials();
+    const M5 = createBankMaterials();
     const meta = definition.metadata;
     const repeat = Array.isArray(meta.floorRepeat) ? meta.floorRepeat : [9, 7];
-    applyMap(M3.floorStone, flagstoneTexture(repeat[0] ?? 9, repeat[1] ?? 7));
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.floorStone);
+    applyMap(M5.floorStone, flagstoneTexture(repeat[0] ?? 9, repeat[1] ?? 7));
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.floorStone);
     mesh5.receiveShadow = true;
     mesh5.name = "bank-floor-slab";
     return mesh5;
@@ -27808,10 +27938,10 @@ function buildSheriffMapObjects(originX, originZ) {
   const floorY = L2.floorTop;
   const t = L2.wallThickness;
   const pt = L2.partitions;
-  const defs2 = [];
+  const defs3 = [];
   let extraSegCursor = 0;
   const push = (uuid, assetType, name, transform, metadata) => {
-    defs2.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
+    defs3.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
   };
   const wall = (uuid, name, x, y, z, sx, sy, sz, repeat) => push(
     uuid,
@@ -28093,7 +28223,7 @@ function buildSheriffMapObjects(originX, originZ) {
     rotation: identity3(),
     scale: { x: 1, y: 1, z: 1 }
   }, { collider: false });
-  return defs2;
+  return defs3;
 }
 
 // src/assets/sheriff/SheriffMaterials.ts
@@ -29301,7 +29431,7 @@ function signBoardTexture(text, sub) {
   }
   return toTexture2(canvas, 1, 1);
 }
-function buildWindowAssembly(M3, width, height, bars, shutters) {
+function buildWindowAssembly(M5, width, height, bars, shutters) {
   const g = new Group();
   const hw = width / 2;
   const hh = height / 2;
@@ -29310,43 +29440,43 @@ function buildWindowAssembly(M3, width, height, bars, shutters) {
   const casing = 0.09;
   const face = SHERIFF_LAYOUT.wallThickness / 2;
   const lw = width + lining * 2;
-  addBox3(g, M3.trim, lw, lining * 2, liningDepth, 0, -hh, 0, "window-liner-bottom");
-  addBox3(g, M3.trim, lw, lining * 2, liningDepth, 0, hh, 0, "window-liner-top");
-  addBox3(g, M3.trim, lining * 2, height - lining * 2, liningDepth, -hw, 0, 0, "window-liner-left");
-  addBox3(g, M3.trim, lining * 2, height - lining * 2, liningDepth, hw, 0, 0, "window-liner-right");
-  const glass = addBox3(g, M3.glass, width - lining * 2, height - lining * 2, 0.02, 0, 0, 0, "window-glass");
+  addBox3(g, M5.trim, lw, lining * 2, liningDepth, 0, -hh, 0, "window-liner-bottom");
+  addBox3(g, M5.trim, lw, lining * 2, liningDepth, 0, hh, 0, "window-liner-top");
+  addBox3(g, M5.trim, lining * 2, height - lining * 2, liningDepth, -hw, 0, 0, "window-liner-left");
+  addBox3(g, M5.trim, lining * 2, height - lining * 2, liningDepth, hw, 0, 0, "window-liner-right");
+  const glass = addBox3(g, M5.glass, width - lining * 2, height - lining * 2, 0.02, 0, 0, 0, "window-glass");
   glass.castShadow = false;
-  addBox3(g, M3.trim, 0.05, height - lining * 2 - 4e-3, 0.02, 0, 0, 0.022, "window-muntin-v");
-  addBox3(g, M3.trim, width - lining * 2 - 4e-3, 0.05, 0.02, 0, 0, 0.022, "window-muntin-h");
+  addBox3(g, M5.trim, 0.05, height - lining * 2 - 4e-3, 0.02, 0, 0, 0.022, "window-muntin-v");
+  addBox3(g, M5.trim, width - lining * 2 - 4e-3, 0.05, 0.02, 0, 0, 0.022, "window-muntin-h");
   const casingZ = liningDepth / 2 + 0.0125;
-  addBox3(g, M3.trim, lw + casing * 2, casing, 0.025, 0, hh + lining + casing / 2, casingZ, "window-casing-top");
-  addBox3(g, M3.trim, lw + casing * 2, casing, 0.025, 0, -hh - lining - casing / 2, casingZ, "window-casing-bottom");
-  addBox3(g, M3.trim, casing, height + lining * 2, 0.025, -hw - lining - casing / 2, 0, casingZ, "window-casing-left");
-  addBox3(g, M3.trim, casing, height + lining * 2, 0.025, hw + lining + casing / 2, 0, casingZ, "window-casing-right");
-  addBox3(g, M3.trim, lw + casing * 2 + 0.08, 0.07, 0.18, 0, -hh - lining - 0.09, face + 0.08, "window-sill");
-  addBox3(g, M3.trim, lw + casing * 2 + 0.08, 0.1, 0.1, 0, hh + lining + 0.05, face + 0.03, "window-lintel");
-  addBox3(g, M3.trim, lw + casing * 2, 0.05, 0.14, 0, -hh - lining - 0.025, -face - 0.07, "window-sill-inner");
+  addBox3(g, M5.trim, lw + casing * 2, casing, 0.025, 0, hh + lining + casing / 2, casingZ, "window-casing-top");
+  addBox3(g, M5.trim, lw + casing * 2, casing, 0.025, 0, -hh - lining - casing / 2, casingZ, "window-casing-bottom");
+  addBox3(g, M5.trim, casing, height + lining * 2, 0.025, -hw - lining - casing / 2, 0, casingZ, "window-casing-left");
+  addBox3(g, M5.trim, casing, height + lining * 2, 0.025, hw + lining + casing / 2, 0, casingZ, "window-casing-right");
+  addBox3(g, M5.trim, lw + casing * 2 + 0.08, 0.07, 0.18, 0, -hh - lining - 0.09, face + 0.08, "window-sill");
+  addBox3(g, M5.trim, lw + casing * 2 + 0.08, 0.1, 0.1, 0, hh + lining + 0.05, face + 0.03, "window-lintel");
+  addBox3(g, M5.trim, lw + casing * 2, 0.05, 0.14, 0, -hh - lining - 0.025, -face - 0.07, "window-sill-inner");
   if (shutters) {
     const sw = hw * 0.72;
     for (const side of [-1, 1]) {
       const sx = side * (hw + lining + casing + sw / 2 + 0.02);
-      addBox3(g, M3.trim, sw, height + lining * 2, 0.05, sx, 0, face + 0.025, "shutter");
+      addBox3(g, M5.trim, sw, height + lining * 2, 0.05, sx, 0, face + 0.025, "shutter");
       for (let i = 0; i < 7; i++) {
-        addBox3(g, M3.trim, sw - 0.04, 0.025, 0.03, sx, -hh + 0.09 + i * (height - 0.18) / 6, face + 0.055, "shutter-slat");
+        addBox3(g, M5.trim, sw - 0.04, 0.025, 0.03, sx, -hh + 0.09 + i * (height - 0.18) / 6, face + 0.055, "shutter-slat");
       }
     }
   }
   if (bars) {
     for (let i = 0; i < 4; i++) {
       const bx = -hw + 0.06 + i * (width - 0.12) / 3;
-      addCyl3(g, M3.iron, 0.016, 0.016, height + 0.1, 8, bx, 0, face + 0.085, "jail-bar");
+      addCyl3(g, M5.iron, 0.016, 0.016, height + 0.1, 8, bx, 0, face + 0.085, "jail-bar");
     }
-    addBox3(g, M3.iron, width + 0.1, 0.06, 0.04, 0, 0, face + 0.085, "jail-bar-strap");
+    addBox3(g, M5.iron, width + 0.1, 0.06, 0.04, 0, 0, face + 0.085, "jail-bar-strap");
   }
   return g;
 }
 function buildSheriffShell(dims) {
-  const M3 = createSheriffMaterials();
+  const M5 = createSheriffMaterials();
   const L2 = SHERIFF_LAYOUT;
   const g = new Group();
   g.name = "sheriff-building";
@@ -29357,24 +29487,24 @@ function buildSheriffShell(dims) {
   const floorTop = L2.floorTop;
   const skirtH = 0.24;
   const skirtY = skirtH / 2 - 0.015;
-  addBox3(g, M3.stone, w + 0.06, skirtH, 0.09, 0, skirtY, wallHalfD + 0.075, "foundation-south");
-  addBox3(g, M3.stone, w + 0.06, skirtH, 0.09, 0, skirtY, -wallHalfD - 0.075, "foundation-north");
-  addBox3(g, M3.stone, 0.09, skirtH, d - t0(L2) - 0.06, -wallHalfW - 0.075, skirtY, 0, "foundation-west");
-  addBox3(g, M3.stone, 0.09, skirtH, d - t0(L2) - 0.06, wallHalfW + 0.075, skirtY, 0, "foundation-east");
+  addBox3(g, M5.stone, w + 0.06, skirtH, 0.09, 0, skirtY, wallHalfD + 0.075, "foundation-south");
+  addBox3(g, M5.stone, w + 0.06, skirtH, 0.09, 0, skirtY, -wallHalfD - 0.075, "foundation-north");
+  addBox3(g, M5.stone, 0.09, skirtH, d - t0(L2) - 0.06, -wallHalfW - 0.075, skirtY, 0, "foundation-west");
+  addBox3(g, M5.stone, 0.09, skirtH, d - t0(L2) - 0.06, wallHalfW + 0.075, skirtY, 0, "foundation-east");
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      addBox3(g, M3.trim, 0.18, h + 0.04, 0.18, sx * (wallHalfW + 0.045), (h + 0.04) / 2 - 0.025, sz * (wallHalfD + 0.045), `corner-board-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
+      addBox3(g, M5.trim, 0.18, h + 0.04, 0.18, sx * (wallHalfW + 0.045), (h + 0.04) / 2 - 0.025, sz * (wallHalfD + 0.045), `corner-board-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
     }
   }
-  addBox3(g, M3.trim, w + 0.1, 0.12, 0.06, 0, 0.19, wallHalfD + 0.105, "water-table-south");
-  addBox3(g, M3.trim, w + 0.1, 0.12, 0.06, 0, 0.19, -wallHalfD - 0.105, "water-table-north");
+  addBox3(g, M5.trim, w + 0.1, 0.12, 0.06, 0, 0.19, wallHalfD + 0.105, "water-table-south");
+  addBox3(g, M5.trim, w + 0.1, 0.12, 0.06, 0, 0.19, -wallHalfD - 0.105, "water-table-north");
   for (const sx of [-1, 1]) {
-    addBox3(g, M3.trim, 0.06, 0.12, d - t0(L2) + 0.1, sx * (wallHalfW + 0.105), 0.19, 0, `water-table-${sx < 0 ? "west" : "east"}`);
+    addBox3(g, M5.trim, 0.06, 0.12, d - t0(L2) + 0.1, sx * (wallHalfW + 0.105), 0.19, 0, `water-table-${sx < 0 ? "west" : "east"}`);
   }
-  addBox3(g, M3.trim, w + 0.12, 0.24, 0.05, 0, h - 0.1, wallHalfD + 0.07, "frieze-south");
-  addBox3(g, M3.trim, w + 0.12, 0.24, 0.05, 0, h - 0.1, -wallHalfD - 0.07, "frieze-north");
+  addBox3(g, M5.trim, w + 0.12, 0.24, 0.05, 0, h - 0.1, wallHalfD + 0.07, "frieze-south");
+  addBox3(g, M5.trim, w + 0.12, 0.24, 0.05, 0, h - 0.1, -wallHalfD - 0.07, "frieze-north");
   for (const sx of [-1, 1]) {
-    addBox3(g, M3.trim, 0.05, 0.24, d - t0(L2) + 0.12, sx * (wallHalfW + 0.07), h - 0.1, 0, `frieze-${sx < 0 ? "west" : "east"}`);
+    addBox3(g, M5.trim, 0.05, 0.24, d - t0(L2) + 0.12, sx * (wallHalfW + 0.07), h - 0.1, 0, `frieze-${sx < 0 ? "west" : "east"}`);
   }
   {
     const rise = L2.roof.ridgeY - L2.roof.eaveY;
@@ -29384,7 +29514,7 @@ function buildSheriffShell(dims) {
     const midZ = runZ / 2;
     const midY = (L2.roof.ridgeY + (L2.roof.eaveY - (runZ - wallHalfD) * (rise / wallHalfD))) / 2;
     for (const sz of [-1, 1]) {
-      const slab = addBox3(g, M3.shingle, w + L2.roof.overhangX * 2, L2.roof.thickness, slopeLen, 0, midY, sz * midZ, `roof-slab-${sz < 0 ? "north" : "south"}`);
+      const slab = addBox3(g, M5.shingle, w + L2.roof.overhangX * 2, L2.roof.thickness, slopeLen, 0, midY, sz * midZ, `roof-slab-${sz < 0 ? "north" : "south"}`);
       slab.rotation.x = sz > 0 ? angle : -angle;
     }
     const shape = new Shape();
@@ -29394,7 +29524,7 @@ function buildSheriffShell(dims) {
     shape.closePath();
     const geo2 = new ExtrudeGeometry(shape, { depth: L2.wallThickness, bevelEnabled: false });
     for (const sx of [-1, 1]) {
-      const infill = new Mesh(geo2, M3.clapboard);
+      const infill = new Mesh(geo2, M5.clapboard);
       infill.rotation.y = sx > 0 ? -Math.PI / 2 : Math.PI / 2;
       infill.position.set(sx * (wallHalfW + L2.wallThickness / 2), h, 0);
       infill.castShadow = true;
@@ -29402,11 +29532,11 @@ function buildSheriffShell(dims) {
       infill.name = `gable-infill-${sx < 0 ? "west" : "east"}`;
       g.add(infill);
     }
-    addBox3(g, M3.iron, w + L2.roof.overhangX * 2, 0.07, 0.34, 0, L2.roof.ridgeY + 0.02, 0, "ridge-cap");
+    addBox3(g, M5.iron, w + L2.roof.overhangX * 2, 0.07, 0.34, 0, L2.roof.ridgeY + 0.02, 0, "ridge-cap");
     const eaveOuterZ = wallHalfD + L2.roof.overhangZ;
     const eaveY = L2.roof.eaveY - L2.roof.overhangZ * (rise / wallHalfD);
     for (const sz of [-1, 1]) {
-      addBox3(g, M3.trim, w + L2.roof.overhangX * 2, 0.2, 0.06, 0, eaveY - 0.06, sz * (eaveOuterZ + 0.03), `eave-fascia-${sz < 0 ? "north" : "south"}`);
+      addBox3(g, M5.trim, w + L2.roof.overhangX * 2, 0.2, 0.06, 0, eaveY - 0.06, sz * (eaveOuterZ + 0.03), `eave-fascia-${sz < 0 ? "north" : "south"}`);
     }
   }
   {
@@ -29419,20 +29549,20 @@ function buildSheriffShell(dims) {
     const pcz = (pz0 + pz1) / 2;
     const postH = L2.porch.roofBackY - 0.1 - floorTop;
     for (const px2 of [px0 + 0.35, px1 - 0.35]) {
-      addBox3(g, M3.trim, L2.porch.postSection, postH, L2.porch.postSection, px2, floorTop + postH / 2, pz1 - 0.18, "porch-post");
-      addBox3(g, M3.trim, L2.porch.postSection + 0.08, 0.07, L2.porch.postSection + 0.08, px2, floorTop + postH + 0.035, pz1 - 0.18, "porch-post-cap");
+      addBox3(g, M5.trim, L2.porch.postSection, postH, L2.porch.postSection, px2, floorTop + postH / 2, pz1 - 0.18, "porch-post");
+      addBox3(g, M5.trim, L2.porch.postSection + 0.08, 0.07, L2.porch.postSection + 0.08, px2, floorTop + postH + 0.035, pz1 - 0.18, "porch-post-cap");
     }
     const roofLen = pz1 - pz0 + 0.24;
-    const shed = addBox3(g, M3.shingle, pw + 0.5, 0.09, roofLen, pc, (L2.porch.roofFrontY + L2.porch.roofBackY) / 2 + 0.045, pcz + 0.12, "porch-roof");
+    const shed = addBox3(g, M5.shingle, pw + 0.5, 0.09, roofLen, pc, (L2.porch.roofFrontY + L2.porch.roofBackY) / 2 + 0.045, pcz + 0.12, "porch-roof");
     shed.rotation.x = Math.atan2(L2.porch.roofBackY - L2.porch.roofFrontY, roofLen);
     for (const px2 of [px0 + 0.55, px1 - 0.55]) {
       for (const pz2 of [pz0 + 0.5, pz1 - 0.35]) {
-        addBox3(g, M3.stone, 0.3, 0.065, 0.3, px2, 0.0325, pz2, "porch-pier");
+        addBox3(g, M5.stone, 0.3, 0.065, 0.3, px2, 0.0325, pz2, "porch-pier");
       }
     }
-    addBox3(g, M3.trim, pw + 0.5, 0.22, 0.06, pc, L2.porch.roofFrontY - 0.07, pz1 + 0.24 + 0, "porch-fascia");
+    addBox3(g, M5.trim, pw + 0.5, 0.22, 0.06, pc, L2.porch.roofFrontY - 0.07, pz1 + 0.24 + 0, "porch-fascia");
     for (const bx of [px0 + 0.35, px1 - 0.35]) {
-      const bracket = addBox3(g, M3.trim, 0.07, 0.3, 0.5, bx, L2.porch.roofFrontY - 0.25, pz1 - 0.05, "porch-bracket");
+      const bracket = addBox3(g, M5.trim, 0.07, 0.3, 0.5, bx, L2.porch.roofFrontY - 0.25, pz1 - 0.05, "porch-bracket");
       bracket.rotation.x = -0.5;
     }
   }
@@ -29445,16 +29575,16 @@ function buildSheriffShell(dims) {
     const innerZ = facadeZ - L2.wallThickness + 0.01;
     const outerZ = facadeZ - 0.01;
     for (const [sz, z] of [[-1, innerZ], [1, outerZ]]) {
-      addBox3(g, M3.trim, dw + casing * 2, casing, casingDepth, dxm, floorTop + dh + casing / 2 - 0.02, z, `door-casing-top-${sz < 0 ? "in" : "out"}`);
-      addBox3(g, M3.trim, casing, dh, casingDepth, L2.frontDoor.xMin - casing / 2 + 0.01, floorTop + dh / 2, z, `door-casing-west-${sz < 0 ? "in" : "out"}`);
-      addBox3(g, M3.trim, casing, dh, casingDepth, L2.frontDoor.xMax + casing / 2 - 0.01, floorTop + dh / 2, z, `door-casing-east-${sz < 0 ? "in" : "out"}`);
+      addBox3(g, M5.trim, dw + casing * 2, casing, casingDepth, dxm, floorTop + dh + casing / 2 - 0.02, z, `door-casing-top-${sz < 0 ? "in" : "out"}`);
+      addBox3(g, M5.trim, casing, dh, casingDepth, L2.frontDoor.xMin - casing / 2 + 0.01, floorTop + dh / 2, z, `door-casing-west-${sz < 0 ? "in" : "out"}`);
+      addBox3(g, M5.trim, casing, dh, casingDepth, L2.frontDoor.xMax + casing / 2 - 0.01, floorTop + dh / 2, z, `door-casing-east-${sz < 0 ? "in" : "out"}`);
     }
   }
   {
     const sign2 = new Group();
     sign2.name = "sheriff-sign";
     const pc = (L2.porch.xMin + L2.porch.xMax) / 2;
-    addBox3(sign2, M3.iron, 3.9, 1.06, 0.08, pc, 3.98, facadeZ + 0, "sign-backboard");
+    addBox3(sign2, M5.iron, 3.9, 1.06, 0.08, pc, 3.98, facadeZ + 0, "sign-backboard");
     const board = new Mesh(new PlaneGeometry(3.7, 0.9), new MeshStandardMaterial({
       color: 16777215,
       map: signBoardTexture("SHERIFF") ?? void 0,
@@ -29483,7 +29613,7 @@ function buildSheriffShell(dims) {
     g.add(plaque);
   }
   for (const win of L2.windows) {
-    const asm = buildWindowAssembly(M3, win.width, win.height, win.bars, win.shutters);
+    const asm = buildWindowAssembly(M5, win.width, win.height, win.bars, win.shutters);
     const midY = win.sill + win.height / 2;
     switch (win.wall) {
       case "south":
@@ -29512,9 +29642,9 @@ function buildSheriffShell(dims) {
     const roofYAt = L2.roof.eaveY + (wallHalfD - Math.abs(sz)) * (rise / wallHalfD) - (wallHalfD - Math.abs(sz) > 0 ? 0 : 0);
     const pipeBottom = floorTop + 1.61;
     const pipeTop = roofYAt + 0.35;
-    addCyl3(g, M3.iron, 0.055, 0.055, pipeTop - pipeBottom, 12, sx, (pipeBottom + pipeTop) / 2, sz, "stovepipe");
-    addCyl3(g, M3.iron, 0.16, 0.09, 0.14, 12, sx, roofYAt + 0.04, sz, "stovepipe-flashing");
-    addCyl3(g, M3.iron, 0.12, 0.12, 0.05, 12, sx, pipeTop + 0.06, sz, "stovepipe-cap");
+    addCyl3(g, M5.iron, 0.055, 0.055, pipeTop - pipeBottom, 12, sx, (pipeBottom + pipeTop) / 2, sz, "stovepipe");
+    addCyl3(g, M5.iron, 0.16, 0.09, 0.14, 12, sx, roofYAt + 0.04, sz, "stovepipe-flashing");
+    addCyl3(g, M5.iron, 0.12, 0.12, 0.05, 12, sx, pipeTop + 0.06, sz, "stovepipe-cap");
   }
   return g;
 }
@@ -29523,12 +29653,12 @@ function t0(_L) {
 }
 var SheriffWallFactory = class {
   create(definition) {
-    const M3 = createSheriffMaterials();
+    const M5 = createSheriffMaterials();
     const meta = definition.metadata;
     const material = typeof meta.material === "string" ? meta.material : "clapboard";
-    let mat = M3.clapboard;
+    let mat = M5.clapboard;
     if (material === "iron")
-      mat = M3.iron;
+      mat = M5.iron;
     const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), mat);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
@@ -29538,8 +29668,8 @@ var SheriffWallFactory = class {
 };
 var SheriffFloorFactory = class {
   create(_definition) {
-    const M3 = createSheriffMaterials();
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.plank);
+    const M5 = createSheriffMaterials();
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.plank);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "sheriff-floor-slab";
@@ -29548,8 +29678,8 @@ var SheriffFloorFactory = class {
 };
 var SheriffCeilingFactory = class {
   create(_definition) {
-    const M3 = createSheriffMaterials();
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.plankDark);
+    const M5 = createSheriffMaterials();
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.plankDark);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "sheriff-ceiling-slab";
@@ -29558,7 +29688,7 @@ var SheriffCeilingFactory = class {
 };
 var SheriffBarSegmentFactory = class {
   create(definition) {
-    const M3 = createSheriffMaterials();
+    const M5 = createSheriffMaterials();
     const meta = definition.metadata;
     const len = Number(meta.length);
     const height = Number(meta.height);
@@ -29572,13 +29702,13 @@ var SheriffBarSegmentFactory = class {
     g.name = "sheriff-bar-segment";
     const rail = 0.07;
     const barH = H - rail - 0.09;
-    addBox3(g, M3.iron, 0.1 / sx, rail / sy, L2 / sz, 0, (H / 2 - rail / 2) / sy, 0, "bar-rail-top");
-    addBox3(g, M3.iron, 0.1 / sx, 0.09 / sy, L2 / sz, 0, -(H / 2 - 0.045) / sy, 0, "bar-rail-bottom");
+    addBox3(g, M5.iron, 0.1 / sx, rail / sy, L2 / sz, 0, (H / 2 - rail / 2) / sy, 0, "bar-rail-top");
+    addBox3(g, M5.iron, 0.1 / sx, 0.09 / sy, L2 / sz, 0, -(H / 2 - 0.045) / sy, 0, "bar-rail-bottom");
     const barGeo = new BoxGeometry(0.03 / sx, barH / sy, 0.03 / sz);
     const count = Math.max(2, Math.round(L2 / 0.14));
     for (let i = 0; i <= count; i++) {
       const z = (-L2 / 2 + i * L2 / count) / sz;
-      const bar = new Mesh(barGeo, M3.iron);
+      const bar = new Mesh(barGeo, M5.iron);
       bar.position.set(0, 0, z);
       bar.castShadow = true;
       bar.name = `bar-${i}`;
@@ -29588,19 +29718,19 @@ var SheriffBarSegmentFactory = class {
   }
 };
 function buildSheriffLantern() {
-  const M3 = createSheriffMaterials();
+  const M5 = createSheriffMaterials();
   const g = new Group();
   g.name = "sheriff-lantern";
-  addBox3(g, M3.iron, 0.14, 0.2, 0.03, 0, 0, 0.015, "lantern-backplate");
-  const arm = addCyl3(g, M3.iron, 0.014, 0.014, 0.18, 8, 0, 0.08, 0.1, "lantern-arm");
+  addBox3(g, M5.iron, 0.14, 0.2, 0.03, 0, 0, 0.015, "lantern-backplate");
+  const arm = addCyl3(g, M5.iron, 0.014, 0.014, 0.18, 8, 0, 0.08, 0.1, "lantern-arm");
   arm.rotation.x = Math.PI / 2;
-  addBox3(g, M3.iron, 0.12, 0.02, 0.12, 0, -0.02, 0.18, "lantern-floor");
-  const glass = addBox3(g, M3.glassWarm, 0.09, 0.14, 0.09, 0, 0.06, 0.18, "lantern-glass");
+  addBox3(g, M5.iron, 0.12, 0.02, 0.12, 0, -0.02, 0.18, "lantern-floor");
+  const glass = addBox3(g, M5.glassWarm, 0.09, 0.14, 0.09, 0, 0.06, 0.18, "lantern-glass");
   glass.castShadow = false;
   for (const sx of [-1, 1]) {
-    addBox3(g, M3.iron, 0.012, 0.16, 0.012, sx * 0.045, 0.06, 0.14, "lantern-post");
+    addBox3(g, M5.iron, 0.012, 0.16, 0.012, sx * 0.045, 0.06, 0.14, "lantern-post");
   }
-  addBox3(g, M3.iron, 0.12, 0.02, 0.12, 0, 0.15, 0.18, "lantern-top");
+  addBox3(g, M5.iron, 0.12, 0.02, 0.12, 0, 0.15, 0.18, "lantern-top");
   const flame = new Mesh(
     new SphereGeometry(0.018, 8, 8),
     new MeshStandardMaterial({ color: 16768922, emissive: 16757575, emissiveIntensity: 1.6 })
@@ -30044,13 +30174,13 @@ function buildStableMapObjects(originX, originZ) {
   const L2 = STABLE_LAYOUT;
   const floorY = L2.floorTop;
   const t = L2.wallThickness;
-  const defs2 = [];
+  const defs3 = [];
   let wallCursor = 0;
   let frontCursor = 0;
   const push = (uuid, assetType, name, transform, metadata) => {
-    defs2.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
+    defs3.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
   };
-  const box4 = (uuid, assetType, name, x, y, z, sx, sy, sz, metadata = {}, ry = 0) => push(
+  const box5 = (uuid, assetType, name, x, y, z, sx, sy, sz, metadata = {}, ry = 0) => push(
     uuid,
     assetType,
     name,
@@ -30059,9 +30189,9 @@ function buildStableMapObjects(originX, originZ) {
   );
   const wallBox = (uuid, name, x, y, z, sx, sy, sz, material = "siding") => {
     const id = uuid ?? STABLE_WALL_SEGMENT_UUIDS[wallCursor++];
-    box4(id, "stable-wall", name, x, y, z, sx, sy, sz, { material });
+    box5(id, "stable-wall", name, x, y, z, sx, sy, sz, { material });
   };
-  box4(
+  box5(
     STABLE_OBJECT_IDS.floor,
     "stable-floor",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u06A9\u0641 \u0686\u0648\u0628\u06CC",
@@ -30073,7 +30203,7 @@ function buildStableMapObjects(originX, originZ) {
     L2.depth - t - 0.05,
     { plankRepeat: [10, 12] }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.thresholdGate,
     "stable-floor",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0622\u0633\u062A\u0627\u0646\u0647 \u062F\u0631\u0648\u0627\u0632\u0647",
@@ -30084,7 +30214,7 @@ function buildStableMapObjects(originX, originZ) {
     L2.floorSlabThickness,
     t
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.thresholdStaff,
     "stable-floor",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0622\u0633\u062A\u0627\u0646\u0647 \u062F\u0631 \u06A9\u0627\u0631\u06A9\u0646\u0627\u0646",
@@ -30138,7 +30268,7 @@ function buildStableMapObjects(originX, originZ) {
     H,
     t
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.wallSouthGateHeader,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0628\u0627\u0644\u0627\u06CC \u062F\u0631\u0648\u0627\u0632\u0647",
@@ -30308,7 +30438,7 @@ function buildStableMapObjects(originX, originZ) {
     const [z1, z2] = side === -1 ? [STABLE_OBJECT_IDS.divWest1, STABLE_OBJECT_IDS.divWest2] : [STABLE_OBJECT_IDS.divEast1, STABLE_OBJECT_IDS.divEast2];
     const [b1, b2] = side === -1 ? [STABLE_OBJECT_IDS.barWest1, STABLE_OBJECT_IDS.barWest2] : [STABLE_OBJECT_IDS.barEast1, STABLE_OBJECT_IDS.barEast2];
     for (const [pi, pz2] of [[0, -3.6], [1, -0.35]]) {
-      box4(
+      box5(
         side === -1 ? pi === 0 ? z1 : z2 : pi === 0 ? z1 : z2,
         "stable-wall",
         `\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u062C\u062F\u0627\u06A9\u0646\u0646\u062F\u0647 (${side < 0 ? "\u063A\u0631\u0628" : "\u0634\u0631\u0642"} ${pi + 1})`,
@@ -30320,7 +30450,7 @@ function buildStableMapObjects(originX, originZ) {
         L2.stall.frontThickness,
         { material: "plankDark" }
       );
-      box4(
+      box5(
         side === -1 ? pi === 0 ? b1 : b2 : pi === 0 ? b1 : b2,
         "stable-bar-wall",
         `\u0627\u0633\u0637\u0628\u0644 \u2014 \u0646\u0631\u062F\u0647 \u062C\u062F\u0627\u06A9\u0646\u0646\u062F\u0647 (${side < 0 ? "\u063A\u0631\u0628" : "\u0634\u0631\u0642"} ${pi + 1})`,
@@ -30340,7 +30470,7 @@ function buildStableMapObjects(originX, originZ) {
   const roomCx = (L2.innerHalfX + L2.rooms.wallX + rt / 2) / 2;
   const dg = L2.rooms.doorGap;
   const roomH = H - floorY;
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomDividerTack,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u06CC\u0631\u0627\u0642",
@@ -30352,7 +30482,7 @@ function buildStableMapObjects(originX, originZ) {
     rt,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomWallTackNorth,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u06CC\u0631\u0627\u0642 (\u06AF\u0630\u0631)",
@@ -30364,7 +30494,7 @@ function buildStableMapObjects(originX, originZ) {
     dg.zMin - rz,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomHeaderTack,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0628\u0627\u0644\u0627\u06CC \u062F\u0631 \u0627\u062A\u0627\u0642 \u06CC\u0631\u0627\u0642",
@@ -30376,7 +30506,7 @@ function buildStableMapObjects(originX, originZ) {
     dg.zMax - dg.zMin,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomWallTackSouth,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u06CC\u0631\u0627\u0642 (\u062C\u0646\u0648\u0628)",
@@ -30388,7 +30518,7 @@ function buildStableMapObjects(originX, originZ) {
     L2.innerHalfZ - dg.zMax,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomDividerFeed,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u0639\u0644\u0648\u0641\u0647",
@@ -30400,7 +30530,7 @@ function buildStableMapObjects(originX, originZ) {
     rt,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomWallFeedNorth,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u0639\u0644\u0648\u0641\u0647 (\u06AF\u0630\u0631)",
@@ -30412,7 +30542,7 @@ function buildStableMapObjects(originX, originZ) {
     dg.zMin - rz,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomHeaderFeed,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0628\u0627\u0644\u0627\u06CC \u062F\u0631 \u0627\u062A\u0627\u0642 \u0639\u0644\u0648\u0641\u0647",
@@ -30424,7 +30554,7 @@ function buildStableMapObjects(originX, originZ) {
     dg.zMax - dg.zMin,
     { material: "plankDark" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.roomWallFeedSouth,
     "stable-wall",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u062F\u06CC\u0648\u0627\u0631 \u0627\u062A\u0627\u0642 \u0639\u0644\u0648\u0641\u0647 (\u062C\u0646\u0648\u0628)",
@@ -30442,7 +30572,7 @@ function buildStableMapObjects(originX, originZ) {
     const gapMax = s.zMax - front.doorGapSouth;
     const frontCx = s.side * L2.stallFrontX;
     const segH = front.grillTopY - floorY;
-    box4(
+    box5(
       STABLE_FRONT_SEGMENT_UUIDS[frontCursor++],
       "stable-stall-front",
       `\u0627\u0633\u0637\u0628\u0644 \u2014 \u062C\u0644\u0648\u06CC \u062C\u0627\u06CC\u06AF\u0627\u0647 ${String(s.index).padStart(2, "0")} (\u0634\u0645\u0627\u0644)`,
@@ -30455,7 +30585,7 @@ function buildStableMapObjects(originX, originZ) {
       { wainscot: true, wainscotH: front.wainscotH, length: gapMin - s.zMin, height: segH, floorY }
     );
     const bH = front.grillTopY - floorY - front.doorH;
-    box4(
+    box5(
       STABLE_FRONT_SEGMENT_UUIDS[frontCursor++],
       "stable-stall-front",
       `\u0627\u0633\u0637\u0628\u0644 \u2014 \u062C\u0644\u0648\u06CC \u062C\u0627\u06CC\u06AF\u0627\u0647 ${String(s.index).padStart(2, "0")} (\u0628\u0627\u0644\u0627\u06CC \u062F\u0631)`,
@@ -30467,7 +30597,7 @@ function buildStableMapObjects(originX, originZ) {
       front.doorGapW,
       { wainscot: false, length: front.doorGapW, height: bH, floorY: floorY + front.doorH }
     );
-    box4(
+    box5(
       STABLE_FRONT_SEGMENT_UUIDS[frontCursor++],
       "stable-stall-front",
       `\u0627\u0633\u0637\u0628\u0644 \u2014 \u062C\u0644\u0648\u06CC \u062C\u0627\u06CC\u06AF\u0627\u0647 ${String(s.index).padStart(2, "0")} (\u067E\u0627\u06CC\u0647)`,
@@ -30498,7 +30628,7 @@ function buildStableMapObjects(originX, originZ) {
     STABLE_OBJECT_IDS.trough6
   ];
   for (const [i, s] of STABLE_STALLS.entries()) {
-    box4(
+    box5(
       troughIds[i],
       "stable-feed-trough",
       `\u0627\u0633\u0637\u0628\u0644 \u2014 \u0622\u062E\u0648\u0631 \u062C\u0627\u06CC\u06AF\u0627\u0647 ${String(s.index).padStart(2, "0")}`,
@@ -30511,7 +30641,7 @@ function buildStableMapObjects(originX, originZ) {
       { hayLevel: s.troughHay, axis: "z" }
     );
   }
-  box4(
+  box5(
     STABLE_OBJECT_IDS.waterTrough,
     "stable-water-trough",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0622\u0628\u0634\u062E\u0648\u0631",
@@ -30523,7 +30653,7 @@ function buildStableMapObjects(originX, originZ) {
     0.5,
     { axis: "x" }
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.workbench,
     "stable-workbench",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0645\u06CC\u0632 \u06A9\u0627\u0631 \u0646\u0639\u0644\u0628\u0646\u062F\u06CC",
@@ -30536,7 +30666,7 @@ function buildStableMapObjects(originX, originZ) {
     {},
     90
   );
-  box4(
+  box5(
     STABLE_OBJECT_IDS.anvil,
     "stable-anvil",
     "\u0627\u0633\u0637\u0628\u0644 \u2014 \u0633\u0646\u062F\u0627\u0646",
@@ -30694,7 +30824,7 @@ function buildStableMapObjects(originX, originZ) {
       );
     }
   }
-  return defs2;
+  return defs3;
 }
 
 // src/assets/stable/StableMaterials.ts
@@ -31742,8 +31872,8 @@ function buildScrapsBox() {
   const M_ = createStableMaterials();
   const g = new Group();
   g.name = "scraps-box-unit";
-  const box4 = addBox4(g, M_.rust, 0.5, 0.22, 0.36, 0, 0, 0, "iron-scraps-box");
-  box4.receiveShadow = true;
+  const box5 = addBox4(g, M_.rust, 0.5, 0.22, 0.36, 0, 0, 0, "iron-scraps-box");
+  box5.receiveShadow = true;
   for (let i = 0; i < 3; i++) {
     const scrap = addBox4(g, M_.iron, 0.16, 0.02, 0.03, -0.1 + i * 0.09, 0.12, 0.03 - i % 2 * 0.06, `iron-scrap-${i}`);
     scrap.rotation.y = i * 0.7;
@@ -32636,9 +32766,9 @@ function buildGunShopMapObjects(originX, originZ) {
     rotation: identity5(),
     scale: unitScale2()
   });
-  const defs2 = [];
+  const defs3 = [];
   const push = (uuid, assetType, name, transform, metadata) => {
-    defs2.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
+    defs3.push({ uuid, assetType, transform, metadata: { name, editable: true, ...metadata } });
   };
   push(GUNSHOP_OBJECT_IDS.building, "gunshop-building", "\u0645\u063A\u0627\u0632\u0647 \u0627\u0633\u0644\u062D\u0647\u200C\u0641\u0631\u0648\u0634\u06CC \u2014 \u0628\u062F\u0646\u0647 \u0633\u0627\u062E\u062A\u0645\u0627\u0646", at(0, 0, 0), {
     collider: false,
@@ -32842,7 +32972,7 @@ function buildGunShopMapObjects(originX, originZ) {
       boxes: [{ size: { x: 0.4, y: 0.26, z: 0.28 }, offset: { x: 0, y: 0.13, z: 0 } }]
     }
   });
-  return defs2;
+  return defs3;
 }
 
 // src/assets/gunshop/GunShopMaterials.ts
@@ -33141,37 +33271,37 @@ function labeledMat(caliber, texture) {
   return labelMatCache.get(caliber);
 }
 function buildRevolver(scale = 1) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-revolver";
   const s = scale;
-  const frame = addBox5(g, M3.steel, 0.1 * s, 0.03 * s, 0.02 * s, 0.03 * s, 0.02 * s, 0, "revolver-frame");
-  addCyl5(g, M3.steelDark, 9e-3 * s, 0.01 * s, 0.13 * s, 12, 0.11 * s, 0.02 * s, 0, "revolver-barrel").rotation.z = Math.PI / 2;
-  addBox5(g, M3.steelDark, 6e-3 * s, 8e-3 * s, 4e-3 * s, 0.175 * s, 0.032 * s, 0, "revolver-front-sight");
-  addCyl5(g, M3.steel, 3e-3 * s, 3e-3 * s, 0.1 * s, 8, 0.11 * s, 8e-3 * s, 0, "revolver-ejector-rod").rotation.z = Math.PI / 2;
-  addCyl5(g, M3.steel, 6e-3 * s, 6e-3 * s, 0.05 * s, 8, 0.09 * s, 8e-3 * s, 0, "revolver-ejector-housing").rotation.z = Math.PI / 2;
+  const frame = addBox5(g, M5.steel, 0.1 * s, 0.03 * s, 0.02 * s, 0.03 * s, 0.02 * s, 0, "revolver-frame");
+  addCyl5(g, M5.steelDark, 9e-3 * s, 0.01 * s, 0.13 * s, 12, 0.11 * s, 0.02 * s, 0, "revolver-barrel").rotation.z = Math.PI / 2;
+  addBox5(g, M5.steelDark, 6e-3 * s, 8e-3 * s, 4e-3 * s, 0.175 * s, 0.032 * s, 0, "revolver-front-sight");
+  addCyl5(g, M5.steel, 3e-3 * s, 3e-3 * s, 0.1 * s, 8, 0.11 * s, 8e-3 * s, 0, "revolver-ejector-rod").rotation.z = Math.PI / 2;
+  addCyl5(g, M5.steel, 6e-3 * s, 6e-3 * s, 0.05 * s, 8, 0.09 * s, 8e-3 * s, 0, "revolver-ejector-housing").rotation.z = Math.PI / 2;
   const cylinderGroup = new Group();
   cylinderGroup.name = "revolver-cylinder";
   cylinderGroup.position.set(0.045 * s, 0.02 * s, 0);
   g.add(cylinderGroup);
-  const drum = addCyl5(cylinderGroup, M3.steel, 0.017 * s, 0.017 * s, 0.032 * s, 16, 0, 0, 0, "revolver-cylinder-drum");
+  const drum = addCyl5(cylinderGroup, M5.steel, 0.017 * s, 0.017 * s, 0.032 * s, 16, 0, 0, 0, "revolver-cylinder-drum");
   drum.rotation.x = Math.PI / 2;
   for (let i = 0; i < 6; i++) {
     const a = i / 6 * Math.PI * 2;
-    const chamber = addCyl5(cylinderGroup, M3.steelDark, 35e-4 * s, 35e-4 * s, 0.034 * s, 8, Math.cos(a) * 0.011 * s, 0, Math.sin(a) * 0.011 * s, `revolver-chamber-${i}`);
+    const chamber = addCyl5(cylinderGroup, M5.steelDark, 35e-4 * s, 35e-4 * s, 0.034 * s, 8, Math.cos(a) * 0.011 * s, 0, Math.sin(a) * 0.011 * s, `revolver-chamber-${i}`);
     chamber.rotation.x = Math.PI / 2;
-    const flute = addBox5(cylinderGroup, M3.steelDark, 4e-3 * s, 0.028 * s, 6e-3 * s, Math.cos(a) * 0.016 * s, 0, Math.sin(a) * 0.016 * s, `revolver-flute-${i}`);
+    const flute = addBox5(cylinderGroup, M5.steelDark, 4e-3 * s, 0.028 * s, 6e-3 * s, Math.cos(a) * 0.016 * s, 0, Math.sin(a) * 0.016 * s, `revolver-flute-${i}`);
     flute.rotation.y = -a;
   }
-  const grip = addBox5(g, M3.grip, 0.018 * s, 0.06 * s, 0.028 * s, -0.02 * s, -0.02 * s, 0, "revolver-grip");
+  const grip = addBox5(g, M5.grip, 0.018 * s, 0.06 * s, 0.028 * s, -0.02 * s, -0.02 * s, 0, "revolver-grip");
   grip.rotation.z = -0.35;
-  addBox5(g, M3.brassDark, 0.024 * s, 0.024 * s, 0.024 * s, -0.04 * s, -0.045 * s, 0, "revolver-grip-cap");
-  const hammer2 = addBox5(g, M3.steelDark, 0.012 * s, 0.018 * s, 6e-3 * s, 0.01 * s, 0.045 * s, 0, "revolver-hammer");
+  addBox5(g, M5.brassDark, 0.024 * s, 0.024 * s, 0.024 * s, -0.04 * s, -0.045 * s, 0, "revolver-grip-cap");
+  const hammer2 = addBox5(g, M5.steelDark, 0.012 * s, 0.018 * s, 6e-3 * s, 0.01 * s, 0.045 * s, 0, "revolver-hammer");
   hammer2.rotation.z = -0.5;
-  const hammerSpur = addBox5(g, M3.steelDark, 0.014 * s, 6e-3 * s, 6e-3 * s, 5e-3 * s, 0.052 * s, 0, "revolver-hammer-spur");
+  const hammerSpur = addBox5(g, M5.steelDark, 0.014 * s, 6e-3 * s, 6e-3 * s, 5e-3 * s, 0.052 * s, 0, "revolver-hammer-spur");
   hammerSpur.rotation.z = -0.5;
-  addBox5(g, M3.steelDark, 4e-3 * s, 0.012 * s, 4e-3 * s, 5e-3 * s, -2e-3 * s, 0, "revolver-trigger");
-  const guard = new Mesh(new TorusGeometry(0.014 * s, 25e-4 * s, 6, 16, Math.PI * 1.3), M3.steel);
+  addBox5(g, M5.steelDark, 4e-3 * s, 0.012 * s, 4e-3 * s, 5e-3 * s, -2e-3 * s, 0, "revolver-trigger");
+  const guard = new Mesh(new TorusGeometry(0.014 * s, 25e-4 * s, 6, 16, Math.PI * 1.3), M5.steel);
   guard.name = "revolver-trigger-guard";
   guard.position.set(5e-3 * s, -8e-3 * s, 0);
   guard.rotation.z = Math.PI * 0.6;
@@ -33181,20 +33311,20 @@ function buildRevolver(scale = 1) {
   return g;
 }
 function buildLeverActionRifle(scale = 1) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-lever-rifle";
   const s = scale;
-  addBox5(g, M3.brassDark, 0.16 * s, 0.05 * s, 0.03 * s, 0, 0, 0, "rifle-receiver");
-  addCyl5(g, M3.steelDark, 0.013 * s, 0.015 * s, 0.55 * s, 12, 0.36 * s, 5e-3 * s, 0, "rifle-barrel").rotation.z = Math.PI / 2;
-  addCyl5(g, M3.steel, 8e-3 * s, 8e-3 * s, 0.5 * s, 10, 0.34 * s, -0.02 * s, 0, "rifle-mag-tube").rotation.z = Math.PI / 2;
-  addCyl5(g, M3.brass, 0.01 * s, 0.01 * s, 0.015 * s, 10, 0.59 * s, -0.02 * s, 0, "rifle-mag-cap").rotation.z = Math.PI / 2;
-  addBox5(g, M3.woodMed, 0.28 * s, 0.035 * s, 0.03 * s, 0.25 * s, -0.01 * s, 0, "rifle-forestock");
+  addBox5(g, M5.brassDark, 0.16 * s, 0.05 * s, 0.03 * s, 0, 0, 0, "rifle-receiver");
+  addCyl5(g, M5.steelDark, 0.013 * s, 0.015 * s, 0.55 * s, 12, 0.36 * s, 5e-3 * s, 0, "rifle-barrel").rotation.z = Math.PI / 2;
+  addCyl5(g, M5.steel, 8e-3 * s, 8e-3 * s, 0.5 * s, 10, 0.34 * s, -0.02 * s, 0, "rifle-mag-tube").rotation.z = Math.PI / 2;
+  addCyl5(g, M5.brass, 0.01 * s, 0.01 * s, 0.015 * s, 10, 0.59 * s, -0.02 * s, 0, "rifle-mag-cap").rotation.z = Math.PI / 2;
+  addBox5(g, M5.woodMed, 0.28 * s, 0.035 * s, 0.03 * s, 0.25 * s, -0.01 * s, 0, "rifle-forestock");
   const leverGroup = new Group();
   leverGroup.name = "rifle-lever";
   leverGroup.position.set(-0.02 * s, -0.03 * s, 0);
   g.add(leverGroup);
-  const leverLoop = new Mesh(new TorusGeometry(0.035 * s, 6e-3 * s, 6, 16, Math.PI * 1.4), M3.steel);
+  const leverLoop = new Mesh(new TorusGeometry(0.035 * s, 6e-3 * s, 6, 16, Math.PI * 1.4), M5.steel);
   leverLoop.name = "rifle-lever-loop";
   leverLoop.position.set(0, -0.03 * s, 0);
   leverLoop.rotation.z = Math.PI * 0.15;
@@ -33205,55 +33335,55 @@ function buildLeverActionRifle(scale = 1) {
   stockGroup.name = "rifle-stock";
   stockGroup.position.set(-0.1 * s, -0.01 * s, 0);
   g.add(stockGroup);
-  const seg1 = addBox5(stockGroup, M3.woodMed, 0.14 * s, 0.045 * s, 0.028 * s, -0.06 * s, 0, 0, "rifle-stock-comb");
-  const seg2 = addBox5(stockGroup, M3.woodMed, 0.1 * s, 0.09 * s, 0.03 * s, -0.16 * s, -0.015 * s, 0, "rifle-stock-grip");
+  const seg1 = addBox5(stockGroup, M5.woodMed, 0.14 * s, 0.045 * s, 0.028 * s, -0.06 * s, 0, 0, "rifle-stock-comb");
+  const seg2 = addBox5(stockGroup, M5.woodMed, 0.1 * s, 0.09 * s, 0.03 * s, -0.16 * s, -0.015 * s, 0, "rifle-stock-grip");
   seg2.rotation.z = -0.12;
-  addBox5(stockGroup, M3.brass, 0.012 * s, 0.1 * s, 0.032 * s, -0.21 * s, -0.02 * s, 0, "rifle-butt-plate");
-  addBox5(g, M3.steelDark, 6e-3 * s, 0.012 * s, 4e-3 * s, 0.6 * s, 0.018 * s, 0, "rifle-front-sight");
-  addBox5(g, M3.steelDark, 0.012 * s, 6e-3 * s, 0.02 * s, 0.15 * s, 0.028 * s, 0, "rifle-rear-sight-base");
-  addBox5(g, M3.steelDark, 3e-3 * s, 0.014 * s, 0.014 * s, 0.15 * s, 0.035 * s, 0, "rifle-rear-sight-blade");
-  const hammer2 = addBox5(g, M3.steelDark, 0.012 * s, 0.02 * s, 6e-3 * s, -0.085 * s, 0.03 * s, 0, "rifle-hammer");
+  addBox5(stockGroup, M5.brass, 0.012 * s, 0.1 * s, 0.032 * s, -0.21 * s, -0.02 * s, 0, "rifle-butt-plate");
+  addBox5(g, M5.steelDark, 6e-3 * s, 0.012 * s, 4e-3 * s, 0.6 * s, 0.018 * s, 0, "rifle-front-sight");
+  addBox5(g, M5.steelDark, 0.012 * s, 6e-3 * s, 0.02 * s, 0.15 * s, 0.028 * s, 0, "rifle-rear-sight-base");
+  addBox5(g, M5.steelDark, 3e-3 * s, 0.014 * s, 0.014 * s, 0.15 * s, 0.035 * s, 0, "rifle-rear-sight-blade");
+  const hammer2 = addBox5(g, M5.steelDark, 0.012 * s, 0.02 * s, 6e-3 * s, -0.085 * s, 0.03 * s, 0, "rifle-hammer");
   hammer2.rotation.z = -0.3;
-  addBox5(g, M3.steelDark, 4e-3 * s, 0.014 * s, 4e-3 * s, -0.02 * s, -0.02 * s, 0, "rifle-trigger");
+  addBox5(g, M5.steelDark, 4e-3 * s, 0.014 * s, 4e-3 * s, -0.02 * s, -0.02 * s, 0, "rifle-trigger");
   return g;
 }
 function buildDoubleBarrelShotgun(scale = 1) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-shotgun";
   const s = scale;
   [-0.014, 0.014].forEach((z, i) => {
-    const barrel2 = addCyl5(g, M3.steelDark, 0.014 * s, 0.016 * s, 0.5 * s, 12, 0.3 * s, 0.01 * s, z * s, `shotgun-barrel-${i === 0 ? "l" : "r"}`);
+    const barrel2 = addCyl5(g, M5.steelDark, 0.014 * s, 0.016 * s, 0.5 * s, 12, 0.3 * s, 0.01 * s, z * s, `shotgun-barrel-${i === 0 ? "l" : "r"}`);
     barrel2.rotation.z = Math.PI / 2;
   });
-  addBox5(g, M3.steel, 0.5 * s, 6e-3 * s, 0.01 * s, 0.3 * s, 0.028 * s, 0, "shotgun-rib");
-  addCyl5(g, M3.brass, 0.02 * s, 0.02 * s, 0.02 * s, 16, 0.545 * s, 0.01 * s, 0, "shotgun-muzzle-band").rotation.z = Math.PI / 2;
-  addBox5(g, M3.steel, 0.1 * s, 0.06 * s, 0.045 * s, 0.02 * s, 0.01 * s, 0, "shotgun-receiver");
+  addBox5(g, M5.steel, 0.5 * s, 6e-3 * s, 0.01 * s, 0.3 * s, 0.028 * s, 0, "shotgun-rib");
+  addCyl5(g, M5.brass, 0.02 * s, 0.02 * s, 0.02 * s, 16, 0.545 * s, 0.01 * s, 0, "shotgun-muzzle-band").rotation.z = Math.PI / 2;
+  addBox5(g, M5.steel, 0.1 * s, 0.06 * s, 0.045 * s, 0.02 * s, 0.01 * s, 0, "shotgun-receiver");
   [-1, 1].forEach((side, i) => {
-    const scroll = new Mesh(new TorusGeometry(0.015 * s, 15e-4 * s, 6, 12), M3.brass);
+    const scroll = new Mesh(new TorusGeometry(0.015 * s, 15e-4 * s, 6, 12), M5.brass);
     scroll.name = `shotgun-scroll-${i === 0 ? "l" : "r"}`;
     scroll.position.set(0.02 * s, 0.01 * s, side * 0.024 * s);
     scroll.castShadow = false;
     scroll.receiveShadow = true;
     g.add(scroll);
   });
-  addBox5(g, M3.woodMed, 0.22 * s, 0.03 * s, 0.045 * s, 0.19 * s, -5e-3 * s, 0, "shotgun-forend");
+  addBox5(g, M5.woodMed, 0.22 * s, 0.03 * s, 0.045 * s, 0.19 * s, -5e-3 * s, 0, "shotgun-forend");
   const stockGroup = new Group();
   stockGroup.name = "shotgun-stock";
   stockGroup.position.set(-0.07 * s, 0, 0);
   g.add(stockGroup);
-  addBox5(stockGroup, M3.woodMed, 0.08 * s, 0.045 * s, 0.035 * s, -0.02 * s, 0, 0, "shotgun-stock-neck");
-  const butt = addBox5(stockGroup, M3.woodMed, 0.1 * s, 0.1 * s, 0.045 * s, -0.11 * s, -0.02 * s, 0, "shotgun-stock-butt");
+  addBox5(stockGroup, M5.woodMed, 0.08 * s, 0.045 * s, 0.035 * s, -0.02 * s, 0, 0, "shotgun-stock-neck");
+  const butt = addBox5(stockGroup, M5.woodMed, 0.1 * s, 0.1 * s, 0.045 * s, -0.11 * s, -0.02 * s, 0, "shotgun-stock-butt");
   butt.rotation.z = -0.15;
-  addBox5(stockGroup, M3.steelDark, 0.01 * s, 0.11 * s, 0.05 * s, -0.155 * s, -0.03 * s, 0, "shotgun-butt-plate");
+  addBox5(stockGroup, M5.steelDark, 0.01 * s, 0.11 * s, 0.05 * s, -0.155 * s, -0.03 * s, 0, "shotgun-butt-plate");
   [-0.014, 0.014].forEach((z, i) => {
-    const hammer2 = addBox5(g, M3.steelDark, 0.014 * s, 0.02 * s, 8e-3 * s, -0.015 * s, 0.045 * s, z * s, `shotgun-hammer-${i === 0 ? "l" : "r"}`);
+    const hammer2 = addBox5(g, M5.steelDark, 0.014 * s, 0.02 * s, 8e-3 * s, -0.015 * s, 0.045 * s, z * s, `shotgun-hammer-${i === 0 ? "l" : "r"}`);
     hammer2.rotation.z = -0.4;
   });
   [-6e-3, 8e-3].forEach((x, i) => {
-    addBox5(g, M3.steelDark, 3e-3 * s, 0.012 * s, 4e-3 * s, x, -0.02 * s, 0, `shotgun-trigger-${i === 0 ? "a" : "b"}`);
+    addBox5(g, M5.steelDark, 3e-3 * s, 0.012 * s, 4e-3 * s, x, -0.02 * s, 0, `shotgun-trigger-${i === 0 ? "a" : "b"}`);
   });
-  const guard = new Mesh(new TorusGeometry(0.02 * s, 3e-3 * s, 6, 16, Math.PI * 1.3), M3.steel);
+  const guard = new Mesh(new TorusGeometry(0.02 * s, 3e-3 * s, 6, 16, Math.PI * 1.3), M5.steel);
   guard.name = "shotgun-trigger-guard";
   guard.position.set(1e-3 * s, -0.03 * s, 0);
   guard.rotation.z = Math.PI * 0.6;
@@ -33263,17 +33393,17 @@ function buildDoubleBarrelShotgun(scale = 1) {
   return g;
 }
 function buildDerringer(scale = 1) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-derringer";
   const s = scale;
-  addBox5(g, M3.brass, 0.01 * s, 0.018 * s, 0.014 * s, 0.015 * s, 8e-3 * s, 0, "derringer-frame");
-  addCyl5(g, M3.steelDark, 5e-3 * s, 6e-3 * s, 0.045 * s, 10, 0.045 * s, 0.01 * s, 0, "derringer-barrel").rotation.z = Math.PI / 2;
-  const grip = addBox5(g, M3.grip, 0.01 * s, 0.03 * s, 0.016 * s, -5e-3 * s, -0.012 * s, 0, "derringer-grip");
+  addBox5(g, M5.brass, 0.01 * s, 0.018 * s, 0.014 * s, 0.015 * s, 8e-3 * s, 0, "derringer-frame");
+  addCyl5(g, M5.steelDark, 5e-3 * s, 6e-3 * s, 0.045 * s, 10, 0.045 * s, 0.01 * s, 0, "derringer-barrel").rotation.z = Math.PI / 2;
+  const grip = addBox5(g, M5.grip, 0.01 * s, 0.03 * s, 0.016 * s, -5e-3 * s, -0.012 * s, 0, "derringer-grip");
   grip.rotation.z = -0.5;
-  const hammer2 = addBox5(g, M3.steelDark, 6e-3 * s, 0.01 * s, 4e-3 * s, 2e-3 * s, 0.02 * s, 0, "derringer-hammer");
+  const hammer2 = addBox5(g, M5.steelDark, 6e-3 * s, 0.01 * s, 4e-3 * s, 2e-3 * s, 0.02 * s, 0, "derringer-hammer");
   hammer2.rotation.z = -0.4;
-  addBox5(g, M3.steelDark, 3e-3 * s, 8e-3 * s, 3e-3 * s, 6e-3 * s, -2e-3 * s, 0, "derringer-trigger");
+  addBox5(g, M5.steelDark, 3e-3 * s, 8e-3 * s, 3e-3 * s, 6e-3 * s, -2e-3 * s, 0, "derringer-trigger");
   return g;
 }
 function createBladeGeometry(length = 0.22, width = 0.035, thickness = 4e-3) {
@@ -33293,25 +33423,25 @@ function createBladeGeometry(length = 0.22, width = 0.035, thickness = 4e-3) {
   });
 }
 function buildBowieKnife() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-bowie-knife";
-  const blade = new Mesh(createBladeGeometry(0.22, 0.035, 4e-3), M3.steel);
+  const blade = new Mesh(createBladeGeometry(0.22, 0.035, 4e-3), M5.steel);
   blade.name = "knife-blade";
   blade.position.set(0.02, 0, 0);
   blade.castShadow = false;
   blade.receiveShadow = true;
   g.add(blade);
-  addBox5(g, M3.brass, 0.012, 0.05, 0.012, 0, 0, 0, "knife-guard");
-  addCyl5(g, M3.bone, 0.011, 0.013, 0.11, 10, -0.06, 0, 0, "knife-handle").rotation.z = Math.PI / 2;
-  addCyl5(g, M3.brass, 0.014, 0.014, 0.014, 10, -0.115, 0, 0, "knife-pommel", false);
+  addBox5(g, M5.brass, 0.012, 0.05, 0.012, 0, 0, 0, "knife-guard");
+  addCyl5(g, M5.bone, 0.011, 0.013, 0.11, 10, -0.06, 0, 0, "knife-handle").rotation.z = Math.PI / 2;
+  addCyl5(g, M5.brass, 0.014, 0.014, 0.014, 10, -0.115, 0, 0, "knife-pommel", false);
   const sheathGroup = new Group();
   sheathGroup.name = "knife-sheath";
   sheathGroup.position.set(0.05, -0.15, 0);
-  addCyl5(sheathGroup, M3.leather, 0.017, 0.014, 0.23, 10, 0, 0, 0, "knife-sheath-body").rotation.z = Math.PI / 2;
-  const sheathTip = addCyl5(sheathGroup, M3.brassDark, 1e-3, 0.014, 0.03, 10, 0.13, 0, 0, "knife-sheath-tip", false);
+  addCyl5(sheathGroup, M5.leather, 0.017, 0.014, 0.23, 10, 0, 0, 0, "knife-sheath-body").rotation.z = Math.PI / 2;
+  const sheathTip = addCyl5(sheathGroup, M5.brassDark, 1e-3, 0.014, 0.03, 10, 0.13, 0, 0, "knife-sheath-tip", false);
   sheathTip.rotation.z = -Math.PI / 2;
-  const beltLoop = new Mesh(new TorusGeometry(0.02, 6e-3, 6, 12), M3.leather);
+  const beltLoop = new Mesh(new TorusGeometry(0.02, 6e-3, 6, 12), M5.leather);
   beltLoop.name = "knife-sheath-loop";
   beltLoop.position.set(-0.09, 0.015, 0);
   beltLoop.castShadow = false;
@@ -33321,17 +33451,17 @@ function buildBowieKnife() {
   return g;
 }
 function buildGunshopCounter(length = 3.2) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-counter";
   const height = 1.05;
   const depth = 0.65;
-  addBox5(g, M3.woodMed, length, height, depth, 0, height / 2, 0, "gunshop-counter-body");
-  addBox5(g, M3.woodTrim, length + 0.06, 0.04, depth + 0.08, 0, height + 0.02, 0, "gunshop-counter-top");
+  addBox5(g, M5.woodMed, length, height, depth, 0, height / 2, 0, "gunshop-counter-body");
+  addBox5(g, M5.woodTrim, length + 0.06, 0.04, depth + 0.08, 0, height + 0.02, 0, "gunshop-counter-top");
   const panelCount = Math.max(3, Math.round(length / 0.8));
   for (let i = 0; i < panelCount; i++) {
     const t = (i + 0.5) / panelCount - 0.5;
-    addBox5(g, M3.woodDark, length / panelCount - 0.08, height * 0.55, 0.015, t * length, height * 0.42, depth / 2 + 8e-3, `gunshop-counter-panel-${i}`);
+    addBox5(g, M5.woodDark, length / panelCount - 0.08, height * 0.55, 0.015, t * length, height * 0.42, depth / 2 + 8e-3, `gunshop-counter-panel-${i}`);
   }
   return g;
 }
@@ -33340,22 +33470,22 @@ function seatOnSurface(obj, surfaceY, gap = 12e-4) {
   obj.position.y += surfaceY + gap - bb.min.y;
 }
 function buildPistolDisplayCase(width = 1.6) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-display-case";
   const d = 0.45;
   const wallH = 0.16;
   const baseH = 0.03;
-  addBox5(g, M3.woodDark, width, baseH, d, 0, baseH / 2, 0, "gunshop-display-base");
-  addBox5(g, M3.felt, width - 0.05, 6e-3, d - 0.05, 0, baseH + 35e-4, 0, "gunshop-display-felt");
-  addBox5(g, M3.woodDark, width, wallH, 0.02, 0, baseH + wallH / 2, d / 2 - 0.01, "gunshop-display-wall-front");
-  addBox5(g, M3.woodDark, width, wallH, 0.02, 0, baseH + wallH / 2, -(d / 2 - 0.01), "gunshop-display-wall-back");
-  addBox5(g, M3.woodDark, 0.02, wallH, d - 0.04, -(width / 2 - 0.01), baseH + wallH / 2, 0, "gunshop-display-wall-left");
-  addBox5(g, M3.woodDark, 0.02, wallH, d - 0.04, width / 2 - 0.01, baseH + wallH / 2, 0, "gunshop-display-wall-right");
-  addBox5(g, M3.glass, width - 0.02, 8e-3, d - 0.02, 0, baseH + wallH + 8e-3, 0, "gunshop-display-glass", false);
+  addBox5(g, M5.woodDark, width, baseH, d, 0, baseH / 2, 0, "gunshop-display-base");
+  addBox5(g, M5.felt, width - 0.05, 6e-3, d - 0.05, 0, baseH + 35e-4, 0, "gunshop-display-felt");
+  addBox5(g, M5.woodDark, width, wallH, 0.02, 0, baseH + wallH / 2, d / 2 - 0.01, "gunshop-display-wall-front");
+  addBox5(g, M5.woodDark, width, wallH, 0.02, 0, baseH + wallH / 2, -(d / 2 - 0.01), "gunshop-display-wall-back");
+  addBox5(g, M5.woodDark, 0.02, wallH, d - 0.04, -(width / 2 - 0.01), baseH + wallH / 2, 0, "gunshop-display-wall-left");
+  addBox5(g, M5.woodDark, 0.02, wallH, d - 0.04, width / 2 - 0.01, baseH + wallH / 2, 0, "gunshop-display-wall-right");
+  addBox5(g, M5.glass, width - 0.02, 8e-3, d - 0.02, 0, baseH + wallH + 8e-3, 0, "gunshop-display-glass", false);
   const feltTop = baseH + 65e-4;
-  addBox5(g, M3.felt, 0.36, 0.022, 0.12, -0.06, feltTop + 0.011 + 12e-4, 0.075, "gunshop-display-riser", false);
-  addBox5(g, M3.brass, 0.2, 5e-3, 0.03, -0.06, feltTop + 12e-4 + 25e-4, 0.16, "gunshop-display-riser-label", false);
+  addBox5(g, M5.felt, 0.36, 0.022, 0.12, -0.06, feltTop + 0.011 + 12e-4, 0.075, "gunshop-display-riser", false);
+  addBox5(g, M5.brass, 0.2, 5e-3, 0.03, -0.06, feltTop + 12e-4 + 25e-4, 0.16, "gunshop-display-riser-label", false);
   const revPose = [
     { x: -0.62, z: 0.05, yaw: Math.PI / 2 + 0.24 },
     { x: -0.06, z: 0.075, yaw: Math.PI / 2 - 0.17 },
@@ -33384,13 +33514,13 @@ function buildPistolDisplayCase(width = 1.6) {
   return g;
 }
 function buildRifleWallRack(count = 7) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-rifle-rack";
   const width = 1.8;
-  addBox5(g, M3.woodDark, width, 0.9, 0.05, 0, 0, 0, "gunshop-rack-backing");
-  addBox5(g, M3.woodTrim, width - 0.1, 0.02, 0.04, 0, 0.2, 0.045, "gunshop-rack-rail-top");
-  addBox5(g, M3.woodTrim, width - 0.1, 0.02, 0.04, 0, -0.25, 0.045, "gunshop-rack-rail-bottom");
+  addBox5(g, M5.woodDark, width, 0.9, 0.05, 0, 0, 0, "gunshop-rack-backing");
+  addBox5(g, M5.woodTrim, width - 0.1, 0.02, 0.04, 0, 0.2, 0.045, "gunshop-rack-rail-top");
+  addBox5(g, M5.woodTrim, width - 0.1, 0.02, 0.04, 0, -0.25, 0.045, "gunshop-rack-rail-bottom");
   for (let i = 0; i < count; i++) {
     const x = -width / 2 + 0.15 + i * ((width - 0.3) / (count - 1));
     const gun = i % 3 === 0 ? buildDoubleBarrelShotgun(0.8) : buildLeverActionRifle(0.55);
@@ -33399,11 +33529,11 @@ function buildRifleWallRack(count = 7) {
     gun.position.set(x, 0.02, 0.1);
     gun.rotation.z = Math.PI / 2 + 0.02 * (i % 2 === 0 ? 1 : -1);
     g.add(gun);
-    addCyl5(g, M3.steelDark, 8e-3, 8e-3, 0.05, 8, x, 0.2, 0.05, `gunshop-rack-peg-${i + 1}-hi`, false).rotation.x = Math.PI / 2;
-    addCyl5(g, M3.steelDark, 8e-3, 8e-3, 0.05, 8, x, -0.25, 0.05, `gunshop-rack-peg-${i + 1}-lo`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 8e-3, 8e-3, 0.05, 8, x, 0.2, 0.05, `gunshop-rack-peg-${i + 1}-hi`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 8e-3, 8e-3, 0.05, 8, x, -0.25, 0.05, `gunshop-rack-peg-${i + 1}-lo`, false).rotation.x = Math.PI / 2;
     const hoopZ = 0.118 + 6e-3;
     for (const [yy, tag] of [[0.2, "hi"], [-0.25, "lo"]]) {
-      const hoop = new Mesh(new TorusGeometry(0.03, 6e-3, 6, 12, Math.PI), M3.steelDark);
+      const hoop = new Mesh(new TorusGeometry(0.03, 6e-3, 6, 12, Math.PI), M5.steelDark);
       hoop.name = `gunshop-rack-hoop-${i + 1}-${tag}`;
       hoop.position.set(x, yy, hoopZ);
       hoop.rotation.z = Math.PI;
@@ -33415,16 +33545,16 @@ function buildRifleWallRack(count = 7) {
   return g;
 }
 function buildGunshopAmmoBox(caliber = ".45 COLT") {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-ammo-box";
   const mat = labeledMat(caliber, ammoLabelTexture(caliber));
   addBox5(g, mat, 0.11, 0.045, 0.07, 0, 0.0225, 0, "gunshop-ammo-box-body");
-  addBox5(g, M3.woodDark, 0.126, 4e-3, 0.086, 0, 0.045, 0, "gunshop-ammo-box-lid", false);
+  addBox5(g, M5.woodDark, 0.126, 4e-3, 0.086, 0, 0.045, 0, "gunshop-ammo-box-lid", false);
   return g;
 }
 function buildGunshopAmmoCrate(caliber = ".44-40 WCF") {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-ammo-crate";
   const w = 0.4;
@@ -33443,13 +33573,13 @@ function buildGunshopAmmoCrate(caliber = ".44-40 WCF") {
   const bodyMat = labeledMat(`crate|${caliber}`, stencilTex);
   addBox5(g, bodyMat, w, h, d, 0, h / 2, 0, "gunshop-ammo-crate-body");
   [-1, 1].forEach((sx, i) => {
-    addBox5(g, M3.woodDark, 0.03, h + 0.014, 0.03, sx * w / 2, h / 2 + 2e-3, sx * d / 2, `gunshop-ammo-crate-batten-v-${i === 0 ? "l" : "r"}`);
+    addBox5(g, M5.woodDark, 0.03, h + 0.014, 0.03, sx * w / 2, h / 2 + 2e-3, sx * d / 2, `gunshop-ammo-crate-batten-v-${i === 0 ? "l" : "r"}`);
   });
   [0.03, h - 0.03].forEach((y, i) => {
-    addBox5(g, M3.woodDark, w + 0.02, 0.025, d + 0.02, 0, y, 0, `gunshop-ammo-crate-batten-h-${i === 0 ? "lo" : "hi"}`);
+    addBox5(g, M5.woodDark, w + 0.02, 0.025, d + 0.02, 0, y, 0, `gunshop-ammo-crate-batten-h-${i === 0 ? "lo" : "hi"}`);
   });
   [-w / 2 - 5e-3, w / 2 + 5e-3].forEach((x, i) => {
-    const ropeHandle = new Mesh(new TorusGeometry(0.04, 8e-3, 6, 12, Math.PI), M3.rope);
+    const ropeHandle = new Mesh(new TorusGeometry(0.04, 8e-3, 6, 12, Math.PI), M5.rope);
     ropeHandle.name = `gunshop-ammo-crate-handle-${i === 0 ? "l" : "r"}`;
     ropeHandle.position.set(x, h * 0.6, 0);
     ropeHandle.rotation.z = Math.PI / 2;
@@ -33462,7 +33592,7 @@ function buildGunshopAmmoCrate(caliber = ".44-40 WCF") {
 }
 var GUNSHOP_STENcil_BG = "#6b4226";
 function buildPowderKeg() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-powder-keg";
   const kegTex = signTexture3({
@@ -33478,7 +33608,7 @@ function buildPowderKeg() {
   const kegMat = labeledMat("keg|black-powder", kegTex);
   addCyl5(g, kegMat, 0.2, 0.17, 0.42, 16, 0, 0.21, 0, "gunshop-powder-keg-barrel");
   [0.06, 0.21, 0.36].forEach((y, i) => {
-    const band = new Mesh(new TorusGeometry(0.19, 0.01, 6, 16), M3.steelDark);
+    const band = new Mesh(new TorusGeometry(0.19, 0.01, 6, 16), M5.steelDark);
     band.name = `gunshop-powder-keg-band-${i + 1}`;
     band.position.set(0, y, 0);
     band.rotation.x = Math.PI / 2;
@@ -33486,38 +33616,38 @@ function buildPowderKeg() {
     band.receiveShadow = true;
     g.add(band);
   });
-  addCyl5(g, M3.brass, 0.025, 0.025, 0.02, 10, 0.1, 0.43, 0, "gunshop-powder-keg-bung", false);
-  addCyl5(g, M3.brass, 1e-3, 0.02, 0.03, 10, 0.1, 0.46, 0, "gunshop-powder-keg-funnel", false);
+  addCyl5(g, M5.brass, 0.025, 0.025, 0.02, 10, 0.1, 0.43, 0, "gunshop-powder-keg-bung", false);
+  addCyl5(g, M5.brass, 1e-3, 0.02, 0.03, 10, 0.1, 0.46, 0, "gunshop-powder-keg-funnel", false);
   return g;
 }
 var GUNSHOP_PALETTE_BG = "#3f2716";
 function buildCartridgeStand(rows = 3, cols = 6) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-cartridge-stand";
   const w = cols * 0.03;
   const d = rows * 0.03;
-  addBox5(g, M3.woodDark, w + 0.03, 0.03, d + 0.03, 0, 0.015, 0, "gunshop-cartridge-stand-block");
+  addBox5(g, M5.woodDark, w + 0.03, 0.03, d + 0.03, 0, 0.015, 0, "gunshop-cartridge-stand-block");
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const x = -w / 2 + (c + 0.5) * (w / cols);
       const z = -d / 2 + (r + 0.5) * (d / rows);
-      addCyl5(g, M3.steelDark, 6e-3, 6e-3, 0.012, 8, x, 0.028, z, `gunshop-cartridge-${r}-${c}-hole`, false);
-      addCyl5(g, M3.brass, 5e-3, 55e-4, 0.03, 8, x, 0.045, z, `gunshop-cartridge-${r}-${c}-case`, false);
-      addCyl5(g, M3.brass, 1e-3, 45e-4, 0.012, 8, x, 0.066, z, `gunshop-cartridge-${r}-${c}-bullet`, false);
+      addCyl5(g, M5.steelDark, 6e-3, 6e-3, 0.012, 8, x, 0.028, z, `gunshop-cartridge-${r}-${c}-hole`, false);
+      addCyl5(g, M5.brass, 5e-3, 55e-4, 0.03, 8, x, 0.045, z, `gunshop-cartridge-${r}-${c}-case`, false);
+      addCyl5(g, M5.brass, 1e-3, 45e-4, 0.012, 8, x, 0.066, z, `gunshop-cartridge-${r}-${c}-bullet`, false);
     }
   }
   return g;
 }
 function buildGunShelfUnit() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-shelf-unit";
   const width = 1.4;
   const height = 1.8;
   const depth = 0.35;
-  addBox5(g, M3.woodDark, 0.04, height, depth, -width / 2, height / 2, 0, "gunshop-shelf-side-left");
-  addBox5(g, M3.woodDark, 0.04, height, depth, width / 2, height / 2, 0, "gunshop-shelf-side-right");
+  addBox5(g, M5.woodDark, 0.04, height, depth, -width / 2, height / 2, 0, "gunshop-shelf-side-left");
+  addBox5(g, M5.woodDark, 0.04, height, depth, width / 2, height / 2, 0, "gunshop-shelf-side-right");
   const shelfYs = [0.05, 0.55, 1.05, 1.55];
   const calibers = [".44-40", ".45 COLT", ".38 WCF", "12 GA"];
   const fill = [
@@ -33566,18 +33696,18 @@ function buildGunShelfUnit() {
   const BOX_LID_TOP = 0.047;
   shelfYs.forEach((y, i) => {
     const boardTop = y + 0.015;
-    addBox5(g, M3.woodMed, width, 0.03, depth, 0, y, 0, `gunshop-shelf-board-${i + 1}`);
+    addBox5(g, M5.woodMed, width, 0.03, depth, 0, y, 0, `gunshop-shelf-board-${i + 1}`);
     let prev = null;
     fill[i].forEach((slot, b) => {
-      const box4 = buildGunshopAmmoBox(calibers[i] ?? ".45 COLT");
-      box4.name = `gunshop-shelf-box-${i + 1}-${b + 1}`;
+      const box5 = buildGunshopAmmoBox(calibers[i] ?? ".45 COLT");
+      box5.name = `gunshop-shelf-box-${i + 1}-${b + 1}`;
       const x = slot.stack && prev ? prev.x : slot.x;
       const z = slot.stack && prev ? prev.z : slot.z ?? 0;
       const baseY = slot.stack && prev ? boardTop + BOX_LID_TOP + 12e-4 : boardTop;
-      box4.position.set(x, baseY, z);
+      box5.position.set(x, baseY, z);
       if (slot.yaw)
-        box4.rotation.y = slot.yaw;
-      g.add(box4);
+        box5.rotation.y = slot.yaw;
+      g.add(box5);
       prev = { x, z };
     });
   });
@@ -33589,12 +33719,12 @@ function buildGunShelfUnit() {
   return g;
 }
 function buildCashRegister2() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-cash-register";
-  addBox5(g, M3.brass, 0.28, 0.1, 0.22, 0, 0.05, 0, "gunshop-register-base");
-  addBox5(g, M3.brass, 0.22, 0.18, 0.18, 0, 0.19, 0, "gunshop-register-body");
-  const shoulder = new Mesh(new CylinderGeometry(0.11, 0.11, 0.03, 16, 1, false, 0, Math.PI), M3.brass);
+  addBox5(g, M5.brass, 0.28, 0.1, 0.22, 0, 0.05, 0, "gunshop-register-base");
+  addBox5(g, M5.brass, 0.22, 0.18, 0.18, 0, 0.19, 0, "gunshop-register-body");
+  const shoulder = new Mesh(new CylinderGeometry(0.11, 0.11, 0.03, 16, 1, false, 0, Math.PI), M5.brass);
   shoulder.name = "gunshop-register-shoulder";
   shoulder.position.set(0, 0.28, 0);
   shoulder.rotation.x = Math.PI / 2;
@@ -33603,14 +33733,14 @@ function buildCashRegister2() {
   g.add(shoulder);
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 5; c++) {
-      const key = addCyl5(g, M3.brassDark, 8e-3, 8e-3, 0.01, 8, -0.08 + c * 0.04, 0.1 + r * 0.025, 0.091, `gunshop-register-key-${r}-${c}`, false);
+      const key = addCyl5(g, M5.brassDark, 8e-3, 8e-3, 0.01, 8, -0.08 + c * 0.04, 0.1 + r * 0.025, 0.091, `gunshop-register-key-${r}-${c}`, false);
       key.rotation.x = Math.PI / 2;
     }
   }
-  addCyl5(g, M3.brassDark, 8e-3, 8e-3, 0.1, 8, 0.15, 0.19, 0, "gunshop-register-crank", false).rotation.z = Math.PI / 2;
-  addCyl5(g, M3.brassDark, 0.015, 0.015, 0.015, 8, 0.2, 0.24, 0, "gunshop-register-crank-handle", false);
-  addBox5(g, M3.brassDark, 0.26, 0.06, 0.2, 0, 0.045, 0.02, "gunshop-register-drawer");
-  const drawerPull = new Mesh(new TorusGeometry(0.015, 3e-3, 6, 10), M3.brassDark);
+  addCyl5(g, M5.brassDark, 8e-3, 8e-3, 0.1, 8, 0.15, 0.19, 0, "gunshop-register-crank", false).rotation.z = Math.PI / 2;
+  addCyl5(g, M5.brassDark, 0.015, 0.015, 0.015, 8, 0.2, 0.24, 0, "gunshop-register-crank-handle", false);
+  addBox5(g, M5.brassDark, 0.26, 0.06, 0.2, 0, 0.045, 0.02, "gunshop-register-drawer");
+  const drawerPull = new Mesh(new TorusGeometry(0.015, 3e-3, 6, 10), M5.brassDark);
   drawerPull.name = "gunshop-register-drawer-pull";
   drawerPull.position.set(0, 0.045, 0.13);
   drawerPull.rotation.x = Math.PI / 2;
@@ -33620,87 +33750,87 @@ function buildCashRegister2() {
   return g;
 }
 function buildHolsterDisplay() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-holster-display";
-  addBox5(g, M3.woodDark, 0.9, 0.55, 0.03, 0, 0, 0, "gunshop-holster-board");
+  addBox5(g, M5.woodDark, 0.9, 0.55, 0.03, 0, 0, 0, "gunshop-holster-board");
   for (let i = 0; i < 3; i++) {
     const x = -0.28 + i * 0.28;
-    addCyl5(g, M3.steelDark, 0.01, 0.012, 0.06, 8, x, 0.15, 0.03, `gunshop-holster-peg-${i + 1}`, false).rotation.x = Math.PI / 2;
-    const belt = new Mesh(new TorusGeometry(0.12, 0.012, 8, 16, Math.PI), M3.leather);
+    addCyl5(g, M5.steelDark, 0.01, 0.012, 0.06, 8, x, 0.15, 0.03, `gunshop-holster-peg-${i + 1}`, false).rotation.x = Math.PI / 2;
+    const belt = new Mesh(new TorusGeometry(0.12, 0.012, 8, 16, Math.PI), M5.leather);
     belt.name = `gunshop-holster-belt-${i + 1}`;
     belt.position.set(x, -0.02, 0.05);
     belt.rotation.z = Math.PI;
     belt.castShadow = false;
     belt.receiveShadow = true;
     g.add(belt);
-    const holster = addCyl5(g, M3.leather, 0.03, 0.035, 0.24, 10, x, -0.2, 0.06, `gunshop-holster-pocket-${i + 1}`, false);
+    const holster = addCyl5(g, M5.leather, 0.03, 0.035, 0.24, 10, x, -0.2, 0.06, `gunshop-holster-pocket-${i + 1}`, false);
     holster.rotation.z = 0.1;
     for (let b = 0; b < 8; b++) {
       const a = b / 8 * Math.PI;
-      addCyl5(g, M3.brassDark, 6e-3, 6e-3, 0.03, 6, x + Math.cos(a) * 0.11, -0.02 + Math.sin(a) * 0.11 * 0.4, 0.07, `gunshop-holster-loop-${i + 1}-${b}`, false);
+      addCyl5(g, M5.brassDark, 6e-3, 6e-3, 0.03, 6, x + Math.cos(a) * 0.11, -0.02 + Math.sin(a) * 0.11 * 0.4, 0.07, `gunshop-holster-loop-${i + 1}-${b}`, false);
     }
   }
   return g;
 }
 function buildBrassScale() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-brass-scale";
-  addCyl5(g, M3.brass, 0.06, 0.07, 0.02, 16, 0, 0.01, 0, "gunshop-scale-base", false);
-  addCyl5(g, M3.brass, 8e-3, 8e-3, 0.22, 10, 0, 0.13, 0, "gunshop-scale-post", false);
-  addBox5(g, M3.brass, 0.28, 8e-3, 8e-3, 0, 0.24, 0, "gunshop-scale-beam", false);
-  addCyl5(g, M3.brassDark, 0.012, 0.012, 0.012, 8, 0, 0.24, 0, "gunshop-scale-fulcrum", false);
+  addCyl5(g, M5.brass, 0.06, 0.07, 0.02, 16, 0, 0.01, 0, "gunshop-scale-base", false);
+  addCyl5(g, M5.brass, 8e-3, 8e-3, 0.22, 10, 0, 0.13, 0, "gunshop-scale-post", false);
+  addBox5(g, M5.brass, 0.28, 8e-3, 8e-3, 0, 0.24, 0, "gunshop-scale-beam", false);
+  addCyl5(g, M5.brassDark, 0.012, 0.012, 0.012, 8, 0, 0.24, 0, "gunshop-scale-fulcrum", false);
   [-0.13, 0.13].forEach((x, i) => {
     const tag = i === 0 ? "l" : "r";
-    const chainA = addCyl5(g, M3.brassDark, 2e-3, 2e-3, 0.08, 6, x - 0.02, 0.2, 0, `gunshop-scale-chain-${tag}-a`, false);
+    const chainA = addCyl5(g, M5.brassDark, 2e-3, 2e-3, 0.08, 6, x - 0.02, 0.2, 0, `gunshop-scale-chain-${tag}-a`, false);
     chainA.rotation.z = 0.25 * Math.sign(x);
-    const chainB = addCyl5(g, M3.brassDark, 2e-3, 2e-3, 0.08, 6, x + 0.02, 0.2, 0, `gunshop-scale-chain-${tag}-b`, false);
+    const chainB = addCyl5(g, M5.brassDark, 2e-3, 2e-3, 0.08, 6, x + 0.02, 0.2, 0, `gunshop-scale-chain-${tag}-b`, false);
     chainB.rotation.z = -0.25 * Math.sign(x);
-    addCyl5(g, M3.brass, 0.045, 0.035, 0.012, 16, x, 0.16, 0, `gunshop-scale-pan-${tag}`, false);
+    addCyl5(g, M5.brass, 0.045, 0.035, 0.012, 16, x, 0.16, 0, `gunshop-scale-pan-${tag}`, false);
   });
   return g;
 }
 function buildGunsmithSign() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-sign";
   const chainLen = 0.28;
   [-0.35, 0.35].forEach((x, i) => {
-    addCyl5(g, M3.brassDark, 6e-3, 6e-3, chainLen, 6, x, -0.02 - chainLen / 2, 0, `gunshop-sign-chain-${i === 0 ? "l" : "r"}`, false);
+    addCyl5(g, M5.brassDark, 6e-3, 6e-3, chainLen, 6, x, -0.02 - chainLen / 2, 0, `gunshop-sign-chain-${i === 0 ? "l" : "r"}`, false);
   });
   const tex = signTexture3({ text: "GUNSMITH", sub: "GUNS \xB7 AMMUNITION \xB7 REPAIRS", w: 560, h: 220 });
-  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M3.parchment;
+  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M5.parchment;
   addBox5(g, boardMat, 1, 0.34, 0.03, 0, -0.02 - chainLen - 0.17, 0, "gunshop-sign-board");
-  addBox5(g, M3.woodDark, 1.04, 0.38, 0.015, 0, -0.02 - chainLen - 0.17, -0.0125, "gunshop-sign-frame");
+  addBox5(g, M5.woodDark, 1.04, 0.38, 0.015, 0, -0.02 - chainLen - 0.17, -0.0125, "gunshop-sign-frame");
   const cy = -0.02 - chainLen - 0.34 - 0.1;
-  const crossA = addCyl5(g, M3.steelDark, 6e-3, 6e-3, 0.5, 6, 0, cy, 0.02, "gunshop-sign-cross-a", false);
+  const crossA = addCyl5(g, M5.steelDark, 6e-3, 6e-3, 0.5, 6, 0, cy, 0.02, "gunshop-sign-cross-a", false);
   crossA.rotation.z = Math.PI / 5;
-  const crossB = addCyl5(g, M3.steelDark, 6e-3, 6e-3, 0.5, 6, 0, cy, 0.02, "gunshop-sign-cross-b", false);
+  const crossB = addCyl5(g, M5.steelDark, 6e-3, 6e-3, 0.5, 6, 0, cy, 0.02, "gunshop-sign-cross-b", false);
   crossB.rotation.z = -Math.PI / 5;
   return g;
 }
 function buildGunshopWorkbench() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-workbench";
   const w = 1.6;
   const d = 0.7;
   const topY = 0.9;
-  addBox5(g, M3.woodTrim, w, 0.05, d, 0, topY + 0.025, 0, "gunshop-workbench-top");
+  addBox5(g, M5.woodTrim, w, 0.05, d, 0, topY + 0.025, 0, "gunshop-workbench-top");
   const legXs = [-w / 2 + 0.05, w / 2 - 0.05];
   const legZs = [-d / 2 + 0.05, d / 2 - 0.05];
   for (const [i, lx] of legXs.entries()) {
     for (const [j, lz] of legZs.entries()) {
-      addBox5(g, M3.woodDark, 0.07, topY, 0.07, lx, topY / 2, lz, `gunshop-workbench-leg-${i * 2 + j + 1}`);
+      addBox5(g, M5.woodDark, 0.07, topY, 0.07, lx, topY / 2, lz, `gunshop-workbench-leg-${i * 2 + j + 1}`);
     }
   }
-  addBox5(g, M3.woodDark, w, 0.12, 0.03, 0, topY - 0.13, d / 2 - 0.02, "gunshop-workbench-apron");
-  addBox5(g, M3.woodMed, w - 0.2, 0.03, d - 0.15, 0, 0.18, 0, "gunshop-workbench-shelf");
-  addBox5(g, M3.woodMed, w, 0.55, 0.03, 0, topY + 0.05 + 0.275, -d / 2 + 0.02, "gunshop-workbench-back-panel");
+  addBox5(g, M5.woodDark, w, 0.12, 0.03, 0, topY - 0.13, d / 2 - 0.02, "gunshop-workbench-apron");
+  addBox5(g, M5.woodMed, w - 0.2, 0.03, d - 0.15, 0, 0.18, 0, "gunshop-workbench-shelf");
+  addBox5(g, M5.woodMed, w, 0.55, 0.03, 0, topY + 0.05 + 0.275, -d / 2 + 0.02, "gunshop-workbench-back-panel");
   const pegZ = -d / 2 + 0.06;
   [-0.5, 0, 0.5].forEach((px2, i) => {
-    addCyl5(g, M3.steelDark, 8e-3, 8e-3, 0.05, 8, px2, topY + 0.38, pegZ, `gunshop-workbench-peg-${i + 1}`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 8e-3, 8e-3, 0.05, 8, px2, topY + 0.38, pegZ, `gunshop-workbench-peg-${i + 1}`, false).rotation.x = Math.PI / 2;
   });
   const top = topY + 0.05;
   const place = (obj, x, z, yaw = 0) => {
@@ -33710,86 +33840,86 @@ function buildGunshopWorkbench() {
     g.add(obj);
     seatOnSurface(obj, top);
   };
-  const partBarrel = addCyl5(g, M3.steelDark, 9e-3, 0.01, 0.13, 10, 0, 95e-4, 0, "gunshop-bench-part-barrel", false);
+  const partBarrel = addCyl5(g, M5.steelDark, 9e-3, 0.01, 0.13, 10, 0, 95e-4, 0, "gunshop-bench-part-barrel", false);
   partBarrel.rotation.z = Math.PI / 2;
   const barrelG = new Group();
   barrelG.name = "gunshop-bench-part-barrel-group";
   barrelG.add(partBarrel);
   place(barrelG, -0.06, -0.24, 0.1);
-  const partCyl = addCyl5(g, M3.steel, 0.018, 0.018, 0.034, 12, 0, 0.017, 0, "gunshop-bench-part-cylinder", false);
+  const partCyl = addCyl5(g, M5.steel, 0.018, 0.018, 0.034, 12, 0, 0.017, 0, "gunshop-bench-part-cylinder", false);
   partCyl.rotation.x = Math.PI / 2;
   const cylG = new Group();
   cylG.name = "gunshop-bench-part-cylinder-group";
   cylG.add(partCyl);
   place(cylG, 0.08, -0.235, 0);
-  const partGrip = addBox5(g, M3.grip, 0.022, 0.062, 0.03, 0, 0.031, 0, "gunshop-bench-part-grip", false);
+  const partGrip = addBox5(g, M5.grip, 0.022, 0.062, 0.03, 0, 0.031, 0, "gunshop-bench-part-grip", false);
   const gripG = new Group();
   gripG.name = "gunshop-bench-part-grip-group";
   gripG.add(partGrip);
   place(gripG, 0.15, -0.24, 0.35);
   const hammer2 = new Group();
   hammer2.name = "gunshop-bench-hammer";
-  const hHandle = addCyl5(hammer2, M3.woodTrim, 8e-3, 9e-3, 0.14, 8, 0, 9e-3, 0, "gunshop-bench-hammer-handle", false);
+  const hHandle = addCyl5(hammer2, M5.woodTrim, 8e-3, 9e-3, 0.14, 8, 0, 9e-3, 0, "gunshop-bench-hammer-handle", false);
   hHandle.rotation.z = Math.PI / 2;
-  addBox5(hammer2, M3.steel, 0.032, 0.032, 0.058, 0.062, 0.026, 0, "gunshop-bench-hammer-head", false);
+  addBox5(hammer2, M5.steel, 0.032, 0.032, 0.058, 0.062, 0.026, 0, "gunshop-bench-hammer-head", false);
   place(hammer2, 0.36, -0.17, 0.15);
   for (const [i, sd] of [[0.3, 0.06, -0.1], [0.35, 0.19, 0.14]].entries()) {
     const driver = new Group();
     driver.name = `gunshop-bench-screwdriver-${i + 1}`;
-    const shaft = addCyl5(driver, M3.steel, 3e-3, 3e-3, 0.075, 8, 0, 4e-3, 0, `gunshop-bench-screwdriver-${i + 1}-shaft`, false);
+    const shaft = addCyl5(driver, M5.steel, 3e-3, 3e-3, 0.075, 8, 0, 4e-3, 0, `gunshop-bench-screwdriver-${i + 1}-shaft`, false);
     shaft.rotation.z = Math.PI / 2;
-    const handle = addCyl5(driver, M3.woodTrim, 95e-4, 0.011, 0.055, 10, -0.063, 0.011, 0, `gunshop-bench-screwdriver-${i + 1}-handle`, false);
+    const handle = addCyl5(driver, M5.woodTrim, 95e-4, 0.011, 0.055, 10, -0.063, 0.011, 0, `gunshop-bench-screwdriver-${i + 1}-handle`, false);
     handle.rotation.z = Math.PI / 2;
     place(driver, sd[0], sd[1], sd[2]);
   }
   const file = new Group();
   file.name = "gunshop-bench-file";
-  addBox5(file, M3.steel, 0.115, 7e-3, 0.018, 0.02, 45e-4, 0, "gunshop-bench-file-blade", false);
-  addBox5(file, M3.woodTrim, 0.05, 0.016, 0.02, -0.052, 9e-3, 0, "gunshop-bench-file-handle", false);
+  addBox5(file, M5.steel, 0.115, 7e-3, 0.018, 0.02, 45e-4, 0, "gunshop-bench-file-blade", false);
+  addBox5(file, M5.woodTrim, 0.05, 0.016, 0.02, -0.052, 9e-3, 0, "gunshop-bench-file-handle", false);
   place(file, 0.5, 0.14, 0.08);
   const oil = new Group();
   oil.name = "gunshop-bench-oil-bottle";
-  addCyl5(oil, M3.glassDark, 0.018, 0.02, 0.075, 10, 0, 0.0375, 0, "gunshop-bench-oil-body", false);
-  addCyl5(oil, M3.brassDark, 8e-3, 8e-3, 0.02, 8, 0, 0.085, 0, "gunshop-bench-oil-neck", false);
-  addCyl5(oil, M3.brass, 95e-4, 95e-4, 8e-3, 8, 0, 0.099, 0, "gunshop-bench-oil-cap", false);
+  addCyl5(oil, M5.glassDark, 0.018, 0.02, 0.075, 10, 0, 0.0375, 0, "gunshop-bench-oil-body", false);
+  addCyl5(oil, M5.brassDark, 8e-3, 8e-3, 0.02, 8, 0, 0.085, 0, "gunshop-bench-oil-neck", false);
+  addCyl5(oil, M5.brass, 95e-4, 95e-4, 8e-3, 8, 0, 0.099, 0, "gunshop-bench-oil-cap", false);
   place(oil, -0.05, 0.19, 0);
   const tray = new Group();
   tray.name = "gunshop-bench-parts-tray";
-  addBox5(tray, M3.steel, 0.13, 6e-3, 0.09, 0, 3e-3, 0, "gunshop-bench-tray-base", false);
-  addBox5(tray, M3.steel, 0.13, 0.02, 6e-3, 0, 0.013, 0.042, "gunshop-bench-tray-rim-n", false);
-  addBox5(tray, M3.steel, 0.13, 0.02, 6e-3, 0, 0.013, -0.042, "gunshop-bench-tray-rim-s", false);
-  addBox5(tray, M3.steel, 6e-3, 0.02, 0.078, 0.062, 0.013, 0, "gunshop-bench-tray-rim-e", false);
-  addBox5(tray, M3.steel, 6e-3, 0.02, 0.078, -0.062, 0.013, 0, "gunshop-bench-tray-rim-w", false);
+  addBox5(tray, M5.steel, 0.13, 6e-3, 0.09, 0, 3e-3, 0, "gunshop-bench-tray-base", false);
+  addBox5(tray, M5.steel, 0.13, 0.02, 6e-3, 0, 0.013, 0.042, "gunshop-bench-tray-rim-n", false);
+  addBox5(tray, M5.steel, 0.13, 0.02, 6e-3, 0, 0.013, -0.042, "gunshop-bench-tray-rim-s", false);
+  addBox5(tray, M5.steel, 6e-3, 0.02, 0.078, 0.062, 0.013, 0, "gunshop-bench-tray-rim-e", false);
+  addBox5(tray, M5.steel, 6e-3, 0.02, 0.078, -0.062, 0.013, 0, "gunshop-bench-tray-rim-w", false);
   [[-0.03, 0.015], [0.01, -0.018], [0.035, 0.02], [-0.015, -0.03]].forEach(([px2, pz2], k) => {
-    addCyl5(tray, M3.brass, 35e-4, 35e-4, 0.012, 6, px2, 0.012, pz2, `gunshop-bench-tray-pin-${k + 1}`, false);
+    addCyl5(tray, M5.brass, 35e-4, 35e-4, 0.012, 6, px2, 0.012, pz2, `gunshop-bench-tray-pin-${k + 1}`, false);
   });
   place(tray, 0.14, 0.16, -0.06);
   [[0.02, 0.04, 0.3], [0.055, 0.075, -0.2], [-5e-3, 0.09, 0.1]].forEach(([cx, cz, cy], k) => {
-    const cart = addCyl5(g, M3.brass, 55e-4, 55e-4, 0.032, 8, 0, 55e-4, 0, `gunshop-bench-cartridge-${k + 1}`, false);
+    const cart = addCyl5(g, M5.brass, 55e-4, 55e-4, 0.032, 8, 0, 55e-4, 0, `gunshop-bench-cartridge-${k + 1}`, false);
     cart.rotation.z = Math.PI / 2;
     const cartG = new Group();
     cartG.name = `gunshop-bench-cartridge-${k + 1}-group`;
     cartG.add(cart);
     place(cartG, cx, cz, cy);
   });
-  const rag = addBox5(g, M3.leather, 0.16, 0.012, 0.12, 0, 6e-3, 0, "gunshop-bench-rag", false);
+  const rag = addBox5(g, M5.leather, 0.16, 0.012, 0.12, 0, 6e-3, 0, "gunshop-bench-rag", false);
   const ragG = new Group();
   ragG.name = "gunshop-bench-rag-group";
   ragG.add(rag);
   place(ragG, -0.2, 0.12, 0.35);
   const wrench = new Group();
   wrench.name = "gunshop-bench-hanging-wrench";
-  const wRing = new Mesh(new TorusGeometry(0.012, 3e-3, 6, 12), M3.steel);
+  const wRing = new Mesh(new TorusGeometry(0.012, 3e-3, 6, 12), M5.steel);
   wRing.name = "gunshop-bench-wrench-ring";
   wRing.castShadow = false;
   wRing.receiveShadow = true;
   wRing.position.set(0, 0, 0);
   wrench.add(wRing);
-  addBox5(wrench, M3.steel, 0.012, 0.13, 5e-3, 0, -0.075, 0, "gunshop-bench-wrench-shaft", false);
-  addBox5(wrench, M3.steel, 0.03, 0.024, 8e-3, 0, -0.15, 0, "gunshop-bench-wrench-jaw", false);
+  addBox5(wrench, M5.steel, 0.012, 0.13, 5e-3, 0, -0.075, 0, "gunshop-bench-wrench-shaft", false);
+  addBox5(wrench, M5.steel, 0.03, 0.024, 8e-3, 0, -0.15, 0, "gunshop-bench-wrench-jaw", false);
   wrench.position.set(0, topY + 0.38, pegZ - 8e-3);
   g.add(wrench);
-  const coil = new Mesh(new TorusGeometry(0.026, 6e-3, 6, 14), M3.steelDark);
+  const coil = new Mesh(new TorusGeometry(0.026, 6e-3, 6, 14), M5.steelDark);
   coil.name = "gunshop-bench-wire-coil";
   coil.castShadow = false;
   coil.receiveShadow = true;
@@ -33797,9 +33927,9 @@ function buildGunshopWorkbench() {
   g.add(coil);
   const box22 = new Group();
   box22.name = "gunshop-bench-toolbox";
-  addBox5(box22, M3.woodMed, 0.32, 0.11, 0.18, 0, 0.055, 0, "gunshop-bench-toolbox-body", false);
-  addBox5(box22, M3.woodDark, 0.34, 0.02, 0.2, 0, 0.115, 0, "gunshop-bench-toolbox-lid", false);
-  const tbHandle = new Mesh(new TorusGeometry(0.035, 5e-3, 6, 12, Math.PI), M3.brassDark);
+  addBox5(box22, M5.woodMed, 0.32, 0.11, 0.18, 0, 0.055, 0, "gunshop-bench-toolbox-body", false);
+  addBox5(box22, M5.woodDark, 0.34, 0.02, 0.2, 0, 0.115, 0, "gunshop-bench-toolbox-lid", false);
+  const tbHandle = new Mesh(new TorusGeometry(0.035, 5e-3, 6, 12, Math.PI), M5.brassDark);
   tbHandle.name = "gunshop-bench-toolbox-handle";
   tbHandle.castShadow = false;
   tbHandle.receiveShadow = true;
@@ -33812,48 +33942,48 @@ function buildGunshopWorkbench() {
   return g;
 }
 function buildGunshopVise() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-vise";
-  addBox5(g, M3.steelDark, 0.16, 0.03, 0.1, 0, 0.015, 0, "gunshop-vise-base");
-  addBox5(g, M3.steelDark, 0.05, 0.09, 0.1, 0.055, 0.075, 0, "gunshop-vise-fixed-jaw");
-  addBox5(g, M3.steel, 0.14, 0.025, 0.03, -0.01, 0.05, 0, "gunshop-vise-slide");
-  addBox5(g, M3.steelDark, 0.04, 0.08, 0.1, -0.055, 0.07, 0, "gunshop-vise-moving-jaw");
-  addCyl5(g, M3.steel, 0.012, 0.012, 0.1, 8, -0.13, 0.07, 0, "gunshop-vise-screw", false).rotation.z = Math.PI / 2;
-  addCyl5(g, M3.steel, 6e-3, 6e-3, 0.12, 8, -0.18, 0.07, 0, "gunshop-vise-handle", false);
+  addBox5(g, M5.steelDark, 0.16, 0.03, 0.1, 0, 0.015, 0, "gunshop-vise-base");
+  addBox5(g, M5.steelDark, 0.05, 0.09, 0.1, 0.055, 0.075, 0, "gunshop-vise-fixed-jaw");
+  addBox5(g, M5.steel, 0.14, 0.025, 0.03, -0.01, 0.05, 0, "gunshop-vise-slide");
+  addBox5(g, M5.steelDark, 0.04, 0.08, 0.1, -0.055, 0.07, 0, "gunshop-vise-moving-jaw");
+  addCyl5(g, M5.steel, 0.012, 0.012, 0.1, 8, -0.13, 0.07, 0, "gunshop-vise-screw", false).rotation.z = Math.PI / 2;
+  addCyl5(g, M5.steel, 6e-3, 6e-3, 0.12, 8, -0.18, 0.07, 0, "gunshop-vise-handle", false);
   return g;
 }
 function buildGunshopToolRack() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-tool-rack";
-  addBox5(g, M3.woodDark, 0.8, 0.6, 0.025, 0, 0, 0, "gunshop-toolrack-board");
+  addBox5(g, M5.woodDark, 0.8, 0.6, 0.025, 0, 0, 0, "gunshop-toolrack-board");
   const peg = (x, y, tag) => {
-    addCyl5(g, M3.steelDark, 6e-3, 6e-3, 0.04, 8, x, y, 0.03, `gunshop-toolrack-peg-${tag}`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 6e-3, 6e-3, 0.04, 8, x, y, 0.03, `gunshop-toolrack-peg-${tag}`, false).rotation.x = Math.PI / 2;
   };
   peg(-0.25, 0.18, "screwdriver");
-  const sdHandle = addCyl5(g, M3.woodTrim, 0.011, 0.011, 0.06, 8, -0.25, 0.12, 0.05, "gunshop-tool-screwdriver-handle", false);
-  addCyl5(g, M3.steel, 3e-3, 3e-3, 0.08, 8, -0.25, 0.02, 0.05, "gunshop-tool-screwdriver-shaft", false);
+  const sdHandle = addCyl5(g, M5.woodTrim, 0.011, 0.011, 0.06, 8, -0.25, 0.12, 0.05, "gunshop-tool-screwdriver-handle", false);
+  addCyl5(g, M5.steel, 3e-3, 3e-3, 0.08, 8, -0.25, 0.02, 0.05, "gunshop-tool-screwdriver-shaft", false);
   peg(-0.08, 0.18, "hammer");
-  addBox5(g, M3.steel, 0.05, 0.03, 0.03, -0.08, 0.1, 0.05, "gunshop-tool-hammer-head", false);
-  addCyl5(g, M3.woodTrim, 8e-3, 8e-3, 0.1, 8, -0.08, 0.02, 0.05, "gunshop-tool-hammer-handle", false);
+  addBox5(g, M5.steel, 0.05, 0.03, 0.03, -0.08, 0.1, 0.05, "gunshop-tool-hammer-head", false);
+  addCyl5(g, M5.woodTrim, 8e-3, 8e-3, 0.1, 8, -0.08, 0.02, 0.05, "gunshop-tool-hammer-handle", false);
   peg(0.1, 0.18, "file");
-  addBox5(g, M3.steel, 0.018, 0.14, 6e-3, 0.1, 0.08, 0.05, "gunshop-tool-file-blade", false);
-  addBox5(g, M3.woodTrim, 0.024, 0.05, 0.014, 0.1, -0.02, 0.05, "gunshop-tool-file-handle", false);
+  addBox5(g, M5.steel, 0.018, 0.14, 6e-3, 0.1, 0.08, 0.05, "gunshop-tool-file-blade", false);
+  addBox5(g, M5.woodTrim, 0.024, 0.05, 0.014, 0.1, -0.02, 0.05, "gunshop-tool-file-handle", false);
   peg(0.27, 0.18, "oil");
-  addCyl5(g, M3.brassDark, 0.02, 0.02, 0.07, 10, 0.27, 0.1, 0.05, "gunshop-tool-oilbottle-body", false);
-  addCyl5(g, M3.brassDark, 8e-3, 8e-3, 0.02, 8, 0.27, 0.145, 0.05, "gunshop-tool-oilbottle-neck", false);
+  addCyl5(g, M5.brassDark, 0.02, 0.02, 0.07, 10, 0.27, 0.1, 0.05, "gunshop-tool-oilbottle-body", false);
+  addCyl5(g, M5.brassDark, 8e-3, 8e-3, 0.02, 8, 0.27, 0.145, 0.05, "gunshop-tool-oilbottle-neck", false);
   return g;
 }
 function buildGunshopLantern(lit) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-lantern";
-  addCyl5(g, M3.steelDark, 0.01, 0.01, 0.25, 8, 0, -0.125, 0, "gunshop-lantern-rod", false);
-  addCyl5(g, M3.steelDark, 0.09, 0.07, 0.03, 10, 0, -0.27, 0, "gunshop-lantern-cap", false);
-  addCyl5(g, M3.glassDark, 0.055, 0.055, 0.12, 10, 0, -0.345, 0, "gunshop-lantern-globe", false);
-  addCyl5(g, M3.flame, 0.016, 0.016, 0.05, 8, 0, -0.34, 0, "gunshop-lantern-flame", false);
-  addCyl5(g, M3.steelDark, 0.075, 0.06, 0.02, 10, 0, -0.415, 0, "gunshop-lantern-base", false);
+  addCyl5(g, M5.steelDark, 0.01, 0.01, 0.25, 8, 0, -0.125, 0, "gunshop-lantern-rod", false);
+  addCyl5(g, M5.steelDark, 0.09, 0.07, 0.03, 10, 0, -0.27, 0, "gunshop-lantern-cap", false);
+  addCyl5(g, M5.glassDark, 0.055, 0.055, 0.12, 10, 0, -0.345, 0, "gunshop-lantern-globe", false);
+  addCyl5(g, M5.flame, 0.016, 0.016, 0.05, 8, 0, -0.34, 0, "gunshop-lantern-flame", false);
+  addCyl5(g, M5.steelDark, 0.075, 0.06, 0.02, 10, 0, -0.415, 0, "gunshop-lantern-base", false);
   if (lit) {
     const light = new PointLight(16756838, 6.5, 9, 2);
     light.name = "gunshop-lantern-light";
@@ -33864,55 +33994,55 @@ function buildGunshopLantern(lit) {
   return g;
 }
 function buildGunshopParapetSign() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-parapet-sign";
   const tex = signTexture3({ text: "GUNS & AMMUNITION", w: 640, h: 180, border: true });
-  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M3.parchment;
+  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M5.parchment;
   addBox5(g, boardMat, 1.35, 0.38, 0.025, 0, 0, 0.0125, "gunshop-parapet-sign-board");
-  addBox5(g, M3.woodDark, 1.39, 0.05, 0.032, 0, 0.215, 0.0125, "gunshop-parapet-sign-frame-top");
-  addBox5(g, M3.woodDark, 1.39, 0.05, 0.032, 0, -0.215, 0.0125, "gunshop-parapet-sign-frame-bottom");
+  addBox5(g, M5.woodDark, 1.39, 0.05, 0.032, 0, 0.215, 0.0125, "gunshop-parapet-sign-frame-top");
+  addBox5(g, M5.woodDark, 1.39, 0.05, 0.032, 0, -0.215, 0.0125, "gunshop-parapet-sign-frame-bottom");
   [-0.6, 0.6].forEach((bx, i) => {
-    addCyl5(g, M3.steelDark, 8e-3, 8e-3, 0.05, 8, bx, 0.13, 7e-3, `gunshop-parapet-sign-bolt-${i === 0 ? "w" : "e"}-hi`, false).rotation.x = Math.PI / 2;
-    addCyl5(g, M3.steelDark, 8e-3, 8e-3, 0.05, 8, bx, -0.13, 7e-3, `gunshop-parapet-sign-bolt-${i === 0 ? "w" : "e"}-lo`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 8e-3, 8e-3, 0.05, 8, bx, 0.13, 7e-3, `gunshop-parapet-sign-bolt-${i === 0 ? "w" : "e"}-hi`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 8e-3, 8e-3, 0.05, 8, bx, -0.13, 7e-3, `gunshop-parapet-sign-bolt-${i === 0 ? "w" : "e"}-lo`, false).rotation.x = Math.PI / 2;
   });
   return g;
 }
 function buildGunshopPorchShingle() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-porch-shingle";
   const chainLen = 0.3;
   [-0.3, 0.3].forEach((x, i) => {
-    addCyl5(g, M3.brassDark, 5e-3, 5e-3, chainLen, 6, x, -chainLen / 2, 0, `gunshop-shingle-chain-${i === 0 ? "w" : "e"}`, false);
+    addCyl5(g, M5.brassDark, 5e-3, 5e-3, chainLen, 6, x, -chainLen / 2, 0, `gunshop-shingle-chain-${i === 0 ? "w" : "e"}`, false);
   });
   const tex = signTexture3({ text: "AMMUNITION", sub: "LOADED TO ORDER", w: 460, h: 160, border: true });
-  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M3.parchment;
+  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M5.parchment;
   const cy = -chainLen - 0.13;
-  addBox5(g, M3.woodDark, 0.88, 0.28, 0.03, 0, cy, 0, "gunshop-shingle-board");
+  addBox5(g, M5.woodDark, 0.88, 0.28, 0.03, 0, cy, 0, "gunshop-shingle-board");
   addBox5(g, boardMat, 0.82, 0.22, 4e-3, 0, cy, 0.017, "gunshop-shingle-face-south");
   addBox5(g, boardMat, 0.82, 0.22, 4e-3, 0, cy, -0.017, "gunshop-shingle-face-north");
   return g;
 }
 function buildGunshopRepairsBoard() {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-repairs-board";
   const tex = signTexture3({ text: "REPAIRS", sub: "GUNSMITH", w: 256, h: 320, border: true });
-  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M3.parchment;
+  const boardMat = tex ? new MeshStandardMaterial({ color: 16777215, map: tex, roughness: 1, metalness: 0 }) : M5.parchment;
   addBox5(g, boardMat, 0.48, 0.6, 0.02, 0, 0, 0.015, "gunshop-repairs-board-board");
-  addBox5(g, M3.woodDark, 0.52, 0.045, 0.026, 0, 0.3225, 0.015, "gunshop-repairs-board-cap");
-  addBox5(g, M3.woodDark, 0.52, 0.045, 0.026, 0, -0.3225, 0.015, "gunshop-repairs-board-base");
+  addBox5(g, M5.woodDark, 0.52, 0.045, 0.026, 0, 0.3225, 0.015, "gunshop-repairs-board-cap");
+  addBox5(g, M5.woodDark, 0.52, 0.045, 0.026, 0, -0.3225, 0.015, "gunshop-repairs-board-base");
   [-0.16, 0.16].forEach((bx, i) => {
-    addCyl5(g, M3.steelDark, 7e-3, 7e-3, 0.044, 8, bx, 0.22, 2e-3, `gunshop-repairs-board-bolt-${i === 0 ? "w" : "e"}-hi`, false).rotation.x = Math.PI / 2;
-    addCyl5(g, M3.steelDark, 7e-3, 7e-3, 0.044, 8, bx, -0.22, 2e-3, `gunshop-repairs-board-bolt-${i === 0 ? "w" : "e"}-lo`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 7e-3, 7e-3, 0.044, 8, bx, 0.22, 2e-3, `gunshop-repairs-board-bolt-${i === 0 ? "w" : "e"}-hi`, false).rotation.x = Math.PI / 2;
+    addCyl5(g, M5.steelDark, 7e-3, 7e-3, 0.044, 8, bx, -0.22, 2e-3, `gunshop-repairs-board-bolt-${i === 0 ? "w" : "e"}-lo`, false).rotation.x = Math.PI / 2;
   });
   return g;
 }
 
 // src/assets/gunshop/GunShopArchitecture.ts
 function buildGunShopWindowAssembly(side, offset) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = `gunshop-window-${side < 0 ? "w" : "e"}${offset}`;
   const win = GUNSHOP_LAYOUT.window;
@@ -33923,34 +34053,34 @@ function buildGunShopWindowAssembly(side, offset) {
   const stripZ = wallFaceZ + 0.02 + stripD / 2;
   const glassZ = wallFaceZ + 0.025;
   const barZ = wallFaceZ + 0.065;
-  addBox5(g, M3.glassDark, win.width, win.height, 0.05, 0, glassY, glassZ, "gunshop-window-glass");
-  addBox5(g, M3.woodTrim, win.width + 0.24, 0.12, stripD, 0, glassY + glassHalfH + 0.06, stripZ, "gunshop-window-frame-top");
-  addBox5(g, M3.woodTrim, win.width + 0.24, 0.12, stripD, 0, win.sillY - 0.06, stripZ, "gunshop-window-frame-bottom");
-  addBox5(g, M3.woodTrim, 0.12, win.height, stripD, -(win.width / 2 + 0.06), glassY, stripZ, "gunshop-window-frame-left");
-  addBox5(g, M3.woodTrim, 0.12, win.height, stripD, win.width / 2 + 0.06, glassY, stripZ, "gunshop-window-frame-right");
-  addBox5(g, M3.woodTrim, 0.05, win.height, 0.03, 0, glassY, barZ, "gunshop-window-cross-v");
-  addBox5(g, M3.woodTrim, win.width, 0.05, 0.03, 0, glassY, barZ, "gunshop-window-cross-h");
-  addBox5(g, M3.woodDark, win.width + 0.24, 0.06, 0.14, 0, win.sillY - 0.15, wallFaceZ + 0.06, "gunshop-window-sill");
+  addBox5(g, M5.glassDark, win.width, win.height, 0.05, 0, glassY, glassZ, "gunshop-window-glass");
+  addBox5(g, M5.woodTrim, win.width + 0.24, 0.12, stripD, 0, glassY + glassHalfH + 0.06, stripZ, "gunshop-window-frame-top");
+  addBox5(g, M5.woodTrim, win.width + 0.24, 0.12, stripD, 0, win.sillY - 0.06, stripZ, "gunshop-window-frame-bottom");
+  addBox5(g, M5.woodTrim, 0.12, win.height, stripD, -(win.width / 2 + 0.06), glassY, stripZ, "gunshop-window-frame-left");
+  addBox5(g, M5.woodTrim, 0.12, win.height, stripD, win.width / 2 + 0.06, glassY, stripZ, "gunshop-window-frame-right");
+  addBox5(g, M5.woodTrim, 0.05, win.height, 0.03, 0, glassY, barZ, "gunshop-window-cross-v");
+  addBox5(g, M5.woodTrim, win.width, 0.05, 0.03, 0, glassY, barZ, "gunshop-window-cross-h");
+  addBox5(g, M5.woodDark, win.width + 0.24, 0.06, 0.14, 0, win.sillY - 0.15, wallFaceZ + 0.06, "gunshop-window-sill");
   return g;
 }
 function buildGunShopShell(dims) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-building";
   const { width: w, depth: d, height: h } = dims;
   const overhang = GUNSHOP_LAYOUT.roofOverhang;
   const roofTop = h + 0.18;
   const wallFaceZ = d / 2 + GUNSHOP_LAYOUT.wallThickness / 2;
-  addBox5(g, M3.woodDark, w + overhang * 2, 0.18, d + overhang * 2, 0, h + 0.09, 0, "gunshop-roof");
+  addBox5(g, M5.woodDark, w + overhang * 2, 0.18, d + overhang * 2, 0, h + 0.09, 0, "gunshop-roof");
   const roofHalfD = d / 2 + overhang;
-  addBox5(g, M3.woodTrim, w + overhang * 2, 0.22, 0.06, 0, h + 0.05, -(roofHalfD + 0.03), "gunshop-fascia-rear");
-  addBox5(g, M3.woodTrim, 0.06, 0.22, d + overhang * 2 + 0.12, -(w / 2 + overhang + 0.03), h + 0.05, 0, "gunshop-fascia-west");
-  addBox5(g, M3.woodTrim, 0.06, 0.22, d + overhang * 2 + 0.12, w / 2 + overhang + 0.03, h + 0.05, 0, "gunshop-fascia-east");
+  addBox5(g, M5.woodTrim, w + overhang * 2, 0.22, 0.06, 0, h + 0.05, -(roofHalfD + 0.03), "gunshop-fascia-rear");
+  addBox5(g, M5.woodTrim, 0.06, 0.22, d + overhang * 2 + 0.12, -(w / 2 + overhang + 0.03), h + 0.05, 0, "gunshop-fascia-west");
+  addBox5(g, M5.woodTrim, 0.06, 0.22, d + overhang * 2 + 0.12, w / 2 + overhang + 0.03, h + 0.05, 0, "gunshop-fascia-east");
   const ffBottom = roofTop;
   const ffTop = GUNSHOP_LAYOUT.falseFrontTop;
   addBox5(
     g,
-    M3.woodTrim,
+    M5.woodTrim,
     w + 0.24,
     ffTop - ffBottom,
     0.14,
@@ -33959,33 +34089,33 @@ function buildGunShopShell(dims) {
     wallFaceZ + 0.02,
     "gunshop-false-front"
   );
-  addBox5(g, M3.woodDark, w + 0.32, 0.08, 0.2, 0, ffTop + 0.04, wallFaceZ + 0.02, "gunshop-false-front-cap");
+  addBox5(g, M5.woodDark, w + 0.32, 0.08, 0.2, 0, ffTop + 0.04, wallFaceZ + 0.02, "gunshop-false-front-cap");
   const porch = GUNSHOP_LAYOUT.porchDepth;
-  addBox5(g, M3.woodMed, w + 0.6, 0.09, porch, 0, 0.045, wallFaceZ + porch / 2, "gunshop-porch-deck");
+  addBox5(g, M5.woodMed, w + 0.6, 0.09, porch, 0, 0.045, wallFaceZ + porch / 2, "gunshop-porch-deck");
   const postH = GUNSHOP_LAYOUT.porchRoofTopY - 0.12 - 0.09;
   const postXs = [-w / 2 - 0.1, -1.8, 1.8, w / 2 + 0.1];
   postXs.forEach((px2, i) => {
-    addCyl5(g, M3.woodDark, 0.08, 0.09, postH, 8, px2, 0.09 + postH / 2, wallFaceZ + porch - 0.2, `gunshop-porch-post-${i}`);
+    addCyl5(g, M5.woodDark, 0.08, 0.09, postH, 8, px2, 0.09 + postH / 2, wallFaceZ + porch - 0.2, `gunshop-porch-post-${i}`);
   });
-  addBox5(g, M3.woodDark, w + 0.9, 0.12, porch + 0.2, 0, GUNSHOP_LAYOUT.porchRoofTopY - 0.06, wallFaceZ + porch / 2, "gunshop-porch-roof");
+  addBox5(g, M5.woodDark, w + 0.9, 0.12, porch + 0.2, 0, GUNSHOP_LAYOUT.porchRoofTopY - 0.06, wallFaceZ + porch / 2, "gunshop-porch-roof");
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      addBox5(g, M3.woodDark, 0.24, h + 0.16, 0.56, sx * (w / 2), (h + 0.04) / 2, sz * (d / 2), `gunshop-corner-post-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
+      addBox5(g, M5.woodDark, 0.24, h + 0.16, 0.56, sx * (w / 2), (h + 0.04) / 2, sz * (d / 2), `gunshop-corner-post-${sx < 0 ? "w" : "e"}${sz < 0 ? "n" : "s"}`);
     }
   }
   const dw = dims.doorWidth;
   const casingH = GUNSHOP_LAYOUT.floorTop + GUNSHOP_LAYOUT.doorHeight + 0.04;
   const casingZ = wallFaceZ + 0.02;
   const casingBottom = 0.08;
-  addBox5(g, M3.woodTrim, 0.08, casingH - casingBottom, 0.06, -(dw / 2 + 0.03), (casingH + casingBottom) / 2, casingZ, "gunshop-door-casing-west");
-  addBox5(g, M3.woodTrim, 0.08, casingH - casingBottom, 0.06, dw / 2 + 0.03, (casingH + casingBottom) / 2, casingZ, "gunshop-door-casing-east");
-  addBox5(g, M3.woodTrim, dw + 0.24, 0.08, 0.06, 0, casingH + 0.04, casingZ, "gunshop-door-casing-header");
+  addBox5(g, M5.woodTrim, 0.08, casingH - casingBottom, 0.06, -(dw / 2 + 0.03), (casingH + casingBottom) / 2, casingZ, "gunshop-door-casing-west");
+  addBox5(g, M5.woodTrim, 0.08, casingH - casingBottom, 0.06, dw / 2 + 0.03, (casingH + casingBottom) / 2, casingZ, "gunshop-door-casing-east");
+  addBox5(g, M5.woodTrim, dw + 0.24, 0.08, 0.06, 0, casingH + 0.04, casingZ, "gunshop-door-casing-header");
   return g;
 }
 var GunShopWallFactory = class {
   create(_definition) {
-    const M3 = createGunShopMaterials();
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.woodMed);
+    const M5 = createGunShopMaterials();
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.woodMed);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "gunshop-wall-segment";
@@ -33994,8 +34124,8 @@ var GunShopWallFactory = class {
 };
 var GunShopFloorFactory = class {
   create(_definition) {
-    const M3 = createGunShopMaterials();
-    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M3.woodMed);
+    const M5 = createGunShopMaterials();
+    const mesh5 = new Mesh(new BoxGeometry(1, 1, 1), M5.woodMed);
     mesh5.castShadow = true;
     mesh5.receiveShadow = true;
     mesh5.name = "gunshop-floor-slab";
@@ -34018,7 +34148,7 @@ function frontDoorMetaOf(definition) {
   };
 }
 function buildGunShopFrontDoor(meta) {
-  const M3 = createGunShopMaterials();
+  const M5 = createGunShopMaterials();
   const g = new Group();
   g.name = "gunshop-front-door";
   const dw = meta.width;
@@ -34037,35 +34167,35 @@ function buildGunShopFrontDoor(meta) {
   hinge.userData.openSign = meta.openSign;
   hinge.userData.openDeg = meta.openDeg;
   g.add(hinge);
-  const slab = addBox5(hinge, M3.woodTrim, leafW, leafH, leafT, dir * leafW / 2, leafH / 2, 0, "gunshop-front-door-leaf");
+  const slab = addBox5(hinge, M5.woodTrim, leafW, leafH, leafT, dir * leafW / 2, leafH / 2, 0, "gunshop-front-door-leaf");
   const glassW = 0.405;
   const glassH = 0.5;
   const upperGlassY = 1.8;
-  addBox5(hinge, M3.glass, glassW, glassH, 0.03, dir * leafW / 2, upperGlassY, leafT / 2 + 0.015, "gunshop-front-door-glass", false);
+  addBox5(hinge, M5.glass, glassW, glassH, 0.03, dir * leafW / 2, upperGlassY, leafT / 2 + 0.015, "gunshop-front-door-glass", false);
   const frT = 0.045;
   const frZ = leafT / 2 + frT / 2;
   const frW = glassW + 0.1;
   const frH = glassH + 0.1;
-  addBox5(hinge, M3.woodDark, frW, 0.05, frT, dir * leafW / 2, upperGlassY + frH / 2 - 0.025, frZ, "gunshop-front-door-glass-frame-top");
-  addBox5(hinge, M3.woodDark, frW, 0.05, frT, dir * leafW / 2, upperGlassY - frH / 2 + 0.025, frZ, "gunshop-front-door-glass-frame-bottom");
-  addBox5(hinge, M3.woodDark, 0.05, glassH, frT, dir * (leafW / 2 - frW / 2 + 0.025), upperGlassY, frZ, "gunshop-front-door-glass-frame-left");
-  addBox5(hinge, M3.woodDark, 0.05, glassH, frT, dir * (leafW / 2 + frW / 2 - 0.025), upperGlassY, frZ, "gunshop-front-door-glass-frame-right");
+  addBox5(hinge, M5.woodDark, frW, 0.05, frT, dir * leafW / 2, upperGlassY + frH / 2 - 0.025, frZ, "gunshop-front-door-glass-frame-top");
+  addBox5(hinge, M5.woodDark, frW, 0.05, frT, dir * leafW / 2, upperGlassY - frH / 2 + 0.025, frZ, "gunshop-front-door-glass-frame-bottom");
+  addBox5(hinge, M5.woodDark, 0.05, glassH, frT, dir * (leafW / 2 - frW / 2 + 0.025), upperGlassY, frZ, "gunshop-front-door-glass-frame-left");
+  addBox5(hinge, M5.woodDark, 0.05, glassH, frT, dir * (leafW / 2 + frW / 2 - 0.025), upperGlassY, frZ, "gunshop-front-door-glass-frame-right");
   const py2 = 0.8;
   const ph = 1.1;
   for (const sz of [-1, 1]) {
-    addBox5(hinge, M3.woodDark, leafW - 0.37, ph, 0.012, dir * leafW / 2, py2, sz * (leafT / 2 + 8e-3), `gunshop-front-door-panel-frame-${sz < 0 ? "in" : "out"}`);
-    addBox5(hinge, M3.woodMed, leafW - 0.45, ph - 0.08, 8e-3, dir * leafW / 2, py2, sz * (leafT / 2 + 2e-3), `gunshop-front-door-panel-field-${sz < 0 ? "in" : "out"}`);
+    addBox5(hinge, M5.woodDark, leafW - 0.37, ph, 0.012, dir * leafW / 2, py2, sz * (leafT / 2 + 8e-3), `gunshop-front-door-panel-frame-${sz < 0 ? "in" : "out"}`);
+    addBox5(hinge, M5.woodMed, leafW - 0.45, ph - 0.08, 8e-3, dir * leafW / 2, py2, sz * (leafT / 2 + 2e-3), `gunshop-front-door-panel-field-${sz < 0 ? "in" : "out"}`);
   }
   [bottomLift + 0.42, bottomLift + leafH - 0.42].forEach((sy, i) => {
-    addBox5(hinge, M3.steelDark, 0.18, 0.05, 0.015, dir * 0.09, sy, leafT / 2 + 75e-4, `gunshop-front-door-strap-${i === 0 ? "low" : "high"}`);
+    addBox5(hinge, M5.steelDark, 0.18, 0.05, 0.015, dir * 0.09, sy, leafT / 2 + 75e-4, `gunshop-front-door-strap-${i === 0 ? "low" : "high"}`);
   });
   const knobX = dir * (leafW - 0.09);
   const knobY = bottomLift + 1.02;
-  addCyl5(hinge, M3.steelDark, 0.028, 0.028, 0.05, 10, knobX, knobY, leafT / 2 + 0.02, "gunshop-front-door-knob", false).rotation.x = Math.PI / 2;
-  addCyl5(hinge, M3.steelDark, 0.045, 0.045, 0.014, 10, knobX, knobY, leafT / 2 + 7e-3, "gunshop-front-door-knob-rose", false).rotation.x = Math.PI / 2;
-  addBox5(hinge, M3.steelDark, 0.09, 0.05, 0.02, knobX, knobY, -leafT / 2 - 0.01, "gunshop-front-door-thumb-latch", false);
+  addCyl5(hinge, M5.steelDark, 0.028, 0.028, 0.05, 10, knobX, knobY, leafT / 2 + 0.02, "gunshop-front-door-knob", false).rotation.x = Math.PI / 2;
+  addCyl5(hinge, M5.steelDark, 0.045, 0.045, 0.014, 10, knobX, knobY, leafT / 2 + 7e-3, "gunshop-front-door-knob-rose", false).rotation.x = Math.PI / 2;
+  addBox5(hinge, M5.steelDark, 0.09, 0.05, 0.02, knobX, knobY, -leafT / 2 - 0.01, "gunshop-front-door-thumb-latch", false);
   [bottomLift + 0.42, bottomLift + leafH - 0.42].forEach((sy, i) => {
-    const knuckle = addCyl5(g, M3.steelDark, 0.022, 0.022, 0.09, 10, hingeX, sy, 0, `gunshop-front-door-knuckle-${i === 0 ? "low" : "high"}`);
+    const knuckle = addCyl5(g, M5.steelDark, 0.022, 0.022, 0.09, 10, hingeX, sy, 0, `gunshop-front-door-knuckle-${i === 0 ? "low" : "high"}`);
     knuckle.rotation.z = Math.PI / 2;
   });
   return g;
@@ -34322,12 +34452,12 @@ function rotateVec3AroundY(v, yawDeg) {
     z: -v.x * sin + v.z * cos
   };
 }
-function rotateSiteDefs(defs2, originX, originZ, yawDeg) {
+function rotateSiteDefs(defs3, originX, originZ, yawDeg) {
   if ((yawDeg % 360 + 360) % 360 === 0) {
-    return defs2.map((d) => d);
+    return defs3.map((d) => d);
   }
   const yawQuat = axisAngleQuaternion("y", yawDeg * DEG2RAD3);
-  return defs2.map((def) => {
+  return defs3.map((def) => {
     const local = {
       x: def.transform.position.x - originX,
       y: def.transform.position.y,
@@ -35385,7 +35515,7 @@ function registerAllTownFactories(registry) {
 // src/assets/town/TownBuildings.ts
 var identity6 = () => ({ x: 0, y: 0, z: 0 });
 function emitFountain(sink, ox, oz) {
-  const box4 = (x, y, z, sx, sy, sz, suffix, tint, collider) => {
+  const box5 = (x, y, z, sx, sy, sz, suffix, tint, collider) => {
     sink(
       "town-box",
       `\u0622\u0628\u200C\u0646\u0645\u0627\u06CC \u0645\u06CC\u062F\u0627\u0646 \u2014 ${suffix}`,
@@ -35393,16 +35523,16 @@ function emitFountain(sink, ox, oz) {
       { tint, collider, editable: true }
     );
   };
-  box4(0, 0.07, 0, 3.4, 0.14, 3.4, "\u0633\u06A9\u0648\u06CC \u0633\u0646\u06AF\u06CC", "stoneDark", true);
-  box4(0, 0.41, -1.35, 3, 0.55, 0.3, "\u062C\u062F\u0627\u0631\u0647 \u0634\u0645\u0627\u0644\u06CC", "stone", true);
-  box4(0, 0.41, 1.35, 3, 0.55, 0.3, "\u062C\u062F\u0627\u0631\u0647 \u062C\u0646\u0648\u0628\u06CC", "stone", true);
-  box4(-1.35, 0.41, 0, 0.3, 0.55, 2.4, "\u062C\u062F\u0627\u0631\u0647 \u063A\u0631\u0628\u06CC", "stone", true);
-  box4(1.35, 0.41, 0, 0.3, 0.55, 2.4, "\u062C\u062F\u0627\u0631\u0647 \u0634\u0631\u0642\u06CC", "stone", true);
-  box4(0, 0.3, 0, 2.4, 0.32, 2.4, "\u06A9\u0641 \u062D\u0648\u0636", "stoneDark", true);
-  box4(0, 0.47, 0, 2.36, 0.06, 2.36, "\u0622\u0628 \u062D\u0648\u0636", "water", false);
-  box4(0, 0.85, 0, 0.55, 0.85, 0.55, "\u0633\u062A\u0648\u0646 \u0645\u06CC\u0627\u0646\u06CC", "stone", true);
-  box4(0, 1.32, 0, 0.95, 0.16, 0.95, "\u0637\u0634\u062A \u0628\u0627\u0644\u0627\u06CC\u06CC", "stoneDark", true);
-  box4(0, 1.42, 0, 0.8, 0.06, 0.8, "\u0622\u0628 \u0637\u0634\u062A", "water", false);
+  box5(0, 0.07, 0, 3.4, 0.14, 3.4, "\u0633\u06A9\u0648\u06CC \u0633\u0646\u06AF\u06CC", "stoneDark", true);
+  box5(0, 0.41, -1.35, 3, 0.55, 0.3, "\u062C\u062F\u0627\u0631\u0647 \u0634\u0645\u0627\u0644\u06CC", "stone", true);
+  box5(0, 0.41, 1.35, 3, 0.55, 0.3, "\u062C\u062F\u0627\u0631\u0647 \u062C\u0646\u0648\u0628\u06CC", "stone", true);
+  box5(-1.35, 0.41, 0, 0.3, 0.55, 2.4, "\u062C\u062F\u0627\u0631\u0647 \u063A\u0631\u0628\u06CC", "stone", true);
+  box5(1.35, 0.41, 0, 0.3, 0.55, 2.4, "\u062C\u062F\u0627\u0631\u0647 \u0634\u0631\u0642\u06CC", "stone", true);
+  box5(0, 0.3, 0, 2.4, 0.32, 2.4, "\u06A9\u0641 \u062D\u0648\u0636", "stoneDark", true);
+  box5(0, 0.47, 0, 2.36, 0.06, 2.36, "\u0622\u0628 \u062D\u0648\u0636", "water", false);
+  box5(0, 0.85, 0, 0.55, 0.85, 0.55, "\u0633\u062A\u0648\u0646 \u0645\u06CC\u0627\u0646\u06CC", "stone", true);
+  box5(0, 1.32, 0, 0.95, 0.16, 0.95, "\u0637\u0634\u062A \u0628\u0627\u0644\u0627\u06CC\u06CC", "stoneDark", true);
+  box5(0, 1.42, 0, 0.8, 0.06, 0.8, "\u0622\u0628 \u0637\u0634\u062A", "water", false);
 }
 
 // src/assets/town/TownLayout.ts
@@ -35485,6 +35615,29 @@ function fenceRun(opts) {
     }
   }
 }
+var TOWN_ROUTE_CORRIDORS = Object.freeze({
+  mainStreet: [
+    [-1.5, -59.5, 6.5],
+    [-1.3, -50, 6.5],
+    [-1, -42, 7],
+    [-0.6, -36.5, 8],
+    [0, -27, 8],
+    [0, -12.7, 8]
+  ],
+  exitRoad: [
+    [0, 9.3, 5.5],
+    [0.55, 18, 5.5],
+    [0.6, 30, 5.5],
+    [0.45, 42, 5.5],
+    [0, 52, 5.5],
+    [0, 59.5, 5.5]
+  ],
+  wealthySpur: [
+    [13.2, 5.2, 3.2],
+    [16.8, 7.8, 3.2],
+    [21.6, 9.6, 3.2]
+  ]
+});
 function lamp(x, z, name) {
   box2("town-lamp-post", `${name} \u2014 \u067E\u0627\u06CC\u0647`, x, 0, z, 0.45, 1.05, 0.45, { collider: true });
   emit("town-lamp-head", `${name} \u2014 \u0633\u0631 \u0686\u0631\u0627\u063A`, { x, y: 1.05, z }, { collider: false });
@@ -35533,16 +35686,7 @@ function buildTownMapObjects() {
   const roadPatch = (name, x, z, w, d, y) => {
     emit("town-road", name, { x, y, z }, { collider: false, editable: false, width: w, depth: d, tint: "patch" });
   };
-  roadRoute("\u062C\u0627\u062F\u0647 \u0645\u0632\u0631\u0639\u0647 \u0648 \u062E\u06CC\u0627\u0628\u0627\u0646 \u0627\u0635\u0644\u06CC", [
-    [-1.5, -59.5, 6.5],
-    [-1.3, -50, 6.5],
-    [-1, -42, 7],
-    [-0.6, -36.5, 8],
-    // the town-entrance widening (gradual trumpet)
-    [0, -27, 8],
-    [0, -12.7, 8]
-    // tucked under the plaza slab
-  ], 0.02);
+  roadRoute("\u062C\u0627\u062F\u0647 \u0645\u0632\u0631\u0639\u0647 \u0648 \u062E\u06CC\u0627\u0628\u0627\u0646 \u0627\u0635\u0644\u06CC", TOWN_ROUTE_CORRIDORS.mainStreet, 0.02);
   emit("town-road", "\u0645\u06CC\u062F\u0627\u0646 \u0645\u0631\u06A9\u0632\u06CC", { x: 0, y: 0.045, z: 0 }, {
     collider: false,
     editable: false,
@@ -35566,20 +35710,8 @@ function buildTownMapObjects() {
       { x: -15, z: -2.6 }
     ]
   });
-  roadRoute("\u062C\u0627\u062F\u0647 \u0627\u0633\u0637\u0628\u0644 \u0648 \u062E\u0631\u0648\u062C\u06CC", [
-    [0, 9.3, 5.5],
-    // tucked under the plaza slab
-    [0.55, 18, 5.5],
-    [0.6, 30, 5.5],
-    [0.45, 42, 5.5],
-    [0, 52, 5.5],
-    [0, 59.5, 5.5]
-  ], 0.02);
-  roadRoute("\u0645\u0633\u06CC\u0631 \u062E\u0627\u0646\u0647 \u067E\u0648\u0644\u062F\u0627\u0631\u06CC", [
-    [13.2, 5.2, 3.2],
-    [16.8, 7.8, 3.2],
-    [21.6, 9.6, 3.2]
-  ], 0.02);
+  roadRoute("\u062C\u0627\u062F\u0647 \u0627\u0633\u0637\u0628\u0644 \u0648 \u062E\u0631\u0648\u062C\u06CC", TOWN_ROUTE_CORRIDORS.exitRoad, 0.02);
+  roadRoute("\u0645\u0633\u06CC\u0631 \u062E\u0627\u0646\u0647 \u067E\u0648\u0644\u062F\u0627\u0631\u06CC", TOWN_ROUTE_CORRIDORS.wealthySpur, 0.02);
   roadPatch("\u0644\u06A9\u0647 \u062E\u0627\u06A9 \u06F1", -8, -18, 4.5, 3, 0.015);
   roadPatch("\u0644\u06A9\u0647 \u062E\u0627\u06A9 \u06F2", 7, -12, 3.6, 2.6, 0.015);
   roadPatch("\u0644\u06A9\u0647 \u062E\u0627\u06A9 \u06F3", -15, -30, 3.8, 2.8, 0.015);
@@ -35722,6 +35854,296 @@ function localSinkDirect() {
       metadata: { name, editable: true, ...metadata }
     });
   };
+}
+
+// src/assets/countryside/CountryBuildings.ts
+var M3 = getTownMaterials();
+function box3(parent, material, sx, sy, sz, x, y, z, name) {
+  const mesh5 = new Mesh(new BoxGeometry(sx, sy, sz), material);
+  mesh5.position.set(x, y, z);
+  mesh5.name = name;
+  mesh5.castShadow = Math.max(Math.abs(sx), Math.abs(sy), Math.abs(sz)) >= 0.25;
+  mesh5.receiveShadow = true;
+  parent.add(mesh5);
+  return mesh5;
+}
+function gableRoof(parent, w, depth, rise, yBase, name, overhang = 0.3) {
+  const slope = Math.hypot(depth / 2 + overhang, rise);
+  const angle = Math.atan2(rise, depth / 2 + overhang);
+  const midY = yBase + rise / 2;
+  const north = box3(parent, M3.shingleDark, w + overhang * 2, 0.09, slope, 0, midY, -(depth / 4 + overhang / 4), `${name}-roof-n`);
+  north.rotation.x = angle;
+  const south = box3(parent, M3.shingleDark, w + overhang * 2, 0.09, slope, 0, midY, depth / 4 + overhang / 4, `${name}-roof-s`);
+  south.rotation.x = -angle;
+  const gableGeo = new BufferGeometry();
+  const hw = (w + overhang * 2) / 2;
+  gableGeo.setAttribute("position", new Float32BufferAttribute([
+    -hw,
+    0,
+    0,
+    hw,
+    0,
+    0,
+    0,
+    rise,
+    0
+  ], 3));
+  gableGeo.computeVertexNormals();
+  for (const [z, label] of [[-depth / 2, "n"], [depth / 2, "s"]]) {
+    const gable = new Mesh(gableGeo, M3.plankB);
+    gable.position.set(0, yBase - 0.015, z);
+    gable.name = `${name}-gable-${label}`;
+    gable.castShadow = true;
+    parent.add(gable);
+  }
+}
+function buildHayBarn() {
+  const g = new Group();
+  g.name = "barn-hay";
+  const W = 7.6;
+  const D2 = 10.8;
+  const WALL = 3.6;
+  box3(g, M3.plankA, W, WALL, 0.22, 0, WALL / 2, -D2 / 2, "barn-wall-n");
+  box3(g, M3.plankA, 0.22, WALL, D2, -W / 2, WALL / 2, 0, "barn-wall-w");
+  box3(g, M3.plankA, 0.22, WALL, D2, W / 2, WALL / 2, 0, "barn-wall-e");
+  const postW = (W - 3.4) / 2;
+  box3(g, M3.plankA, postW, WALL, 0.22, -(W / 2 - postW / 2), WALL / 2, D2 / 2, "barn-wall-front-w");
+  box3(g, M3.plankA, postW, WALL, 0.22, W / 2 - postW / 2, WALL / 2, D2 / 2, "barn-wall-front-e");
+  box3(g, M3.plankA, 3.4, WALL - 2.4, 0.22, 0, WALL - (WALL - 2.4) / 2, D2 / 2, "barn-wall-front-top");
+  box3(g, M3.plankB, 1.65, 2.35, 0.08, -0.9, 1.175, D2 / 2 + 0.05, "barn-door-l");
+  box3(g, M3.plankB, 1.65, 2.35, 0.08, 1.05, 1.175, D2 / 2 + 0.05, "barn-door-r");
+  box3(g, M3.woodDark, W + 0.3, 0.12, 0.12, 0, 2.5, D2 / 2 + 0.18, "barn-door-rail");
+  box3(g, M3.woodDark, 1.3, 1.3, 0.1, 0, WALL + 1.15, D2 / 2 + 0.03, "barn-loft-door");
+  box3(g, M3.woodGray, 0.16, 0.16, 1.5, 0, WALL + 2.05, D2 / 2 + 0.45, "barn-hoist-beam");
+  gableRoof(g, W, D2, 2.1, WALL, "barn");
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    box3(g, M3.woodDark, 0.3, WALL - 0.02, 0.3, sx * W / 2, (WALL - 0.02) / 2, sz * D2 / 2, `barn-corner-${sx}-${sz}`);
+  }
+  box3(g, M3.stone, W + 0.14, 0.35, D2 + 0.14, 0, 0.175, 0, "barn-base");
+  return g;
+}
+function buildEquipmentShed() {
+  const g = new Group();
+  g.name = "shed-equipment";
+  const W = 6.2;
+  const D2 = 4.6;
+  const BACK = 2.9;
+  const FRONT = 2.3;
+  box3(g, M3.plankC, W, BACK, 0.2, 0, BACK / 2, -D2 / 2, "shed-wall-n");
+  box3(g, M3.plankC, 0.2, BACK, D2, -W / 2, BACK / 2, 0, "shed-wall-w");
+  box3(g, M3.plankC, 0.2, BACK, D2, W / 2, BACK / 2, 0, "shed-wall-e");
+  const slope = Math.hypot(D2 + 0.5, BACK - FRONT + 0.35);
+  const roof = box3(g, M3.shingle, W + 0.6, 0.09, slope, 0, (BACK + FRONT) / 2 + 0.15, 0, "shed-roof");
+  roof.rotation.x = Math.atan2(BACK - FRONT, D2);
+  for (const x of [-W / 2 + 0.25, 0, W / 2 - 0.25]) {
+    box3(g, M3.woodGray, 0.18, FRONT, 0.18, x, FRONT / 2, D2 / 2 - 0.25, `shed-post-${x}`);
+  }
+  box3(g, M3.plankB, 3.2, 0.1, 0.8, -1.2, 0.92, -D2 / 2 + 0.55, "shed-bench-top");
+  box3(g, M3.woodDark, 0.12, 0.9, 0.12, -2.6, 0.45, -D2 / 2 + 0.55, "shed-bench-leg-w");
+  box3(g, M3.woodDark, 0.12, 0.9, 0.12, 0.2, 0.45, -D2 / 2 + 0.55, "shed-bench-leg-e");
+  box3(g, M3.iron, 0.09, 0.6, 0.05, -0.6, 1.6, -D2 / 2 + 0.12, "shed-tool-rake");
+  box3(g, M3.ironLight, 0.09, 0.5, 0.05, -0.3, 1.55, -D2 / 2 + 0.12, "shed-tool-shovel");
+  box3(g, M3.woodMed, 0.7, 0.55, 0.7, 1.9, 0.275, -D2 / 2 + 0.5, "shed-crate");
+  return g;
+}
+function buildRemoteCabin() {
+  const g = new Group();
+  g.name = "cabin-remote";
+  const W = 4.8;
+  const D2 = 4;
+  const WALL = 2.5;
+  const course = WALL / 6;
+  for (let i = 0; i < 6; i += 1) {
+    const y = course * (i + 0.5);
+    const logM = i % 2 ? M3.woodMed : M3.plankC;
+    box3(g, logM, W, course, 0.24, 0, y, -D2 / 2, `cabin-log-n-${i}`);
+    if (i > 3)
+      box3(g, logM, W, course, 0.24, 0, y, D2 / 2, `cabin-log-s-${i}`);
+    box3(g, logM, 0.24, course, D2, -W / 2, y, 0, `cabin-log-w-${i}`);
+    box3(g, logM, 0.24, course, D2, W / 2, y, 0, `cabin-log-e-${i}`);
+  }
+  box3(g, M3.woodDark, 0.95, 1.95, 0.08, 0.6, 0.975, D2 / 2 + 0.02, "cabin-door");
+  box3(g, M3.woodDark, 0.95, 0.85, 0.1, -1.2, 1.35, D2 / 2 + 0.02, "cabin-window");
+  box3(g, M3.ironLight, 0.8, 0.7, 0.03, -1.2, 1.35, D2 / 2 + 0.09, "cabin-window-pane");
+  gableRoof(g, W, D2, 1.25, WALL, "cabin", 0.45);
+  box3(g, M3.stone, 0.85, WALL + 1.5, 0.85, W / 2 + 0.55, (WALL + 1.5) / 2, -0.7, "cabin-chimney");
+  box3(g, M3.plankB, 1.6, 0.14, 1, 0.6, 0.07, D2 / 2 + 0.5, "cabin-stoop");
+  box3(g, M3.woodDark, 0.12, 1.6, 0.12, 1.7, 0.8, D2 / 2 + 0.7, "cabin-lamp-post");
+  box3(g, M3.lanternGlass, 0.16, 0.22, 0.16, 1.7, 1.7, D2 / 2 + 0.7, "cabin-lamp");
+  box3(g, M3.bark, 0.5, 0.85, 1.3, -W / 2 - 0.35, 0.425, 0.9, "cabin-firewood");
+  return g;
+}
+function buildChickenCoop() {
+  const g = new Group();
+  g.name = "coop-chicken";
+  const W = 2;
+  const D2 = 2.8;
+  const FLOOR3 = 0.62;
+  const H = 0.95;
+  box3(g, M3.plankB, W, H, D2, 0, FLOOR3 + H / 2, 0, "coop-body");
+  const roof = box3(g, M3.shingle, W + 0.35, 0.07, D2 + 0.4, 0, FLOOR3 + H + 0.28, -0.05, "coop-roof");
+  roof.rotation.x = Math.atan2(0.32, D2);
+  box3(g, M3.woodDark, 0.42, 0.5, 0.06, -0.4, FLOOR3 + 0.25, D2 / 2 + 0.02, "coop-door");
+  const ramp = box3(g, M3.plankC, 0.5, 0.06, 1.5, -0.4, FLOOR3 / 2, D2 / 2 + 0.85, "coop-ramp");
+  ramp.rotation.x = -Math.atan2(FLOOR3, 1.45);
+  box3(g, M3.woodMed, 0.55, 0.5, 1.1, W / 2 + 0.3, FLOOR3 + 0.45, -0.5, "coop-nests");
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    box3(g, M3.woodDark, 0.16, FLOOR3, 0.16, sx * (W - 0.3) / 2, FLOOR3 / 2, sz * (D2 - 0.3) / 2, `coop-post-${sx}-${sz}`);
+  }
+  box3(g, M3.woodMed, 0.7, 0.1, 0.5, 0.7, 0.05, D2 / 2 + 0.5, "coop-feed-tray");
+  return g;
+}
+function buildPigShelter() {
+  const g = new Group();
+  g.name = "pig-shelter";
+  const W = 3.2;
+  const D2 = 2.8;
+  const BACK = 1.5;
+  const FRONT = 1.1;
+  box3(g, M3.plankC, W, BACK, 0.18, 0, BACK / 2, -D2 / 2, "pig-wall-n");
+  box3(g, M3.plankC, 0.18, BACK, D2, -W / 2, BACK / 2, 0, "pig-wall-w");
+  box3(g, M3.plankC, 0.18, BACK, D2, W / 2, BACK / 2, 0, "pig-wall-e");
+  const slope = Math.hypot(D2 + 0.4, BACK - FRONT);
+  const roof = box3(g, M3.shingle, W + 0.4, 0.07, slope, 0, (BACK + FRONT) / 2 + 0.05, 0, "pig-roof");
+  roof.rotation.x = Math.atan2(BACK - FRONT, D2);
+  box3(g, M3.dirtPatch, W - 0.6, 0.05, D2 + 1.4, 0, 0.025, 0.7, "pig-mud-pad");
+  box3(g, M3.woodMed, 0.8, 0.18, 0.5, -0.8, 0.09, -D2 / 2 + 0.5, "pig-trough");
+  return g;
+}
+function buildGrainSilo() {
+  const g = new Group();
+  g.name = "silo-grain";
+  const H = 7.2;
+  const R = 1.7;
+  const body = new Mesh(new CylinderGeometry(R, R, H, 12), M3.plankB);
+  body.position.y = H / 2;
+  body.castShadow = true;
+  body.receiveShadow = true;
+  body.name = "silo-body";
+  g.add(body);
+  const dome = new Mesh(new SphereGeometry(R, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), M3.ironLight);
+  dome.position.y = H;
+  dome.castShadow = true;
+  dome.name = "silo-dome";
+  g.add(dome);
+  box3(g, M3.stone, R * 2.1, 0.3, R * 2.1, 0, 0.15, 0, "silo-base");
+  box3(g, M3.iron, 0.06, H * 0.8, 0.06, R + 0.12, H * 0.4, 0, "silo-ladder-a");
+  box3(g, M3.iron, 0.06, H * 0.8, 0.06, R + 0.12, H * 0.4, 0.4, "silo-ladder-b");
+  for (let i = 1; i < 7; i += 1)
+    box3(g, M3.iron, 0.05, 0.05, 0.4, R + 0.12, i * H * 0.8 / 7, 0.2, `silo-rung-${i}`);
+  return g;
+}
+var bodyBox = (x, z, wallHeight) => ({ size: { x, y: wallHeight, z }, offset: { x: 0, y: wallHeight / 2, z: 0 } });
+var COUNTRY_COLLIDERS = Object.freeze({
+  "barn-hay": Object.freeze({
+    boxes: Object.freeze([bodyBox(7.6, 10.8, 3.6)])
+  }),
+  "shed-equipment": Object.freeze({
+    boxes: Object.freeze([
+      { size: { x: 6.2, y: 2.9, z: 0.2 }, offset: { x: 0, y: 1.45, z: -2.2 } },
+      { size: { x: 0.2, y: 2.9, z: 4.6 }, offset: { x: -3, y: 1.45, z: 0 } },
+      { size: { x: 0.2, y: 2.9, z: 4.6 }, offset: { x: 3, y: 1.45, z: 0 } },
+      { size: { x: 3.2, y: 1, z: 0.8 }, offset: { x: -1.2, y: 0.5, z: -1.75 } }
+    ])
+  }),
+  "cabin-remote": Object.freeze({
+    boxes: Object.freeze([
+      bodyBox(4.8, 4, 2.5),
+      { size: { x: 0.85, y: 4, z: 0.85 }, offset: { x: 2.95, y: 2, z: -0.7 } }
+    ])
+  }),
+  "coop-chicken": Object.freeze({
+    boxes: Object.freeze([
+      { size: { x: 2, y: 1.62, z: 2.8 }, offset: { x: 0, y: 0.81, z: 0 } }
+    ])
+  }),
+  "pig-shelter": Object.freeze({
+    boxes: Object.freeze([
+      { size: { x: 3.2, y: 1.5, z: 0.18 }, offset: { x: 0, y: 0.75, z: -1.31 } },
+      { size: { x: 0.18, y: 1.5, z: 2.8 }, offset: { x: -1.51, y: 0.75, z: 0 } },
+      { size: { x: 0.18, y: 1.5, z: 2.8 }, offset: { x: 1.51, y: 0.75, z: 0 } }
+    ])
+  }),
+  "silo-grain": Object.freeze({
+    boxes: Object.freeze([
+      { size: { x: 3.4, y: 7.2, z: 3.4 }, offset: { x: 0, y: 3.6, z: 0 } }
+    ])
+  })
+});
+function createCountryFieldFactory() {
+  return {
+    create(definition) {
+      const g = new Group();
+      g.name = "country-field";
+      const rows = Number(definition.metadata.rows ?? 7);
+      const rowGap = Number(definition.metadata.rowGap ?? 1.4);
+      const length = Number(definition.metadata.length ?? 10);
+      const ridgeParts = [];
+      const sproutParts = [];
+      for (let r = 0; r < rows; r += 1) {
+        const z = (r - (rows - 1) / 2) * rowGap;
+        const ridge = new BoxGeometry(length, 0.16, 0.42);
+        ridge.translate(0, 0.08, z);
+        ridgeParts.push(ridge);
+        const tufts = Math.floor(length / 0.62);
+        for (let i = 0; i < tufts; i += 1) {
+          const x = -length / 2 + 0.35 + i * 0.62;
+          const h = 0.2 + (r * 7 + i * 13) % 6 * 0.035;
+          const sprout = new ConeGeometry(0.12, h, 5);
+          sprout.translate(x, 0.145 + h / 2, z);
+          sproutParts.push(sprout);
+        }
+      }
+      const ridgeMesh = new Mesh(mergeParts(ridgeParts), M3.dirtPatch);
+      ridgeMesh.receiveShadow = true;
+      ridgeMesh.name = "country-field-ridges";
+      g.add(ridgeMesh);
+      const sproutMesh = new Mesh(mergeParts(sproutParts), M3.crop);
+      sproutMesh.name = "country-field-sprouts";
+      sproutMesh.castShadow = false;
+      g.add(sproutMesh);
+      return g;
+    }
+  };
+}
+function mergeParts(parts) {
+  const positions = [];
+  const normals = [];
+  for (const geo2 of parts) {
+    const p = geo2.attributes.position;
+    const n = geo2.attributes.normal;
+    for (let i = 0; i < p.count; i += 1) {
+      positions.push(p.getX(i), p.getY(i), p.getZ(i));
+      normals.push(n.getX(i), n.getY(i), n.getZ(i));
+    }
+    geo2.dispose();
+  }
+  const merged = new BufferGeometry();
+  merged.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  merged.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+  return merged;
+}
+var COUNTRY_BUILDING_TYPES = Object.freeze([
+  "barn-hay",
+  "shed-equipment",
+  "cabin-remote",
+  "coop-chicken",
+  "pig-shelter",
+  "silo-grain"
+]);
+var builders = {
+  "barn-hay": () => buildHayBarn(),
+  "shed-equipment": () => buildEquipmentShed(),
+  "cabin-remote": () => buildRemoteCabin(),
+  "coop-chicken": () => buildChickenCoop(),
+  "pig-shelter": () => buildPigShelter(),
+  "silo-grain": () => buildGrainSilo()
+};
+function registerCountryFactories(registry) {
+  for (const [assetType, build] of Object.entries(builders)) {
+    registry.register(assetType, { create: () => build() }, assetType);
+  }
+  registry.register("country-field", createCountryFieldFactory(), "Country Crop Field");
 }
 
 // src/assets/TownExteriorAssetFactory.ts
@@ -36044,7 +36466,7 @@ function mesh4(geo2, material, x = 0, y = 0, z = 0) {
   m.receiveShadow = true;
   return m;
 }
-function box3(parent, material, w, h, d, x, y, z, name) {
+function box4(parent, material, w, h, d, x, y, z, name) {
   const m = mesh4(new BoxGeometry(w, h, d), material, x, y, z);
   if (name)
     m.name = name;
@@ -36069,7 +36491,7 @@ function buildGableRoof(opts) {
     panel.rotation.z = -side * angle;
     g.add(panel);
   });
-  box3(g, MAT3.trimDark(), 0.08, 0.08, depth + overhang * 2, 0, ridgeTop, 0, "ridge-cap");
+  box4(g, MAT3.trimDark(), 0.08, 0.08, depth + overhang * 2, 0, ridgeTop, 0, "ridge-cap");
   [-1, 1].forEach((zSide) => {
     const shape = new Shape();
     shape.moveTo(-run, 0);
@@ -36108,13 +36530,13 @@ function buildShedRoof(opts) {
 function buildWindowUnit(w = 0.65, h = 0.95, broken = false) {
   const g = new Group();
   g.name = "window-unit";
-  box3(g, MAT3.trimDark(), w, h, 0.04, 0, 0, 0, "window-frame");
+  box4(g, MAT3.trimDark(), w, h, 0.04, 0, 0, 0, "window-frame");
   const pane = mesh4(new PlaneGeometry(w - 0.07, h - 0.07), MAT3.glass(broken), 0, 0, 0.022);
   pane.name = "window-pane";
   g.add(pane);
-  box3(g, MAT3.trimDark(), 0.02, h - 0.07, 0.012, 0, 0, 0.032);
-  box3(g, MAT3.trimDark(), w - 0.07, 0.02, 0.012, 0, 0, 0.032);
-  box3(g, MAT3.trimDark(), w + 0.1, 0.045, 0.07, 0, -h / 2 - 0.022, 0.024);
+  box4(g, MAT3.trimDark(), 0.02, h - 0.07, 0.012, 0, 0, 0.032);
+  box4(g, MAT3.trimDark(), w - 0.07, 0.02, 0.012, 0, 0, 0.032);
+  box4(g, MAT3.trimDark(), w + 0.1, 0.045, 0.07, 0, -h / 2 - 0.022, 0.024);
   if (broken) {
     const crack = mesh4(new PlaneGeometry(0.025, h * 0.7), MAT3.glass(true), 0.03, 0, 0.024);
     crack.rotation.z = 0.5;
@@ -36130,19 +36552,19 @@ function buildWindowUnit(w = 0.65, h = 0.95, broken = false) {
 function buildDoorUnit(w = 0.92, h = 2.05, fancy = false) {
   const g = new Group();
   g.name = "door-unit";
-  box3(g, MAT3.trimDark(), w + 0.1, h + 0.06, 0.05, 0, 0, 0, "door-frame");
+  box4(g, MAT3.trimDark(), w + 0.1, h + 0.06, 0.05, 0, 0, 0, "door-frame");
   const panel = mesh4(new BoxGeometry(w, h, 0.035), woodMat(fancy ? 0.15 : 0.35, fancy ? TRIM_WHITE : WOOD_WORN), 0, 0, 0.022);
   panel.name = "door-leaf";
   g.add(panel);
   if (fancy) {
     [-0.25, 0.25].forEach((oy) => {
-      box3(g, MAT3.trimDark(), w * 0.62, h * 0.3, 0.012, 0, oy * h, 0.045);
+      box4(g, MAT3.trimDark(), w * 0.62, h * 0.3, 0.012, 0, oy * h, 0.045);
     });
     const glassInsert = mesh4(new CircleGeometry(w * 0.16, 16), MAT3.glass(), 0, h * 0.32, 0.046);
     g.add(glassInsert);
   } else {
     for (let i = 0; i < 3; i++) {
-      box3(g, woodMat(0.4), w / 3 - 0.012, h - 0.05, 6e-3, -w / 2 + (i + 0.5) * (w / 3), 0, 0.042);
+      box4(g, woodMat(0.4), w / 3 - 0.012, h - 0.05, 6e-3, -w / 2 + (i + 0.5) * (w / 3), 0, 0.042);
     }
   }
   const knob = mesh4(new SphereGeometry(0.032, 8, 8), MAT3.brass(), w / 2 - 0.1, -0.02, 0.055);
@@ -36155,7 +36577,7 @@ function buildSteps(width, count, wear = 0.3) {
   const stepH = 0.18;
   const stepD = 0.3;
   for (let i = 0; i < count; i++) {
-    box3(g, woodMat(wear), width, stepH, stepD * (count - i), 0, stepH / 2 + i * stepH, stepD * count / 2 - stepD * (count - i) / 2);
+    box4(g, woodMat(wear), width, stepH, stepD * (count - i), 0, stepH / 2 + i * stepH, stepD * count / 2 - stepD * (count - i) / 2);
   }
   return g;
 }
@@ -36164,7 +36586,7 @@ function buildPorch(opts) {
   const g = new Group();
   g.name = "porch";
   const deckH = 0.18;
-  box3(g, woodMat(wear), width, deckH, depth, 0, deckH / 2, depth / 2, "porch-deck");
+  box4(g, woodMat(wear), width, deckH, depth, 0, deckH / 2, depth / 2, "porch-deck");
   let roof = null;
   if (roofed) {
     roof = buildShedRoof({
@@ -36190,7 +36612,7 @@ function buildPorch(opts) {
     g.add(post);
   }
   if (railed) {
-    box3(g, MAT3.trimDark(), width - 0.24, 0.05, 0.05, 0, deckH + 0.95, depth - 0.1);
+    box4(g, MAT3.trimDark(), width - 0.24, 0.05, 0.05, 0, deckH + 0.95, depth - 0.1);
     const railBottom = deckH + 0.95 - 0.025;
     const balusterLen = railBottom - deckH;
     const balusterCount = Math.round(width / 0.22);
@@ -36205,18 +36627,18 @@ function buildPorch(opts) {
 function buildChimney(height = 1) {
   const g = new Group();
   g.name = "chimney";
-  box3(g, MAT3.stone(), 0.3, height, 0.3, 0, height / 2, 0, "chimney-shaft");
-  box3(g, MAT3.trimDark(), 0.38, 0.07, 0.38, 0, height + 0.035, 0, "chimney-cap");
+  box4(g, MAT3.stone(), 0.3, height, 0.3, 0, height / 2, 0, "chimney-shaft");
+  box4(g, MAT3.trimDark(), 0.38, 0.07, 0.38, 0, height + 0.035, 0, "chimney-cap");
   return g;
 }
 function buildWoodCrate() {
   const g = new Group();
   g.name = "wood-crate";
   const size = 0.42;
-  box3(g, woodMat(0.45), size, size, size, 0, size / 2, 0, "crate-body");
+  box4(g, woodMat(0.45), size, size, size, 0, size / 2, 0, "crate-body");
   [-1, 1].forEach((sx) => {
     [-1, 1].forEach((sz) => {
-      box3(
+      box4(
         g,
         woodMat(0.5),
         0.035,
@@ -36229,7 +36651,7 @@ function buildWoodCrate() {
       );
     });
   });
-  box3(g, woodMat(0.5), size + 0.02, 0.03, size + 0.02, 0, 0.08, 0, "crate-band");
+  box4(g, woodMat(0.5), size + 0.02, 0.03, size + 0.02, 0, 0.08, 0, "crate-band");
   return g;
 }
 function buildBarrelProp() {
@@ -36308,10 +36730,10 @@ function buildFenceSection(length = 1.4, wear = 0.35) {
   const g = new Group();
   g.name = "fence-section";
   [0, length].forEach((x) => {
-    box3(g, woodMat(wear), 0.07, 0.85, 0.07, x - length / 2, 0.425, 0);
+    box4(g, woodMat(wear), 0.07, 0.85, 0.07, x - length / 2, 0.425, 0);
   });
   [0.3, 0.58].forEach((t) => {
-    box3(g, woodMat(wear), length, 0.06, 0.025, 0, t * 0.85 + 0.15, 0);
+    box4(g, woodMat(wear), length, 0.06, 0.025, 0, t * 0.85 + 0.15, 0);
   });
   return g;
 }
@@ -36330,19 +36752,19 @@ function buildWaterTrough() {
     g.add(skid);
   }
   for (const sz of [-1, 1]) {
-    box3(g, woodMat(0.5), len, bodyH, t, 0, baseY + bodyH / 2, sz * (d / 2 - t / 2), `trough-wall-${sz > 0 ? "s" : "n"}`);
+    box4(g, woodMat(0.5), len, bodyH, t, 0, baseY + bodyH / 2, sz * (d / 2 - t / 2), `trough-wall-${sz > 0 ? "s" : "n"}`);
   }
   for (const sx of [-1, 1]) {
-    box3(g, woodMat(0.5), t, bodyH, d - 2 * t - 0.01, sx * (len / 2 - t / 2), baseY + bodyH / 2, 0, `trough-end-${sx > 0 ? "e" : "w"}`);
+    box4(g, woodMat(0.5), t, bodyH, d - 2 * t - 0.01, sx * (len / 2 - t / 2), baseY + bodyH / 2, 0, `trough-end-${sx > 0 ? "e" : "w"}`);
   }
-  box3(g, woodMat(0.72), len - 2 * t - 0.04, 0.02, d - 2 * t - 0.04, 0, baseY + 0.01, 0, "trough-floor");
+  box4(g, woodMat(0.72), len - 2 * t - 0.04, 0.02, d - 2 * t - 0.04, 0, baseY + 0.01, 0, "trough-floor");
   const wallTop = baseY + bodyH;
   const rimY = wallTop - 5e-3 + rimH / 2;
   for (const sz of [-1, 1]) {
-    box3(g, woodMat(0.42), len + 0.05, rimH, t + 0.025, 0, rimY, sz * (d / 2 + 2e-3), `trough-rim-${sz > 0 ? "s" : "n"}`);
+    box4(g, woodMat(0.42), len + 0.05, rimH, t + 0.025, 0, rimY, sz * (d / 2 + 2e-3), `trough-rim-${sz > 0 ? "s" : "n"}`);
   }
   for (const sx of [-1, 1]) {
-    box3(g, woodMat(0.42), t + 0.025, rimH, d + 0.05, sx * (len / 2 + 2e-3), rimY, 0, `trough-rim-${sx > 0 ? "e" : "w"}`);
+    box4(g, woodMat(0.42), t + 0.025, rimH, d + 0.05, sx * (len / 2 + 2e-3), rimY, 0, `trough-rim-${sx > 0 ? "e" : "w"}`);
   }
   for (const sx of [-1, 1]) {
     const hoop = mesh4(new TorusGeometry(d / 2 + 0.012, 0.012, 5, 14), MAT3.iron(), sx * 0.45, baseY + bodyH / 2, 0);
@@ -36366,9 +36788,9 @@ function buildWaterTrough() {
 function buildBalanceScale() {
   const g = new Group();
   g.name = "balance-scale";
-  box3(g, woodMat(0.3), 0.16, 0.03, 0.1, 0, 0.015, 0, "scale-base");
-  box3(g, MAT3.brass(), 0.025, 0.34, 0.025, 0, 0.19, 0, "scale-post");
-  box3(g, MAT3.brass(), 0.4, 0.02, 0.02, 0, 0.37, 0, "scale-beam");
+  box4(g, woodMat(0.3), 0.16, 0.03, 0.1, 0, 0.015, 0, "scale-base");
+  box4(g, MAT3.brass(), 0.025, 0.34, 0.025, 0, 0.19, 0, "scale-post");
+  box4(g, MAT3.brass(), 0.4, 0.02, 0.02, 0, 0.37, 0, "scale-beam");
   [-0.18, 0.18].forEach((x) => {
     const chain = mesh4(new CylinderGeometry(3e-3, 3e-3, 0.09, 4), MAT3.iron(), x, 0.315, 0);
     g.add(chain);
@@ -36381,8 +36803,8 @@ function buildBalanceScale() {
 function buildCleaver() {
   const g = new Group();
   g.name = "cleaver";
-  box3(g, MAT3.iron(), 0.17, 0.13, 6e-3, 0, 0, 0, "cleaver-blade");
-  box3(g, woodMat(0.3), 0.09, 0.035, 0.02, 0.12, 0.03, 0, "cleaver-handle");
+  box4(g, MAT3.iron(), 0.17, 0.13, 6e-3, 0, 0, 0, "cleaver-blade");
+  box4(g, woodMat(0.3), 0.09, 0.035, 0.02, 0.12, 0.03, 0, "cleaver-handle");
   return g;
 }
 function buildButcherStall() {
@@ -36393,9 +36815,9 @@ function buildButcherStall() {
   const width = 3;
   const depth = 1.8;
   const wallHeight = 1.25;
-  box3(g, woodMat(wear), width, wallHeight, 0.07, 0, wallHeight / 2, -depth / 2, "stall-back-wall");
+  box4(g, woodMat(wear), width, wallHeight, 0.07, 0, wallHeight / 2, -depth / 2, "stall-back-wall");
   [-1, 1].forEach((side) => {
-    box3(g, woodMat(wear), 0.07, wallHeight, depth, side * width / 2, wallHeight / 2, 0, `stall-side-wall-${side < 0 ? "w" : "e"}`);
+    box4(g, woodMat(wear), 0.07, wallHeight, depth, side * width / 2, wallHeight / 2, 0, `stall-side-wall-${side < 0 ? "w" : "e"}`);
   });
   const frontLine = depth / 2 + 0.05;
   const awnDepth = frontLine + depth / 2;
@@ -36425,8 +36847,8 @@ function buildButcherStall() {
     scallop.rotation.x = Math.PI;
     g.add(scallop);
   }
-  box3(g, woodMat(wear), width - 0.25, 0.95, 0.5, 0, 0.475, depth / 2 - 0.25, "stall-counter");
-  box3(g, woodMat(wear * 0.8), width - 0.15, 0.05, 0.56, 0, 0.975, depth / 2 - 0.25, "stall-counter-top");
+  box4(g, woodMat(wear), width - 0.25, 0.95, 0.5, 0, 0.475, depth / 2 - 0.25, "stall-counter");
+  box4(g, woodMat(wear * 0.8), width - 0.15, 0.05, 0.56, 0, 0.975, depth / 2 - 0.25, "stall-counter-top");
   const hookRail = mesh4(new CylinderGeometry(0.018, 0.018, width - 0.35, 8), MAT3.iron(), 0, 2.15, depth / 2 - 0.08);
   hookRail.rotation.z = Math.PI / 2;
   g.add(hookRail);
@@ -36435,9 +36857,9 @@ function buildButcherStall() {
     cut.position.set(-width / 2 + 0.45 + i * ((width - 0.9) / 4), 2.12, depth / 2 - 0.08);
     g.add(cut);
   }
-  box3(g, woodMat(wear), width - 0.35, 0.05, 0.34, 0, 1.05, -depth / 2 + 0.24, "stall-back-shelf");
+  box4(g, woodMat(wear), width - 0.35, 0.05, 0.34, 0, 1.05, -depth / 2 + 0.24, "stall-back-shelf");
   for (let i = 0; i < 3; i++) {
-    box3(g, MAT3.meat(), 0.26, 0.17, 0.2, -0.6 + i * 0.6, 1.16, -depth / 2 + 0.24, `meat-piece-${i}`);
+    box4(g, MAT3.meat(), 0.26, 0.17, 0.2, -0.6 + i * 0.6, 1.16, -depth / 2 + 0.24, `meat-piece-${i}`);
   }
   const hides = [
     { kind: "cow", z: -0.35, y: 0.1, rot: 0.04 },
@@ -36482,7 +36904,7 @@ function buildButcherStall() {
   priceBoard.rotation.y = -0.12;
   priceBoard.name = "price-board";
   g.add(priceBoard);
-  box3(g, MAT3.iron(), 0.5, 0.02, 0.015, 1.45, 1.665, -depth / 2 + 0.05);
+  box4(g, MAT3.iron(), 0.5, 0.02, 0.015, 1.45, 1.665, -depth / 2 + 0.05);
   const stain1 = mesh4(new PlaneGeometry(0.24, 0.11), MAT3.blood(), -0.62, 1.0015, depth / 2 - 0.18);
   stain1.rotation.x = -Math.PI / 2;
   stain1.name = "blood-stain-counter";
@@ -36508,8 +36930,8 @@ function buildButcherStall() {
   const sign2 = mesh4(new BoxGeometry(1, 0.4, 0.03), stdMat6("#e8dcc0", signTex), 0, 2.3, depth / 2 + 0.36);
   sign2.name = "butcher-sign";
   g.add(sign2);
-  box3(g, MAT3.iron(), 0.02, 0.02, 0.5, -0.3, 2.42, depth / 2 + 0.16);
-  box3(g, MAT3.iron(), 0.02, 0.02, 0.5, 0.3, 2.42, depth / 2 + 0.16);
+  box4(g, MAT3.iron(), 0.02, 0.02, 0.5, -0.3, 2.42, depth / 2 + 0.16);
+  box4(g, MAT3.iron(), 0.02, 0.02, 0.5, 0.3, 2.42, depth / 2 + 0.16);
   return g;
 }
 function buildWorkerHouse() {
@@ -36519,7 +36941,7 @@ function buildWorkerHouse() {
   const width = 4;
   const depth = 3.4;
   const wallHeight = 2.75;
-  box3(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
+  box4(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
   const roof = buildGableRoof({ width, depth, wallHeight, ridgeRise: 1.15, overhang: 0.32, wear });
   g.add(roof);
   const door = buildDoorUnit(0.92, 2.05, false);
@@ -36530,7 +36952,7 @@ function buildWorkerHouse() {
     win.position.set(x, 1.75, depth / 2 + 0.02);
     g.add(win);
   });
-  box3(g, woodMat(wear), 1.3, 0.16, 0.5, 0, 0.08, depth / 2 + 0.25, "stoop");
+  box4(g, woodMat(wear), 1.3, 0.16, 0.5, 0, 0.08, depth / 2 + 0.25, "stoop");
   const steps = buildSteps(1.1, 1, wear);
   steps.position.set(0, 0, depth / 2 + 0.5);
   g.add(steps);
@@ -36554,8 +36976,8 @@ function buildFamilyHouse() {
   const stoneHeight = 1.15;
   const woodHeight = 1.85;
   const wallHeight = stoneHeight + woodHeight;
-  box3(g, MAT3.stone(), width, stoneHeight, depth, 0, stoneHeight / 2, 0, "stone-base");
-  box3(g, woodMat(wear, WOOD_FRESH), width, woodHeight, depth, 0, stoneHeight + woodHeight / 2, 0, "wood-upper");
+  box4(g, MAT3.stone(), width, stoneHeight, depth, 0, stoneHeight / 2, 0, "stone-base");
+  box4(g, woodMat(wear, WOOD_FRESH), width, woodHeight, depth, 0, stoneHeight + woodHeight / 2, 0, "wood-upper");
   const roof = buildGableRoof({ width, depth, wallHeight, ridgeRise: 1.5, overhang: 0.42, wear });
   g.add(roof);
   const chimney = buildChimney(1);
@@ -36589,7 +37011,7 @@ function buildFamilyHouse() {
     g.add(plant);
   });
   [-1.55, 1.55].forEach((x) => {
-    const flowerBox = box3(g, woodMat(0.3), 0.8, 0.14, 0.18, x, stoneHeight + 0.18, depth / 2 + 0.07, "flower-box");
+    const flowerBox = box4(g, woodMat(0.3), 0.8, 0.14, 0.18, x, stoneHeight + 0.18, depth / 2 + 0.07, "flower-box");
     const blooms = mesh4(new SphereGeometry(0.06, 6, 4), stdMat6("#a34a3a", null, { roughness: 0.9 }), x - 0.2, stoneHeight + 0.3, depth / 2 + 0.07);
     g.add(blooms);
     const blooms2 = mesh4(new SphereGeometry(0.06, 6, 4), stdMat6("#b8a23a", null, { roughness: 0.9 }), x + 0.18, stoneHeight + 0.3, depth / 2 + 0.07);
@@ -36614,16 +37036,16 @@ function buildWealthyTownhouse() {
   const depth = 4.8;
   const floorHeight = 2.2;
   const wallHeight = floorHeight * 2;
-  box3(g, MAT3.stone(), width + 0.08, 0.55, depth + 0.08, 0, 0.275, 0, "stone-base");
-  box3(g, woodMat(wear, TRIM_WHITE), width, wallHeight - 0.55, depth, 0, 0.55 + (wallHeight - 0.55) / 2, 0, "house-body");
-  box3(g, MAT3.trimDark(), width + 0.05, 0.07, depth + 0.05, 0, floorHeight, 0, "floor-divider");
+  box4(g, MAT3.stone(), width + 0.08, 0.55, depth + 0.08, 0, 0.275, 0, "stone-base");
+  box4(g, woodMat(wear, TRIM_WHITE), width, wallHeight - 0.55, depth, 0, 0.55 + (wallHeight - 0.55) / 2, 0, "house-body");
+  box4(g, MAT3.trimDark(), width + 0.05, 0.07, depth + 0.05, 0, floorHeight, 0, "floor-divider");
   const roof = buildGableRoof({ width, depth, wallHeight, ridgeRise: 1.75, overhang: 0.45, wear });
   g.add(roof);
   const crossGable = buildGableRoof({ width: 1.9, depth: 1.1, wallHeight: wallHeight + 0.35, ridgeRise: 0.8, overhang: 0.22, wear });
   crossGable.position.set(0, 0, depth / 2 - 0.25);
   g.add(crossGable);
   const ridgeTop = roof.userData.ridgeTop;
-  box3(g, woodMat(wear, TRIM_WHITE), 0.4, 0.4, 0.4, 0, ridgeTop + 0.2, 0, "cupola-base");
+  box4(g, woodMat(wear, TRIM_WHITE), 0.4, 0.4, 0.4, 0, ridgeTop + 0.2, 0, "cupola-base");
   const cupolaRoof = mesh4(new ConeGeometry(0.32, 0.4, 4), MAT3.roof(wear), 0, ridgeTop + 0.6, 0);
   cupolaRoof.rotation.y = Math.PI / 4;
   g.add(cupolaRoof);
@@ -36631,7 +37053,7 @@ function buildWealthyTownhouse() {
   g.add(finial);
   for (let i = 0; i < 16; i++) {
     const x = -width / 2 + 0.22 + i * ((width - 0.44) / 15);
-    box3(g, MAT3.trimWhite(), 0.07, 0.07, 0.07, x, wallHeight - 0.03, depth / 2 + 0.045);
+    box4(g, MAT3.trimWhite(), 0.07, 0.07, 0.07, x, wallHeight - 0.03, depth / 2 + 0.045);
   }
   {
     const deckTop = 0.14;
@@ -36646,10 +37068,10 @@ function buildWealthyTownhouse() {
       g.add(capital);
     });
   }
-  box3(g, MAT3.trimWhite(), 4.2, 0.09, 1.2, 0, floorHeight, depth / 2 + 0.55, "porch-roof-deck");
-  box3(g, woodMat(wear), 4.2, 0.14, 1.2, 0, 0.07, depth / 2 + 0.55, "porch-floor");
-  box3(g, MAT3.trimWhite(), 2, 0.09, 0.7, 0, floorHeight + 0.09, depth / 2 + 0.3, "balcony-floor");
-  box3(g, MAT3.trimWhite(), 2, 0.05, 0.05, 0, floorHeight + 0.95, depth / 2 + 0.62, "balcony-rail");
+  box4(g, MAT3.trimWhite(), 4.2, 0.09, 1.2, 0, floorHeight, depth / 2 + 0.55, "porch-roof-deck");
+  box4(g, woodMat(wear), 4.2, 0.14, 1.2, 0, 0.07, depth / 2 + 0.55, "porch-floor");
+  box4(g, MAT3.trimWhite(), 2, 0.09, 0.7, 0, floorHeight + 0.09, depth / 2 + 0.3, "balcony-floor");
+  box4(g, MAT3.trimWhite(), 2, 0.05, 0.05, 0, floorHeight + 0.95, depth / 2 + 0.62, "balcony-rail");
   for (let i = 0; i < 9; i++) {
     const x = -0.92 + i * (1.84 / 8);
     const baluster = mesh4(new CylinderGeometry(9e-3, 9e-3, 0.82, 6), MAT3.trimWhite(), x, floorHeight + 0.53, depth / 2 + 0.62);
@@ -36662,9 +37084,9 @@ function buildWealthyTownhouse() {
   mainDoor.position.set(0, 1.1775, depth / 2 + 0.02);
   g.add(mainDoor);
   [-0.85, 0.85].forEach((x) => {
-    box3(g, MAT3.iron(), 0.03, 0.03, 0.3, x, 2.12, depth / 2 + 0.13);
-    const lamp2 = box3(g, MAT3.glass(), 0.14, 0.22, 0.14, x, 2, depth / 2 + 0.28, "lantern");
-    box3(g, MAT3.iron(), 0.17, 0.03, 0.17, x, 2.125, depth / 2 + 0.28);
+    box4(g, MAT3.iron(), 0.03, 0.03, 0.3, x, 2.12, depth / 2 + 0.13);
+    const lamp2 = box4(g, MAT3.glass(), 0.14, 0.22, 0.14, x, 2, depth / 2 + 0.28, "lantern");
+    box4(g, MAT3.iron(), 0.17, 0.03, 0.17, x, 2.125, depth / 2 + 0.28);
   });
   const winRowGround = [-1.95, -1.15, 1.15, 1.95];
   winRowGround.forEach((x) => {
@@ -36672,7 +37094,7 @@ function buildWealthyTownhouse() {
     win.position.set(x, 1.35, depth / 2 + 0.02);
     g.add(win);
     [-1, 1].forEach((s) => {
-      box3(g, stdMat6("#3a5030", null, { roughness: 0.8 }), 0.2, 1.15, 0.025, x + s * 0.44, 1.35, depth / 2 + 0.016);
+      box4(g, stdMat6("#3a5030", null, { roughness: 0.8 }), 0.2, 1.15, 0.025, x + s * 0.44, 1.35, depth / 2 + 0.016);
     });
   });
   [-1.7, 1.7].forEach((x) => {
@@ -36702,7 +37124,7 @@ function buildFarmhouse() {
   const width = 4.6;
   const depth = 4;
   const wallHeight = 3;
-  box3(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
+  box4(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
   const roof = buildGableRoof({ width, depth, wallHeight, ridgeRise: 2, overhang: 0.42, wear });
   g.add(roof);
   const chimney = buildChimney(0.95);
@@ -36718,13 +37140,13 @@ function buildFarmhouse() {
   const winAttic = buildWindowUnit(0.55, 0.6, false);
   winAttic.position.set(0, wallHeight + 0.62, depth / 2 + 0.02);
   g.add(winAttic);
-  box3(g, woodMat(wear), 1.35, 0.16, 0.5, -0.5, 0.08, depth / 2 + 0.25, "stoop");
+  box4(g, woodMat(wear), 1.35, 0.16, 0.5, -0.5, 0.08, depth / 2 + 0.25, "stoop");
   const steps = buildSteps(1.2, 1, wear);
   steps.position.set(-0.5, 0, depth / 2 + 0.5);
   g.add(steps);
   const shedWidth = 2;
   const shedWallH = 2.1;
-  box3(g, woodMat(wear + 0.1), shedWidth, shedWallH, depth * 0.8, width / 2 + shedWidth / 2, shedWallH / 2, -depth * 0.1, "shed-body");
+  box4(g, woodMat(wear + 0.1), shedWidth, shedWallH, depth * 0.8, width / 2 + shedWidth / 2, shedWallH / 2, -depth * 0.1, "shed-body");
   const shedRoof = buildShedRoof({
     width: depth * 0.8 + 0.25,
     // long axis runs along the shed depth (z)
@@ -36779,7 +37201,7 @@ function buildAbandonedHouse() {
   const width = 4;
   const depth = 3.4;
   const wallHeight = 2.75;
-  box3(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
+  box4(g, woodMat(wear), width, wallHeight, depth, 0, wallHeight / 2, 0, "house-body");
   const roof = buildGableRoof({ width, depth, wallHeight, ridgeRise: 1.15, overhang: 0.32, wear });
   roof.children[1].rotation.z += 0.06;
   roof.children[1].position.y -= 0.05;
@@ -36804,7 +37226,7 @@ function buildAbandonedHouse() {
     plank.rotation.z = 0.16 + i * 0.05;
     g.add(plank);
   });
-  const stoop = box3(g, woodMat(wear), 1.3, 0.14, 0.5, 0, 0.07, depth / 2 + 0.25, "stoop");
+  const stoop = box4(g, woodMat(wear), 1.3, 0.14, 0.5, 0, 0.07, depth / 2 + 0.25, "stoop");
   stoop.rotation.z = 0.035;
   const steps = buildSteps(1.1, 1, wear);
   steps.position.set(0, -0.02, depth / 2 + 0.5);
@@ -36931,7 +37353,7 @@ var TOWN_EXTERIOR_ASSET_TYPES = Object.freeze([
   "town-exterior-scene"
 ]);
 function registerTownExteriorFactories(registry) {
-  const builders = {
+  const builders2 = {
     "butcher-stall": () => buildButcherStall(),
     "house-worker": () => buildWorkerHouse(),
     "house-family": () => buildFamilyHouse(),
@@ -36948,9 +37370,693 @@ function registerTownExteriorFactories(registry) {
     "water-trough": () => buildWaterTrough(),
     "town-exterior-scene": () => buildTownExteriorScene()
   };
-  for (const [assetType, build] of Object.entries(builders)) {
+  for (const [assetType, build] of Object.entries(builders2)) {
     registry.register(assetType, { create: () => build() }, assetType);
   }
+}
+
+// src/assets/countryside/CountryLayout.ts
+var countryUuidCursor = 200704;
+function countryUuid() {
+  countryUuidCursor += 1;
+  return `c0000000-0000-4000-8000-${countryUuidCursor.toString(16).padStart(12, "0")}`;
+}
+var siteCursor = 0;
+function site(type, name, x, z, yaw, scale = 1) {
+  siteCursor += 1;
+  return {
+    uuid: `c0000000-0000-4000-8000-${(204800 + siteCursor).toString(16).padStart(12, "0")}`,
+    type,
+    name,
+    x,
+    z,
+    yaw,
+    scale
+  };
+}
+var COUNTRY_SITES = Object.freeze([
+  // --- THE RANCH (north) -----------------------------------------------------
+  site("barn-hay", "\u0627\u0646\u0628\u0627\u0631 \u0639\u0644\u0648\u0641\u0647\u0654 \u0631\u0627\u0646\u0686", -7.5, -85, 90),
+  // door faces the road (east)
+  site("shed-equipment", "\u0627\u0646\u0628\u0627\u0631 \u062A\u062C\u0647\u06CC\u0632\u0627\u062A \u0631\u0627\u0646\u0686", -13, -64, 90),
+  // open side east
+  // --- THE AGRI FARM (east) --------------------------------------------------
+  site("house-worker", "\u062E\u0627\u0646\u0647\u0654 \u06A9\u0627\u0631\u06AF\u0631\u0627\u0646 \u0645\u0632\u0631\u0639\u0647", 80, -94, 180),
+  // reused town house faces north
+  site("barn-hay", "\u0622\u062E\u0648\u0631 \u0648 \u0627\u0646\u0628\u0627\u0631 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", 90, -98, -90),
+  // door faces west
+  site("silo-grain", "\u0633\u06CC\u0644\u0648 \u063A\u0644\u0647 \u06F1", 96, -93, 0),
+  site("silo-grain", "\u0633\u06CC\u0644\u0648 \u063A\u0644\u0647 \u06F2", 96, -98.5, 0),
+  site("shed-equipment", "\u0627\u0646\u0628\u0627\u0631 \u0627\u0628\u0632\u0627\u0631 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", 86, -88, 180),
+  // open side north to the yard
+  // --- THE FAMILY FARM (northwest) --------------------------------------------
+  site("house-family", "\u062E\u0627\u0646\u0647\u0654 \u0631\u0648\u0633\u062A\u0627\u06CC\u06CC \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", -88, -88, 180),
+  site("coop-chicken", "\u0645\u0631\u063A\u062F\u0627\u0646\u06CC", -83, -84.5, 180),
+  site("pig-shelter", "\u062C\u0627 \u062E\u0648\u06A9\u200C\u0647\u0627", -93, -84, 180),
+  // --- THE WILDS (south) ------------------------------------------------------
+  site("cabin-remote", "\u06A9\u0644\u0628\u0647\u0654 \u062A\u06A9\u200C\u0627\u0641\u062A\u0627\u062F\u0647\u0654 \u062C\u0646\u0648\u0628", -32, 126, 180),
+  site("house-abandoned", "\u062E\u0627\u0646\u0647\u0654 \u0645\u062A\u0631\u0648\u06A9\u0647\u0654 \u062F\u0634\u062A", 98, 106, 270, 1.15)
+  // reused ruined shell
+]);
+function countryColliderFor(type) {
+  return COUNTRY_COLLIDERS[type] ?? TOWN_EXTERIOR_COLLIDERS[type];
+}
+var COUNTRY_FENCE_STYLES = Object.freeze({
+  farm: { height: 1.12, thickness: 0.2 },
+  // the town farm-fence contract
+  corral: { height: 1.12, thickness: 0.2 },
+  tall: { height: 1.45, thickness: 0.22 },
+  // cattle-proof perimeter
+  low: { height: 0.8, thickness: 0.16 }
+  // garden/chicken yard
+});
+var COUNTRY_FENCE_RUNS = Object.freeze([
+  // --- ranch perimeter (wraps AROUND the existing yard's fence lines) --------
+  { name: "\u062D\u0635\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u0634\u0645\u0627\u0644", from: [-30, -96], to: [2, -96], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u063A\u0631\u0628", from: [-30, -96], to: [-30, -57], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u062C\u0646\u0648\u0628 \u063A\u0631\u0628\u06CC", from: [-30, -57], to: [-21, -57], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u062C\u0646\u0648\u0628 \u0634\u0631\u0642\u06CC", from: [-5.8, -57], to: [2, -57], gaps: [[-4.6, 0.8]], style: "tall" },
+  // the farm road passes THROUGH — the ranch's dirt entry
+  { name: "\u062D\u0635\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u0634\u0631\u0642", from: [2, -96], to: [2, -57], gaps: [[-66, -63]], style: "tall" },
+  // trailhead gap
+  // --- cattle enclosure (big, tall, one wide gate on its east side) -----------
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0627\u0648\u0647\u0627 \u2014 \u0634\u0645\u0627\u0644", from: [-28, -94], to: [-14, -94], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0627\u0648\u0647\u0627 \u2014 \u062C\u0646\u0648\u0628", from: [-28, -76], to: [-14, -76], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0627\u0648\u0647\u0627 \u2014 \u063A\u0631\u0628", from: [-28, -94], to: [-28, -76], style: "tall" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0627\u0648\u0647\u0627 \u2014 \u0634\u0631\u0642", from: [-14, -94], to: [-14, -76], gaps: [[-86.5, -83.5]], style: "tall" },
+  // --- horse corral beside the road -------------------------------------------
+  { name: "\u062D\u0635\u0627\u0631 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686 \u2014 \u0634\u0645\u0627\u0644", from: [-11, -72], to: [-3.5, -72], style: "corral" },
+  { name: "\u062D\u0635\u0627\u0631 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686 \u2014 \u062C\u0646\u0648\u0628", from: [-11, -63], to: [-3.5, -63], style: "corral" },
+  { name: "\u062D\u0635\u0627\u0631 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686 \u2014 \u063A\u0631\u0628", from: [-11, -72], to: [-11, -63], gaps: [[-68.8, -66.2]], style: "corral" },
+  { name: "\u062D\u0635\u0627\u0631 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686 \u2014 \u0634\u0631\u0642", from: [-3.5, -72], to: [-3.5, -63], style: "corral" },
+  // --- agri farmstead yard (house + barn + silos) ------------------------------
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC \u2014 \u0634\u0645\u0627\u0644", from: [72, -100], to: [100, -100], gaps: [[92, 95.5]], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC \u2014 \u062C\u0646\u0648\u0628", from: [72, -84], to: [100, -84], gaps: [[75, 79]], style: "farm" },
+  // road entry
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC \u2014 \u063A\u0631\u0628", from: [72, -100], to: [72, -84], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC \u2014 \u0634\u0631\u0642", from: [100, -100], to: [100, -84], style: "farm" },
+  // --- family farm: chicken yard (low), pig pen, sheep paddock -----------------
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0631\u063A\u200C\u0647\u0627 \u2014 \u0634\u0645\u0627\u0644", from: [-81.5, -86], to: [-76.5, -86], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0631\u063A\u200C\u0647\u0627 \u2014 \u062C\u0646\u0648\u0628", from: [-81.5, -81], to: [-76.5, -81], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0631\u063A\u200C\u0647\u0627 \u2014 \u063A\u0631\u0628", from: [-81.5, -86], to: [-81.5, -81], gaps: [[-84.4, -82.6]], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0645\u0631\u063A\u200C\u0647\u0627 \u2014 \u0634\u0631\u0642", from: [-76.5, -86], to: [-76.5, -81], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u062E\u0648\u06A9\u200C\u0647\u0627 \u2014 \u0634\u0645\u0627\u0644", from: [-95, -86], to: [-90, -86], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u062E\u0648\u06A9\u200C\u0647\u0627 \u2014 \u062C\u0646\u0648\u0628", from: [-95, -81], to: [-90, -81], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u062E\u0648\u06A9\u200C\u0647\u0627 \u2014 \u063A\u0631\u0628", from: [-95, -86], to: [-95, -81], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u062E\u0648\u06A9\u200C\u0647\u0627 \u2014 \u0634\u0631\u0642", from: [-90, -86], to: [-90, -81], gaps: [[-84.6, -82.4]], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u0634\u0645\u0627\u0644", from: [-96, -96], to: [-89, -96], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u062C\u0646\u0648\u0628", from: [-96, -90], to: [-89, -90], gaps: [[-93.6, -91.4]], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u063A\u0631\u0628", from: [-96, -96], to: [-96, -90], style: "farm" },
+  { name: "\u062D\u0635\u0627\u0631 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u0634\u0631\u0642", from: [-89, -96], to: [-89, -90], style: "farm" },
+  // --- family garden plot -------------------------------------------------------
+  { name: "\u062D\u0635\u0627\u0631 \u0628\u0627\u063A \u2014 \u0634\u0645\u0627\u0644", from: [-94.5, -104], to: [-88.5, -104], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0628\u0627\u063A \u2014 \u062C\u0646\u0648\u0628", from: [-94.5, -99.5], to: [-88.5, -99.5], gaps: [[-92.4, -90.6]], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0628\u0627\u063A \u2014 \u063A\u0631\u0628", from: [-94.5, -104], to: [-94.5, -99.5], style: "low" },
+  { name: "\u062D\u0635\u0627\u0631 \u0628\u0627\u063A \u2014 \u0634\u0631\u0642", from: [-88.5, -104], to: [-88.5, -99.5], style: "low" }
+]);
+var COUNTRY_ROADS = Object.freeze([
+  // ranch road: the farm road continues north THROUGH the open range
+  { name: "\u062C\u0627\u062F\u0647\u0654 \u0631\u0627\u0646\u0686", pts: [[-1.5, -59.5, 6.5], [-1.5, -70, 5.5], [-1.8, -88, 5], [-2, -108, 3.5], [-2, -122, 3]] },
+  // agri branch: forks east off the farm road
+  { name: "\u062C\u0627\u062F\u0647\u0654 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", pts: [[-1.5, -60, 5.5], [28, -63.5, 4.4], [52, -71, 4], [70, -79.5, 3.8], [80, -86, 3.6], [88, -90, 3.4]] },
+  // family branch: forks northwest off the farm road
+  { name: "\u062C\u0627\u062F\u0647\u0654 \u0645\u0632\u0631\u0639\u0647\u0654 \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", pts: [[-1.5, -62, 5], [-30, -66, 3.8], [-56, -73.5, 3.4], [-74, -83, 3.2], [-86, -89.5, 3]] },
+  // wilds: the exit road continues south into deer country
+  { name: "\u062C\u0627\u062F\u0647\u0654 \u062F\u0634\u062A \u062C\u0646\u0648\u0628\u06CC", pts: [[0, 59.5, 5.5], [0, 80, 4.6], [-6, 100, 3.6], [-16, 118, 3.2], [-26, 130, 3]] },
+  // east trail to the ruined plain cabin (narrow)
+  { name: "\u0645\u0633\u06CC\u0631 \u06A9\u0644\u0628\u0647\u0654 \u062F\u0634\u062A", pts: [[0.6, 80, 3], [30, 88, 2.8], [58, 96, 2.8], [84, 102, 2.6], [96, 104, 2.6]] },
+  // spur: deer-meadow clearing (ends at the pond rim)
+  { name: "\u0645\u0633\u06CC\u0631 \u0686\u0631\u0627\u06AF\u0627\u0647 \u06AF\u0648\u0632\u0646", pts: [[-16, 118, 3], [-26, 114, 2.6], [-36, 110, 2.6]] }
+]);
+var COUNTRY_ROAD_CORRIDORS = COUNTRY_ROADS;
+var COUNTRY_PONDS = Object.freeze([
+  { name: "\u062D\u0648\u0636 \u0686\u0631\u0627\u06AF\u0627\u0647 \u06AF\u0648\u0632\u0646", x: -42, z: 108, rx: 4.2, rz: 2.7 },
+  { name: "\u062D\u0648\u0636 \u0622\u0628 \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", x: -84, z: -93, rx: 1.8, rz: 1.3 }
+]);
+var COUNTRY_FIELDS = Object.freeze([
+  { name: "\u06A9\u0634\u062A\u0632\u0627\u0631 \u06AF\u0646\u062F\u0645 \u06F1", x: 64, z: -102, rows: 8, rowGap: 1.5, length: 18 },
+  { name: "\u06A9\u0634\u062A\u0632\u0627\u0631 \u06AF\u0646\u062F\u0645 \u06F2", x: 86, z: -110, rows: 8, rowGap: 1.5, length: 20, yaw: 90 },
+  { name: "\u06A9\u0634\u062A\u0632\u0627\u0631 \u062C\u0648", x: 60, z: -114, rows: 6, rowGap: 1.5, length: 14 },
+  { name: "\u06A9\u0634\u062A\u0632\u0627\u0631 \u06CC\u0648\u0646\u062C\u0647", x: 102, z: -108, rows: 7, rowGap: 1.4, length: 16, yaw: 90 },
+  { name: "\u0628\u0627\u063A \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", x: -91.5, z: -101.75, rows: 4, rowGap: 1.1, length: 5 }
+]);
+var COUNTRY_HABITAT_RECTS = Object.freeze([
+  { x0: -28, z0: -94, x1: -14, z1: -76 },
+  // cattle enclosure
+  { x0: -11, z0: -72, x1: -3.5, z1: -63 },
+  // horse corral
+  { x0: -100, z0: -100, x1: 100, z1: -84 },
+  // agri yard
+  { x0: -96, z0: -104, x1: -76.5, z1: -81 }
+  // family farmstead strip
+]);
+var DEER_MEADOW = Object.freeze({ x: -42, z: 108, r: 7 });
+var COUNTRY_ZONES = Object.freeze([
+  { name: "\u062F\u0634\u062A \u0634\u0631\u0642", kind: "plains", x0: 8, z0: -138, x1: 138, z1: -28 },
+  { name: "\u062F\u0634\u062A \u062C\u0646\u0648\u0628 \u0634\u0631\u0642", kind: "plains", x0: 26, z0: -28, x1: 138, z1: 96 },
+  { name: "\u062F\u0634\u062A \u062C\u0646\u0648\u0628 \u0634\u0631\u0642 \u062F\u0648\u0631", kind: "plains", x0: 40, z0: 96, x1: 138, z1: 138 },
+  { name: "\u0686\u0645\u0646\u0632\u0627\u0631 \u063A\u0631\u0628", kind: "grassland", x0: -138, z0: -28, x1: -10, z1: 138 },
+  { name: "\u0686\u0645\u0646\u0632\u0627\u0631 \u063A\u0631\u0628 \u0645\u06CC\u0627\u0646\u06CC", kind: "grassland", x0: -138, z0: -100, x1: -34, z1: -28 },
+  { name: "\u0686\u0645\u0646\u0632\u0627\u0631 \u0634\u0645\u0627\u0644 \u063A\u0631\u0628", kind: "grassland", x0: -138, z0: -138, x1: -34, z1: -100 },
+  { name: "\u062F\u0634\u062A \u062C\u0646\u0648\u0628\u06CC", kind: "wild", x0: -138, z0: 56, x1: 40, z1: 138 },
+  { name: "\u0645\u0631\u0627\u062A\u0639 \u0631\u0627\u0646\u0686", kind: "ranchRange", x0: -34, z0: -138, x1: 8, z1: -100 },
+  { name: "\u0645\u0631\u0627\u062A\u0639 \u0631\u0627\u0646\u0686 \u0645\u06CC\u0627\u0646\u06CC", kind: "ranchRange", x0: -34, z0: -100, x1: 8, z1: -57 },
+  { name: "\u0645\u0631\u062A\u0639 \u0634\u0631\u0642 \u0631\u0627\u0646\u0686", kind: "ranchRange", x0: 8, z0: -138, x1: 34, z1: -100 }
+]);
+var ZONE_DENSITY = Object.freeze({
+  plains: { grass: 95, bush: 26, rock: 14, bigRock: 5, tree: 3, stump: 3 },
+  grassland: { grass: 150, bush: 38, rock: 10, bigRock: 3, tree: 8, stump: 4 },
+  wild: { grass: 110, bush: 40, rock: 18, bigRock: 6, tree: 22, stump: 6 },
+  ranchRange: { grass: 120, bush: 24, rock: 8, bigRock: 2, tree: 2, stump: 2 }
+});
+var defs2 = [];
+function emit2(assetType, name, position, metadata, rotation = { x: 0, y: 0, z: 0 }, scale = { x: 1, y: 1, z: 1 }) {
+  defs2.push({
+    uuid: countryUuid(),
+    assetType,
+    transform: { position, rotation, scale },
+    metadata: { name, editable: metadata.editable ?? true, ...metadata }
+  });
+}
+function boxDef(assetType, name, x, y, z, sx, sy, sz, metadata) {
+  emit2(assetType, name, { x, y, z }, metadata, { x: 0, y: 0, z: 0 }, { x: sx, y: sy, z: sz });
+}
+function buildCountryMapObjects() {
+  countryUuidCursor = 200704;
+  siteCursor = 0;
+  defs2.length = 0;
+  for (const s of COUNTRY_SITES) {
+    const scale = s.scale ?? 1;
+    defs2.push({
+      uuid: s.uuid,
+      assetType: s.type,
+      transform: {
+        position: { x: s.x, y: 0, z: s.z },
+        rotation: { x: 0, y: s.yaw, z: 0 },
+        scale: { x: scale, y: scale, z: scale }
+      },
+      metadata: { name: s.name, editable: true, collider: countryColliderFor(s.type) }
+    });
+  }
+  for (const road of COUNTRY_ROADS) {
+    emit2("town-road", road.name, { x: 0, y: 0.02, z: 0 }, {
+      collider: false,
+      editable: false,
+      route: road.pts.map(([x, z, w]) => ({ x, z, w }))
+    });
+  }
+  boxDef("town-road", "\u0644\u06A9\u0647\u0654 \u062E\u0627\u06A9 \u0631\u0627\u0646\u0686", -9, 0.015, -70, 3.6, 1, 2.6, { collider: false, editable: false, width: 3.6, depth: 2.6, tint: "patch" });
+  boxDef("town-road", "\u0644\u06A9\u0647\u0654 \u062E\u0627\u06A9 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", 84, 0.015, -92, 3.2, 1, 2.4, { collider: false, editable: false, width: 3.2, depth: 2.4, tint: "patch" });
+  boxDef("town-road", "\u0644\u06A9\u0647\u0654 \u062E\u0627\u06A9 \u0645\u0632\u0631\u0639\u0647\u0654 \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", -86, 0.015, -90, 3, 1, 2.2, { collider: false, editable: false, width: 3, depth: 2.2, tint: "patch" });
+  for (const pond of COUNTRY_PONDS) {
+    emit2("town-pond", pond.name, { x: pond.x, y: 0, z: pond.z }, { collider: false, rx: pond.rx, rz: pond.rz });
+  }
+  for (const field of COUNTRY_FIELDS) {
+    emit2("country-field", field.name, { x: field.x, y: 0, z: field.z }, {
+      collider: false,
+      editable: false,
+      rows: field.rows,
+      rowGap: field.rowGap,
+      length: field.length
+    }, { x: 0, y: field.yaw ?? 0, z: 0 });
+  }
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u0628\u0632\u0631\u06AF \u06AF\u0627\u0648\u0647\u0627 \u06F1", -24, 0, -80, 2.4, 0.47, 0.62, { collider: true });
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u0628\u0632\u0631\u06AF \u06AF\u0627\u0648\u0647\u0627 \u06F2", -24, 0, -88, 2.4, 0.47, 0.62, { collider: true });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u06AF\u0627\u0648\u0647\u0627 \u06F1", -19, 0, -83, 1.5, 0.78, 1, { collider: true });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u06AF\u0627\u0648\u0647\u0627 \u06F2", -19, 0.78, -83, 1.2, 0.7, 0.85, { collider: false });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u06AF\u0627\u0648\u0647\u0627 \u06F3", -19.6, 0, -88.5, 1.2, 0.78, 0.9, { collider: true });
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686", -7.2, 0, -70.5, 1.9, 0.47, 0.62, { collider: true });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u0627\u0633\u0628 \u0631\u0627\u0646\u0686", -9.6, 0, -66.5, 1.15, 0.78, 0.85, { collider: true });
+  emit2("town-hitching", "\u067E\u0627\u06CC\u0647\u0654 \u0645\u0647\u0627\u0631 \u0631\u0627\u0646\u0686", { x: -2.9, y: 0, z: -64.5 }, { collider: true }, { x: 0, y: 90, z: 0 }, { x: 2, y: 1.1, z: 0.35 });
+  boxDef("town-box", "\u06AF\u0627\u0631\u06CC \u0631\u0627\u0646\u0686 \u2014 \u0645\u062D\u0641\u0638\u0647", -4.6, 0.76, -81, 1.9, 0.75, 3.4, { tint: "plankA", collider: true });
+  emit2("town-wagon", "\u06AF\u0627\u0631\u06CC \u0631\u0627\u0646\u0686 \u2014 \u0686\u0631\u062E\u200C\u0647\u0627", { x: -4.6, y: 0, z: -81 }, { collider: false });
+  boxDef("town-hay", "\u0628\u0627\u0631 \u06AF\u0627\u0631\u06CC \u0631\u0627\u0646\u0686", -4.6, 1.52, -81, 1, 0.78, 0.75, { collider: false });
+  boxDef("town-barrel", "\u0628\u0634\u06A9\u0647\u0654 \u0627\u0646\u0628\u0627\u0631 \u0631\u0627\u0646\u0686 \u06F1", -3.6, 0, -83.2, 0.74, 0.95, 0.74, { collider: true });
+  boxDef("town-barrel", "\u0628\u0634\u06A9\u0647\u0654 \u0627\u0646\u0628\u0627\u0631 \u0631\u0627\u0646\u0686 \u06F2", -3.7, 0, -84.1, 0.68, 0.9, 0.68, { collider: true });
+  boxDef("town-woodpile", "\u0647\u06CC\u0632\u0645 \u0631\u0627\u0646\u0686", -10.4, 0, -82.5, 1.5, 1.05, 0.8, { collider: true });
+  boxDef("town-lamp-post", "\u0686\u0631\u0627\u063A \u0627\u0646\u0628\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u067E\u0627\u06CC\u0647", -4.4, 0, -87.6, 0.45, 1.05, 0.45, { collider: true });
+  emit2("town-lamp-head", "\u0686\u0631\u0627\u063A \u0627\u0646\u0628\u0627\u0631 \u0631\u0627\u0646\u0686 \u2014 \u0633\u0631", { x: -4.4, y: 1.05, z: -87.6 }, { collider: false });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u062A\u062C\u0647\u06CC\u0632\u0627\u062A \u06F1", -10.8, 0, -62.4, 0.85, 0.85, 0.85, { collider: true });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u062A\u062C\u0647\u06CC\u0632\u0627\u062A \u06F2", -10.9, 0.85, -62.5, 0.62, 0.62, 0.62, { collider: false });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u0627\u0646\u0628\u0627\u0631 \u062A\u062C\u0647\u06CC\u0632\u0627\u062A", -15.6, 0, -62.6, 1.15, 0.78, 0.85, { collider: true });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u0645\u062D\u0635\u0648\u0644 \u06F1", 82.5, 0, -90.5, 0.85, 0.85, 0.85, { collider: true });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u0645\u062D\u0635\u0648\u0644 \u06F2", 83.5, 0, -90.6, 0.8, 0.8, 0.8, { collider: true });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u0645\u062D\u0635\u0648\u0644 \u2014 \u0631\u0648\u06CC \u0647\u0645", 83, 0.85, -90.5, 0.6, 0.6, 0.6, { collider: false });
+  boxDef("town-barrel", "\u0628\u0634\u06A9\u0647\u0654 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", 81.4, 0, -89.8, 0.74, 0.95, 0.74, { collider: true });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u062C\u0644\u0648\u06CC \u0627\u0646\u0628\u0627\u0631", 87.5, 0, -92.2, 1.3, 0.78, 0.95, { collider: true });
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u06A9\u0627\u0631\u06AF\u0631\u0627\u0646", 78.2, 0, -90.6, 1.8, 0.47, 0.62, { collider: true });
+  boxDef("town-woodpile", "\u0647\u06CC\u0632\u0645 \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC", 97.4, 0, -90.2, 1.4, 1.05, 0.8, { collider: true });
+  boxDef("town-lamp-post", "\u0686\u0631\u0627\u063A \u062E\u0627\u0646\u0647\u0654 \u06A9\u0627\u0631\u06AF\u0631\u0627\u0646 \u2014 \u067E\u0627\u06CC\u0647", 79.2, 0, -92.4, 0.45, 1.05, 0.45, { collider: true });
+  emit2("town-lamp-head", "\u0686\u0631\u0627\u063A \u062E\u0627\u0646\u0647\u0654 \u06A9\u0627\u0631\u06AF\u0631\u0627\u0646 \u2014 \u0633\u0631", { x: 79.2, y: 1.05, z: -92.4 }, { collider: false });
+  emit2("town-windmill", "\u0622\u0633\u06CC\u0627\u0628 \u0628\u0627\u062F\u06CC \u0645\u0632\u0631\u0639\u0647", { x: 104, y: 0, z: -96 }, { collider: false });
+  boxDef("town-woodpile", "\u0647\u06CC\u0632\u0645 \u062E\u0627\u0646\u0647\u0654 \u0631\u0648\u0633\u062A\u0627\u06CC\u06CC", -85.8, 0, -86.2, 1.3, 1.05, 0.75, { collider: true });
+  boxDef("town-barrel", "\u0628\u0634\u06A9\u0647\u0654 \u0622\u0628 \u0628\u0627\u0631\u0627\u0646", -84.4, 0, -89.4, 0.74, 0.95, 0.74, { collider: true });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u062A\u062E\u0645\u200C\u0645\u0631\u063A", -80.4, 0, -85.8, 0.7, 0.7, 0.7, { collider: true });
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", -93.5, 0, -93.4, 1.7, 0.47, 0.62, { collider: true });
+  boxDef("town-hay", "\u0639\u0644\u0648\u0641\u0647\u0654 \u06AF\u0648\u0633\u0641\u0646\u062F \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC", -95.2, 0, -91.6, 1.1, 0.78, 0.8, { collider: true });
+  boxDef("town-trough", "\u0622\u0628\u0634\u062E\u0648\u0631 \u062E\u0648\u06A9\u200C\u0647\u0627", -92.6, 0, -82.6, 1.4, 0.47, 0.55, { collider: true });
+  boxDef("town-lamp-post", "\u0686\u0631\u0627\u063A \u0627\u06CC\u0648\u0627\u0646 \u0631\u0648\u0633\u062A\u0627\u06CC\u06CC \u2014 \u067E\u0627\u06CC\u0647", -85.6, 0, -90.4, 0.45, 1.05, 0.45, { collider: true });
+  emit2("town-lamp-head", "\u0686\u0631\u0627\u063A \u0627\u06CC\u0648\u0627\u0646 \u0631\u0648\u0633\u062A\u0627\u06CC\u06CC \u2014 \u0633\u0631", { x: -85.6, y: 1.05, z: -90.4 }, { collider: false });
+  boxDef("town-box", "\u06AF\u0627\u0631\u06CC \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u0645\u062D\u0641\u0638\u0647", -89.5, 0.76, -84.8, 1.9, 0.75, 3.4, { tint: "plankB", collider: true });
+  emit2("town-wagon", "\u06AF\u0627\u0631\u06CC \u062E\u0627\u0646\u0648\u0627\u062F\u06AF\u06CC \u2014 \u0686\u0631\u062E\u200C\u0647\u0627", { x: -89.5, y: 0, z: -84.8 }, { collider: false });
+  boxDef("town-crate", "\u062C\u0639\u0628\u0647\u0654 \u06A9\u0644\u0628\u0647\u0654 \u062C\u0646\u0648\u0628", -30.4, 0, 124.6, 0.75, 0.75, 0.75, { collider: true });
+  boxDef("town-barrel", "\u0628\u0634\u06A9\u0647\u0654 \u06A9\u0644\u0628\u0647\u0654 \u062C\u0646\u0648\u0628", -33.6, 0, 124.4, 0.74, 0.95, 0.74, { collider: true });
+  boxDef("town-woodpile", "\u0647\u06CC\u0632\u0645 \u06A9\u0644\u0628\u0647\u0654 \u062C\u0646\u0648\u0628", -30.6, 0, 128.4, 1.2, 0.95, 0.7, { collider: true });
+  boxDef("town-rock", "\u0633\u0646\u06AF \u0686\u0631\u0627\u06AF\u0627\u0647 \u06AF\u0648\u0632\u0646 \u06F1", -47.5, 0, 104.5, 1.6, 1, 1.4, { collider: true });
+  boxDef("town-rock", "\u0633\u0646\u06AF \u0686\u0631\u0627\u06AF\u0627\u0647 \u06AF\u0648\u0632\u0646 \u06F2", -36.8, 0, 112.8, 1.2, 0.75, 1.1, { collider: true });
+  const tree2 = (x, z, seed, s, name) => {
+    emit2("town-tree", name, { x, y: 0, z }, { collider: false, seed }, { x: 0, y: seed * 37, z: 0 }, { x: s, y: s, z: s });
+  };
+  tree2(-12.2, -90.5, 11, 1.2, "\u062F\u0631\u062E\u062A \u0631\u0627\u0646\u0686");
+  tree2(-19.8, -60.8, 12, 1.05, "\u062F\u0631\u062E\u062A \u0627\u0646\u0628\u0627\u0631 \u0631\u0627\u0646\u0686");
+  tree2(75.5, -88.5, 13, 1.1, "\u062F\u0631\u062E\u062A \u0645\u0632\u0631\u0639\u0647\u0654 \u06A9\u0634\u0627\u0648\u0631\u0632\u06CC");
+  tree2(99.5, -103.5, 14, 1, "\u062F\u0631\u062E\u062A \u0627\u0646\u0628\u0627\u0631 \u063A\u0644\u0647");
+  tree2(-83.2, -87.6, 15, 1.15, "\u062F\u0631\u062E\u062A \u062E\u0627\u0646\u0647\u0654 \u0631\u0648\u0633\u062A\u0627\u06CC\u06CC");
+  tree2(-31.5, 122.4, 16, 1.25, "\u062F\u0631\u062E\u062A \u06A9\u0644\u0628\u0647\u0654 \u062C\u0646\u0648\u0628");
+  tree2(-38.5, 113.5, 17, 1.3, "\u062F\u0631\u062E\u062A \u0686\u0631\u0627\u06AF\u0627\u0647 \u06AF\u0648\u0632\u0646");
+  tree2(95.5, 110.5, 18, 1.1, "\u062F\u0631\u062E\u062A \u062E\u0627\u0646\u0647\u0654 \u0645\u062A\u0631\u0648\u06A9\u0647");
+  return defs2;
+}
+var COUNTRY_HILLS = Object.freeze([
+  { x: -185, z: -120, rx: 42, ry: 13, rz: 30 },
+  { x: -150, z: -30, rx: 30, ry: 8, rz: 40 },
+  { x: -168, z: 70, rx: 38, ry: 11, rz: 34 },
+  { x: -110, z: 175, rx: 46, ry: 14, rz: 30 },
+  { x: -30, z: 190, rx: 55, ry: 9, rz: 26 },
+  { x: 70, z: 178, rx: 40, ry: 12, rz: 36 },
+  { x: 155, z: 110, rx: 36, ry: 15, rz: 30 },
+  { x: 190, z: 20, rx: 44, ry: 16, rz: 32 },
+  // the mesa (flat-topped)
+  { x: 150, z: -70, rx: 34, ry: 10, rz: 40 },
+  { x: 100, z: -175, rx: 48, ry: 12, rz: 28 },
+  { x: 20, z: -190, rx: 52, ry: 10, rz: 30 },
+  { x: -70, z: -180, rx: 44, ry: 13, rz: 32 }
+]);
+
+// src/assets/countryside/CountryAmbient.ts
+var M4 = getTownMaterials();
+function mulberry322(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = a + 1831565813 >>> 0;
+    let t = a;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function zoneSeed(zoneName, species) {
+  let h = 2166136261;
+  const s = `${zoneName}\xB7${species}`;
+  for (let i = 0; i < s.length; i += 1) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function distToSegment(px2, pz2, ax, az, bx, bz) {
+  const dx = bx - ax;
+  const dz = bz - az;
+  const lenSq = dx * dx + dz * dz;
+  const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((px2 - ax) * dx + (pz2 - az) * dz) / lenSq));
+  return Math.hypot(px2 - (ax + t * dx), pz2 - (az + t * dz));
+}
+var TOWN_RECT = { x0: -34, z0: -62, x1: 34, z1: 59.5 };
+var TOWN_CROP_FIELD = { x0: 2.25, z0: -57, x1: 13.25, z1: -46 };
+var COUNTRY_POND_KEEP_OUTS = [
+  { x: -42, z: 108, rx: 4.2, rz: 2.7 },
+  { x: -84, z: -93, rx: 1.8, rz: 1.3 }
+];
+var TOWN_POND = { x: -18.5, z: -35.2, rx: 2.6, rz: 1.8 };
+var inRect = (x, z, r, pad = 0) => x > r.x0 - pad && x < r.x1 + pad && z > r.z0 - pad && z < r.z1 + pad;
+function craggyBlobGeometry(radius, salt, jitter = 0.12) {
+  const geo2 = new IcosahedronGeometry(radius, 0);
+  const pos = geo2.attributes.position;
+  const v = new Vector3();
+  const hash = (x, y, z, k) => {
+    const t = Math.sin(x * 127.1 + y * 311.7 + z * 74.7 + k * 53.13) * 43758.5453;
+    return t - Math.floor(t);
+  };
+  for (let i = 0; i < pos.count; i += 1) {
+    v.fromBufferAttribute(pos, i);
+    const h1 = hash(v.x, v.y, v.z, salt);
+    const h2 = hash(v.x, v.y, v.z, salt + 7);
+    v.multiplyScalar(1 + (h1 - 0.5) * 2 * jitter + (h2 - 0.5) * jitter);
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  geo2.computeVertexNormals();
+  return geo2;
+}
+function grassTuftGeometry() {
+  const positions = [];
+  const normals = [];
+  const rng = mulberry322(3815);
+  for (let b = 0; b < 6; b += 1) {
+    const h = 0.24 + rng() * 0.3;
+    const lean = 0.3 + rng() * 0.55;
+    const yaw = rng() * Math.PI * 2;
+    const w = 0.03;
+    const geo2 = new PlaneGeometry(w, h, 1, 1);
+    geo2.translate(0, h / 2, 0);
+    const pos = geo2.attributes.position;
+    for (let vi = 0; vi < pos.count; vi += 1) {
+      const t = pos.getY(vi) / h;
+      pos.setX(vi, pos.getX(vi) * (1 - t * 0.8));
+      pos.setZ(vi, (rng() - 0.5) * 0.5 * t * t * h);
+    }
+    geo2.computeVertexNormals();
+    const p = geo2.attributes.position;
+    const n = geo2.attributes.normal;
+    const cos = Math.cos(yaw);
+    const sin = Math.sin(yaw);
+    const leanCos = Math.cos(lean);
+    const leanSin = Math.sin(lean);
+    for (let vi = 0; vi < p.count; vi += 1) {
+      const x = p.getX(vi);
+      const y = p.getY(vi) * leanCos - p.getZ(vi) * leanSin;
+      const z = p.getY(vi) * leanSin + p.getZ(vi) * leanCos;
+      positions.push(x * cos - z * sin, y, x * sin + z * cos);
+      normals.push(n.getX(vi), n.getY(vi), n.getZ(vi));
+    }
+    geo2.dispose();
+  }
+  const merged = new BufferGeometry();
+  merged.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  merged.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+  return merged;
+}
+function fenceSectionGeometry() {
+  const parts = [];
+  const push = (sx, sy, sz, x, y, z) => {
+    const geo2 = new BoxGeometry(sx, sy, sz);
+    geo2.translate(x, y, z);
+    parts.push(geo2);
+  };
+  push(0.07, 0.96, 0.5, -0.46, 0.48, 0);
+  push(0.07, 0.96, 0.5, 0.46, 0.48, 0);
+  push(0.98, 0.07, 0.32, 0, 0.78, 0);
+  push(0.98, 0.06, 0.3, 0, 0.45, 0);
+  push(0.98, 0.08, 0.34, 0, 0.12, 0);
+  const merged = mergeGeometries2(parts);
+  return merged;
+}
+function mergeGeometries2(parts) {
+  const positions = [];
+  const normals = [];
+  for (const geo2 of parts) {
+    const p = geo2.attributes.position;
+    const n = geo2.attributes.normal;
+    for (let i = 0; i < p.count; i += 1) {
+      positions.push(p.getX(i), p.getY(i), p.getZ(i));
+      normals.push(n.getX(i), n.getY(i), n.getZ(i));
+    }
+    geo2.dispose();
+  }
+  const merged = new BufferGeometry();
+  merged.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  merged.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+  return merged;
+}
+var COUNTRY_AMBIENT_ROOT = "country-ambient-root";
+function createCountryAmbient({ scene: scene2, colliderKeepOuts }) {
+  const group = new Group();
+  group.name = COUNTRY_AMBIENT_ROOT;
+  const previous = scene2.getObjectByName(COUNTRY_AMBIENT_ROOT);
+  if (previous)
+    previous.removeFromParent();
+  scene2.add(group);
+  const createdGeometries = [];
+  const track = (geo2) => {
+    createdGeometries.push(geo2);
+    return geo2;
+  };
+  const corridors = [
+    ...Object.values(TOWN_ROUTE_CORRIDORS).map((pts) => ({ pts: pts.map(([x, z, w]) => ({ x, z, w })) })),
+    ...COUNTRY_ROAD_CORRIDORS.map((road) => ({ pts: road.pts.map(([x, z, w]) => ({ x, z, w })) }))
+  ];
+  const nearAnyRoad = (x, z, pad) => {
+    for (const road of corridors) {
+      for (let i = 1; i < road.pts.length; i += 1) {
+        const a = road.pts[i - 1];
+        const b = road.pts[i];
+        if (distToSegment(x, z, a.x, a.z, b.x, b.z) < b.w / 2 + pad)
+          return true;
+      }
+    }
+    return false;
+  };
+  const inColliderKeepOut = (x, z, pad) => {
+    for (const b of colliderKeepOuts) {
+      if (b.max.y < 0.3)
+        continue;
+      if (x > b.min.x - pad && x < b.max.x + pad && z > b.min.z - pad && z < b.max.z + pad)
+        return true;
+    }
+    return false;
+  };
+  const inAnyPond = (x, z, pad) => {
+    if (Math.abs(x - TOWN_POND.x) < TOWN_POND.rx + pad && Math.abs(z - TOWN_POND.z) < TOWN_POND.rz + pad)
+      return true;
+    for (const pond of COUNTRY_POND_KEEP_OUTS) {
+      if (Math.abs(x - pond.x) < pond.rx + pad && Math.abs(z - pond.z) < pond.rz + pad)
+        return true;
+    }
+    return false;
+  };
+  const inHabitat = (x, z) => COUNTRY_HABITAT_RECTS.some((r) => inRect(x, z, r, 0));
+  const placed = { tree: [], bush: [], rock: [], bigRock: [], grass: [], stump: [] };
+  const minSpacing = { tree: 3.4, bush: 1.3, rock: 2.2, bigRock: 5, grass: 0.55, stump: 3 };
+  const tooClose = (species, x, z) => {
+    const list = placed[species];
+    const min = minSpacing[species];
+    for (let i = list.length - 1; i >= 0; i -= 1) {
+      const p = list[i];
+      const dx = p.x - x;
+      const dz = p.z - z;
+      if (dx * dx + dz * dz < min * min)
+        return true;
+    }
+    return false;
+  };
+  for (const zone of COUNTRY_ZONES) {
+    const areaHa = (zone.x1 - zone.x0) * (zone.z1 - zone.z0) / 1e4;
+    const density = ZONE_DENSITY[zone.kind];
+    const rng = mulberry322(zoneSeed(zone.name, "all"));
+    const sample = (species, count, spawn) => {
+      const target = Math.round(count * areaHa);
+      let accepted = 0;
+      let attempts = 0;
+      while (accepted < target && attempts < target * 30) {
+        attempts += 1;
+        const x = zone.x0 + rng() * (zone.x1 - zone.x0);
+        const z = zone.z0 + rng() * (zone.z1 - zone.z0);
+        if (Math.abs(x) > 138 || Math.abs(z) > 138)
+          continue;
+        if (inRect(x, z, TOWN_RECT, 1.5))
+          continue;
+        if (inRect(x, z, TOWN_CROP_FIELD, 1))
+          continue;
+        if (nearAnyRoad(x, z, 1.3))
+          continue;
+        if (inColliderKeepOut(x, z, 1.6))
+          continue;
+        if (inAnyPond(x, z, 1.4))
+          continue;
+        const habitat = inHabitat(x, z);
+        if (habitat && (species === "tree" || species === "bigRock"))
+          continue;
+        if (habitat && rng() > 0.25)
+          continue;
+        if (species === "tree" && Math.hypot(x - DEER_MEADOW.x, z - DEER_MEADOW.z) < DEER_MEADOW.r)
+          continue;
+        if (tooClose(species, x, z))
+          continue;
+        const { scale, variant } = spawn();
+        placed[species].push({ x, z, scale, yaw: rng() * Math.PI * 2, variant: variant ?? 0 });
+        accepted += 1;
+      }
+    };
+    sample("tree", density.tree, () => ({ scale: 0.8 + rng() * 0.75, variant: Math.floor(rng() * 3) }));
+    sample("bush", density.bush, () => ({ scale: 0.7 + rng() * 0.8 }));
+    sample("rock", density.rock, () => ({ scale: 0.45 + rng() * 0.5 }));
+    sample("bigRock", density.bigRock, () => ({ scale: 0.8 + rng() * 0.7 }));
+    sample("grass", density.grass, () => ({ scale: 0.8 + rng() * 0.7, variant: rng() > 0.5 ? 1 : 0 }));
+    sample("stump", density.stump, () => ({ scale: 0.7 + rng() * 0.5 }));
+  }
+  const matrix = new Matrix4();
+  const quat = new Quaternion();
+  const up = new Vector3(0, 1, 0);
+  const pos = new Vector3();
+  const scl = new Vector3();
+  function addInstanced(name, geometry, material, instances, opts) {
+    if (instances.length === 0)
+      return;
+    const mesh5 = new InstancedMesh(geometry, material, instances.length);
+    mesh5.name = name;
+    mesh5.castShadow = opts.castShadow;
+    mesh5.receiveShadow = true;
+    for (let i = 0; i < instances.length; i += 1) {
+      const inst = instances[i];
+      pos.set(inst.x, opts.yBase ? opts.yBase(inst.scale) : 0, inst.z);
+      quat.setFromAxisAngle(up, inst.yaw);
+      const sy = opts.squashY ? inst.scale * (0.66 + i % 5 * 0.06) : inst.scale;
+      scl.set(inst.scale, sy, inst.scale);
+      matrix.compose(pos, quat, scl);
+      mesh5.setMatrixAt(i, matrix);
+    }
+    mesh5.instanceMatrix.needsUpdate = true;
+    mesh5.matrixAutoUpdate = false;
+    group.add(mesh5);
+  }
+  const trunkGeo = track(new CylinderGeometry(0.13, 0.26, 2.4, 6).translate(0, 1.2, 0));
+  const canopyMaterials = [M4.leafDry, M4.leafOlive, M4.leafOliveDark];
+  const canopyGeos = canopyMaterials.map((_, v) => track(craggyBlobGeometry(1.05, 31 + v * 17, 0.14)));
+  addInstanced("country-tree-trunks", trunkGeo, M4.bark, placed.tree, { castShadow: true });
+  for (let v = 0; v < 3; v += 1) {
+    addInstanced(
+      `country-tree-canopy-${v}`,
+      canopyGeos[v],
+      canopyMaterials[v],
+      placed.tree.filter((t) => t.variant === v),
+      { castShadow: true, yBase: (s) => 2.15 * s + v * 0.05, squashY: true }
+    );
+  }
+  const bushGeo = track(craggyBlobGeometry(0.42, 57, 0.1));
+  addInstanced("country-bushes", bushGeo, M4.leafOliveDark, placed.bush, { castShadow: false, yBase: (s) => 0.26 * s, squashY: true });
+  const rockGeo = track(craggyBlobGeometry(0.38, 83, 0.16));
+  addInstanced("country-rocks", rockGeo, M4.stone, placed.rock, { castShadow: false, yBase: (s) => 0.16 * s, squashY: true });
+  const bigRockGeo = track(craggyBlobGeometry(0.95, 97, 0.18));
+  addInstanced("country-big-rocks", bigRockGeo, M4.stoneDark, placed.bigRock, { castShadow: true, yBase: (s) => 0.3 * s, squashY: true });
+  const stumpGeo = track(new CylinderGeometry(0.3, 0.38, 0.34, 7).translate(0, 0.17, 0));
+  addInstanced("country-stumps", stumpGeo, M4.bark, placed.stump, { castShadow: false });
+  const tuftGeo = track(grassTuftGeometry());
+  addInstanced("country-grass-dry", tuftGeo, M4.grassDry, placed.grass.filter((g) => g.variant === 0), { castShadow: false });
+  addInstanced("country-grass-olive", tuftGeo, M4.leafOliveDark, placed.grass.filter((g) => g.variant === 1), { castShadow: false });
+  const sections = [];
+  for (const run of COUNTRY_FENCE_RUNS) {
+    const style = COUNTRY_FENCE_STYLES[run.style];
+    const alongX = run.from[1] === run.to[1];
+    const a = alongX ? run.from[0] : run.from[1];
+    const b = alongX ? run.to[0] : run.to[1];
+    const fixed = alongX ? run.from[1] : run.from[0];
+    const sorted = [...run.gaps ?? []].sort((p, q) => p[0] - q[0]);
+    const intervals = [];
+    let cursor = Math.min(a, b);
+    const end = Math.max(a, b);
+    for (const [g0, g1] of sorted) {
+      if (g0 > cursor)
+        intervals.push([cursor, Math.min(g0, end)]);
+      cursor = Math.max(cursor, g1);
+    }
+    if (cursor < end)
+      intervals.push([cursor, end]);
+    const rng = mulberry322(zoneSeed(run.name, "fence"));
+    for (const [i0, i1] of intervals) {
+      const len = i1 - i0;
+      if (len < 0.35)
+        continue;
+      const count = Math.max(1, Math.round(len / (run.section ?? 2.2)));
+      const secLen = len / count;
+      for (let i = 0; i < count; i += 1) {
+        const c = i0 + secLen * (i + 0.5);
+        sections.push({
+          x: alongX ? c : fixed,
+          z: alongX ? fixed : c,
+          len: secLen,
+          height: style.height * (0.985 + rng() * 0.03),
+          thickness: style.thickness,
+          alongX
+        });
+      }
+    }
+  }
+  const fenceGeo = track(fenceSectionGeometry());
+  addInstanced("country-fences", fenceGeo, M4.woodMed, sections.map((s) => ({
+    x: s.x,
+    z: s.z,
+    scale: s.len,
+    yaw: s.alongX ? 0 : Math.PI / 2,
+    variant: 0
+  })), {
+    castShadow: true,
+    yBase: () => 0
+  });
+  const fenceMesh = group.getObjectByName("country-fences");
+  if (fenceMesh) {
+    for (let i = 0; i < sections.length; i += 1) {
+      const s = sections[i];
+      pos.set(s.x, 0, s.z);
+      quat.setFromAxisAngle(up, s.alongX ? 0 : Math.PI / 2);
+      scl.set(s.len, s.height, s.thickness);
+      matrix.compose(pos, quat, scl);
+      fenceMesh.setMatrixAt(i, matrix);
+    }
+    fenceMesh.instanceMatrix.needsUpdate = true;
+  }
+  const hillGeo = track(new SphereGeometry(1, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2));
+  const hillMesh = new InstancedMesh(hillGeo, M4.dirtPatch, COUNTRY_HILLS.length);
+  hillMesh.name = "country-hills";
+  hillMesh.castShadow = false;
+  hillMesh.receiveShadow = false;
+  hillMesh.matrixAutoUpdate = false;
+  for (let i = 0; i < COUNTRY_HILLS.length; i += 1) {
+    const h = COUNTRY_HILLS[i];
+    pos.set(h.x, -h.ry * 0.22, h.z);
+    quat.identity();
+    scl.set(h.rx, h.ry, h.rz);
+    matrix.compose(pos, quat, scl);
+    hillMesh.setMatrixAt(i, matrix);
+  }
+  hillMesh.instanceMatrix.needsUpdate = true;
+  group.add(hillMesh);
+  const staticBounds = [];
+  let sectionIndex = 0;
+  for (const s of sections) {
+    const hx = s.alongX ? s.len / 2 : s.thickness / 2;
+    const hz = s.alongX ? s.thickness / 2 : s.len / 2;
+    staticBounds.push({
+      uuid: `country-fence-${sectionIndex}`,
+      min: { x: s.x - hx, y: 0, z: s.z - hz },
+      max: { x: s.x + hx, y: s.height, z: s.z + hz }
+    });
+    sectionIndex += 1;
+  }
+  for (const t of placed.tree) {
+    const r = 0.55 * t.scale;
+    staticBounds.push({
+      uuid: `country-tree-${t.x.toFixed(2)},${t.z.toFixed(2)}`,
+      min: { x: t.x - r, y: 0, z: t.z - r },
+      max: { x: t.x + r, y: 2.4 * t.scale, z: t.z + r }
+    });
+  }
+  for (const r of placed.bigRock) {
+    const half = 0.95 * r.scale;
+    staticBounds.push({
+      uuid: `country-rock-${r.x.toFixed(2)},${r.z.toFixed(2)}`,
+      min: { x: r.x - half, y: 0, z: r.z - half },
+      max: { x: r.x + half, y: 0.9 * r.scale, z: r.z + half }
+    });
+  }
+  const frozenBounds = () => staticBounds;
+  function dispose() {
+    group.removeFromParent();
+    for (const geo2 of createdGeometries)
+      geo2.dispose();
+    createdGeometries.length = 0;
+    staticBounds.length = 0;
+  }
+  const stats = {
+    trees: placed.tree.length,
+    bushes: placed.bush.length,
+    rocks: placed.rock.length,
+    bigRocks: placed.bigRock.length,
+    grass: placed.grass.length,
+    stumps: placed.stump.length,
+    fenceSections: sections.length,
+    hills: COUNTRY_HILLS.length,
+    staticColliders: staticBounds.length
+  };
+  return { group, staticColliders: frozenBounds, stats: () => ({ ...stats }), dispose };
 }
 
 // src/physics/CollisionWorld.ts
@@ -36987,6 +38093,7 @@ function localColliderBoxes(metadata) {
 }
 var CollisionWorld = class {
   definitions;
+  extraBounds;
   floorY;
   /** Cached bounds — rebuilt only when the scene actually changes. */
   cachedBounds = null;
@@ -36995,6 +38102,7 @@ var CollisionWorld = class {
     this.definitions = typeof definitions === "function" ? definitions : () => definitions;
     const options = typeof optionsOrFloorY === "number" ? {} : optionsOrFloorY;
     this.floorY = typeof optionsOrFloorY === "number" ? optionsOrFloorY : optionsOrFloorY.floorY ?? 0;
+    this.extraBounds = typeof optionsOrFloorY === "number" ? void 0 : optionsOrFloorY.extraBounds;
     const bus = options.events;
     if (bus) {
       const invalidate = () => {
@@ -37048,6 +38156,8 @@ var CollisionWorld = class {
       for (const bounds of this.toCollisionBounds(definition))
         out.push(bounds);
     }
+    if (this.extraBounds)
+      out.push(...this.extraBounds());
     const frozen = Object.freeze(out);
     if (this.unsubscribe)
       this.cachedBounds = frozen;
@@ -37120,16 +38230,16 @@ var CollisionWorld = class {
     const asin = abs(sin);
     const boxes = localColliderBoxes(definition.metadata);
     if (boxes) {
-      return boxes.map((box4) => {
-        const off = box4.offset ?? { x: 0, y: 0, z: 0 };
+      return boxes.map((box5) => {
+        const off = box5.offset ?? { x: 0, y: 0, z: 0 };
         const ox = off.x * scale.x;
         const oy = off.y * scale.y;
         const oz = off.z * scale.z;
         const cx = position.x + ox * cos + oz * sin;
         const cz = position.z - ox * sin + oz * cos;
-        const halfX = abs(box4.size.x * scale.x) * 0.5;
-        const halfY = abs(box4.size.y * scale.y) * 0.5;
-        const halfZ = abs(box4.size.z * scale.z) * 0.5;
+        const halfX = abs(box5.size.x * scale.x) * 0.5;
+        const halfY = abs(box5.size.y * scale.y) * 0.5;
+        const halfZ = abs(box5.size.z * scale.z) * 0.5;
         const extentX = acos * halfX + asin * halfZ;
         const extentZ = asin * halfX + acos * halfZ;
         return { uuid: definition.uuid, min: { x: cx - extentX, y: position.y + oy - halfY, z: cz - extentZ }, max: { x: cx + extentX, y: position.y + oy + halfY, z: cz + extentZ } };
@@ -39676,9 +40786,9 @@ var sameTransform = (a, b) => sameVec3(a.position, b.position) && sameVec3(a.rot
 var AuthoredLayout = class {
   authored = /* @__PURE__ */ new Map();
   /** Replace the snapshot with the given definitions' transforms (cloned). */
-  capture(defs2) {
+  capture(defs3) {
     this.authored.clear();
-    for (const def of defs2) {
+    for (const def of defs3) {
       const t = def.transform;
       this.authored.set(def.uuid, {
         position: { ...t.position },
@@ -43101,18 +44211,15 @@ function createWorld() {
   const scene2 = new Scene();
   const SKY_DUST = 14206882;
   scene2.background = new Color(SKY_DUST);
-  scene2.fog = new Fog(SKY_DUST, 40, 105);
+  scene2.fog = new Fog(SKY_DUST, 55, 175);
   const camera2 = new PerspectiveCamera(
     70,
     Math.max(stage2.clientWidth, 1) / Math.max(stage2.clientHeight, 1),
     0.05,
-    // Far plane sized to the CURRENT world (the old 150 was set when the map
-    // was 100×100 — stale “±50 m walls / 141 m diagonal” comment and all).
-    // The 2026-09 town ground is 120×120 (±60): its farthest corner from any
-    // vantage point is the full diagonal 120√2 ≈ 169.7 m, so 180 clears the
-    // whole map with margin — and stays tight (fog ends at 105; nothing but
-    // the sky reads beyond it).
-    180
+    // Far plane sized to the CURRENT world: the 280×280 ground's farthest
+    // corner from any vantage point is the full diagonal 280√2 ≈ 396 m, so
+    // 420 clears the whole map with margin.
+    420
   );
   window.__westDebug = () => {
     const dir = camera2.getWorldDirection(new Vector3());
@@ -43137,10 +44244,10 @@ function createWorld() {
   sun2.position.set(-25, 35, 15);
   sun2.castShadow = true;
   sun2.shadow.mapSize.set(1024, 1024);
-  sun2.shadow.camera.left = -85;
-  sun2.shadow.camera.right = 85;
-  sun2.shadow.camera.top = 85;
-  sun2.shadow.camera.bottom = -85;
+  sun2.shadow.camera.left = -48;
+  sun2.shadow.camera.right = 48;
+  sun2.shadow.camera.top = 48;
+  sun2.shadow.camera.bottom = -48;
   sun2.shadow.camera.near = 1;
   sun2.shadow.camera.far = 200;
   sun2.shadow.bias = -35e-5;
@@ -43157,6 +44264,7 @@ function createWorld() {
   registerAllGunShopFactories(assets);
   registerAllTownFactories(assets);
   registerTownExteriorFactories(assets);
+  registerCountryFactories(assets);
   const adapter2 = new ThreeRendererAdapter({ scene: scene2, assetRegistry: assets });
   const manager2 = new SceneStateManager({ renderer: adapter2 });
   const groundUuid = "10000000-0000-4000-a000-000000000001";
@@ -43237,6 +44345,14 @@ function createWorld() {
       }
     });
   }
+  for (const countryDef of buildCountryMapObjects()) {
+    manager2.registerObject(countryDef);
+  }
+  const keepOutProbe = new CollisionWorld(() => manager2.getAllObjects());
+  const countryAmbient = createCountryAmbient({
+    scene: scene2,
+    colliderKeepOuts: keepOutProbe.getCollisionBounds()
+  });
   return {
     stage: stage2,
     scene: scene2,
@@ -43247,7 +44363,8 @@ function createWorld() {
     sun: sun2,
     hemisphere: hemisphere2,
     adapter: adapter2,
-    manager: manager2
+    manager: manager2,
+    countryAmbient
   };
 }
 
@@ -44169,7 +45286,7 @@ var BEDTIME_HOUR = 20;
 var BEDTIME_STAGGER_HOURS = 0.75;
 var WAKE_HOUR = 5.5;
 var BEDTIME_EASE_SECONDS = 16;
-function mulberry322(seed) {
+function mulberry323(seed) {
   let a = seed >>> 0;
   return () => {
     a = a + 1831565813 >>> 0;
@@ -44383,7 +45500,7 @@ function createSheepSystem({ scene: scene2, collisionWorld: collisionWorld2, get
     if (spawned || disposed)
       return;
     spawned = true;
-    rng = mulberry322(SHEEP_SEED);
+    rng = mulberry323(SHEEP_SEED);
     const colliders = collisionWorld2.getCollisionBounds();
     const count = flockSize(rng);
     const spawnPoints = sampleSpawnPoints(rng, count, colliders);
@@ -44640,6 +45757,7 @@ function createTestHooks(ctx) {
     horse: horse2,
     horseModelHead,
     sheep,
+    countryAmbient,
     authoredLayout: authoredLayout2,
     resetObjectToAuthored: resetObjectToAuthored2,
     resetAllToAuthored: resetAllToAuthored2,
@@ -44859,15 +45977,15 @@ function createTestHooks(ctx) {
         materials.add((Array.isArray(m.material) ? m.material[0] : m.material).uuid);
         geometries.add(m.geometry.uuid);
       });
-      const box4 = new Box3().setFromObject(root);
+      const box5 = new Box3().setFromObject(root);
       return {
         meshes,
         vertices,
         materials: materials.size,
         geometries: geometries.size,
         bbox: {
-          min: { x: +box4.min.x.toFixed(3), y: +box4.min.y.toFixed(3), z: +box4.min.z.toFixed(3) },
-          max: { x: +box4.max.x.toFixed(3), y: +box4.max.y.toFixed(3), z: +box4.max.z.toFixed(3) }
+          min: { x: +box5.min.x.toFixed(3), y: +box5.min.y.toFixed(3), z: +box5.min.z.toFixed(3) },
+          max: { x: +box5.max.x.toFixed(3), y: +box5.max.y.toFixed(3), z: +box5.max.z.toFixed(3) }
         }
       };
     },
@@ -44965,6 +46083,16 @@ function createTestHooks(ctx) {
         list: system.snapshots()
       };
     },
+    // Countryside probe (read-only): instanced layer counts + static collider
+    // count for the verify-countryside harness (world expansion).
+    country: () => {
+      const probe = countryAmbient();
+      return {
+        stats: probe.stats,
+        colliderCount: probe.colliderCount,
+        rootInScene: scene2.getObjectByName("country-ambient-root") !== void 0
+      };
+    },
     // Read-only renderer.info snapshot for the perf harness (§9 baseline):
     // last-frame draw calls / points / triangles exactly as the driver saw them.
     stats: () => ({
@@ -45000,7 +46128,7 @@ function createTestHooks(ctx) {
       if (!root)
         return null;
       root.updateWorldMatrix(true, true);
-      const box4 = new Box3().setFromObject(root);
+      const box5 = new Box3().setFromObject(root);
       const parts = [];
       root.traverse((o) => {
         const m = o;
@@ -45010,8 +46138,8 @@ function createTestHooks(ctx) {
         parts.push({ name: m.name || m.parent?.name || "<part>", y: [+b.min.y.toFixed(3), +b.max.y.toFixed(3)] });
       });
       return {
-        min: { x: +box4.min.x.toFixed(3), y: +box4.min.y.toFixed(3), z: +box4.min.z.toFixed(3) },
-        max: { x: +box4.max.x.toFixed(3), y: +box4.max.y.toFixed(3), z: +box4.max.z.toFixed(3) },
+        min: { x: +box5.min.x.toFixed(3), y: +box5.min.y.toFixed(3), z: +box5.min.z.toFixed(3) },
+        max: { x: +box5.max.x.toFixed(3), y: +box5.max.y.toFixed(3), z: +box5.max.z.toFixed(3) },
         parts
       };
     },
@@ -45110,7 +46238,14 @@ function resetAllToAuthored() {
   }
   return restored;
 }
-var collisionWorld = new CollisionWorld(() => manager.getAllObjects(), { floorY: 0, events: manager.bus });
+var collisionWorld = new CollisionWorld(
+  () => manager.getAllObjects(),
+  // WORLD EXPANSION: ONE solver, two layers — the managed defs PLUS the
+  // countryside ambient layer's exact static AABBs (instanced fence
+  // sections, wild trees, big rocks). The player, the horse and the sheep
+  // collide with all of them through the SAME solver — no parallel system.
+  { floorY: 0, events: manager.bus, extraBounds: () => world.countryAmbient.staticColliders() }
+);
 var RESPAWN_POINT = { x: TOWN_RESPAWN.x, y: CHARACTER_PROPORTIONS.eyeHeight, z: TOWN_RESPAWN.z };
 var playerController = new PlayerController(collisionWorld, {
   camera,
@@ -45147,6 +46282,8 @@ var dayNight = new DayNightCycle(scene, sun, hemisphere, {
   startTime: 8
 });
 var editShadowPulse = 0;
+var shadowFollowX = 0;
+var shadowFollowZ = 0;
 var hudTimer = 0;
 var editor = new ObjectEditorController(manager, {
   onObjectModified: () => {
@@ -45199,6 +46336,10 @@ window.__westTest = createTestHooks({
   dayNight,
   horse: () => rig.horse,
   horseModelHead: () => rig.horseModel.joints.head,
+  countryAmbient: () => {
+    const ambient = world.countryAmbient;
+    return { stats: ambient.stats(), colliderCount: ambient.staticColliders().length };
+  },
   authoredLayout,
   resetObjectToAuthored,
   resetAllToAuthored,
@@ -45693,6 +46834,21 @@ function animate() {
       { x: -Math.sin(playerController.getYaw()), y: 0, z: -Math.cos(playerController.getYaw()) }
     );
   dayNight.update(delta);
+  {
+    const p = playerController.getPosition();
+    const snapX = Math.round(p.x * 4) / 4;
+    const snapZ = Math.round(p.z * 4) / 4;
+    const dx = snapX - shadowFollowX;
+    const dz = snapZ - shadowFollowZ;
+    if (dx !== 0 || dz !== 0) {
+      sun.position.x += dx;
+      sun.position.z += dz;
+      sun.target.position.x += dx;
+      sun.target.position.z += dz;
+      shadowFollowX = snapX;
+      shadowFollowZ = snapZ;
+    }
+  }
   const castersMoving = rig.isMountAnimating() || rig.isDismountAnimating() || gizmo.isDragging() || editShadowPulse > 0 || playerController.getHorizontalSpeed() > 0.25 || Math.abs(playerController.getVerticalVelocity()) > 0.5 || Math.abs(horseSnap.speed) > 0.25 || sheepSystem.anyMoving();
   renderer.shadowMap.needsUpdate = shadows.update(delta, castersMoving);
   if (editShadowPulse > 0)

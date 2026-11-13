@@ -47,7 +47,7 @@
       "format": "esm"
     },
     "src/config/GameConfig.ts": {
-      "bytes": 5090,
+      "bytes": 5455,
       "imports": [],
       "format": "esm"
     },
@@ -936,7 +936,7 @@
       "format": "esm"
     },
     "src/assets/town/TownLayout.ts": {
-      "bytes": 26766,
+      "bytes": 27312,
       "imports": [
         {
           "path": "src/config/GameConfig.ts",
@@ -977,7 +977,7 @@
       "format": "esm"
     },
     "src/assets/town/index.ts": {
-      "bytes": 559,
+      "bytes": 583,
       "imports": [
         {
           "path": "src/assets/town/TownAssetFactory.ts",
@@ -1002,6 +1002,22 @@
       ],
       "format": "esm"
     },
+    "src/assets/countryside/CountryBuildings.ts": {
+      "bytes": 19243,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/town/TownMaterials.ts",
+          "kind": "import-statement",
+          "original": "../town/TownMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
     "src/assets/TownExteriorAssetFactory.ts": {
       "bytes": 73497,
       "imports": [
@@ -1013,8 +1029,71 @@
       ],
       "format": "esm"
     },
+    "src/assets/countryside/CountryLayout.ts": {
+      "bytes": 26850,
+      "imports": [
+        {
+          "path": "src/assets/TownExteriorAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "../TownExteriorAssetFactory.js"
+        },
+        {
+          "path": "src/assets/countryside/CountryBuildings.ts",
+          "kind": "import-statement",
+          "original": "./CountryBuildings.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/countryside/CountryAmbient.ts": {
+      "bytes": 22039,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/town/TownMaterials.ts",
+          "kind": "import-statement",
+          "original": "../town/TownMaterials.js"
+        },
+        {
+          "path": "src/assets/town/TownLayout.ts",
+          "kind": "import-statement",
+          "original": "../town/TownLayout.js"
+        },
+        {
+          "path": "src/assets/countryside/CountryLayout.ts",
+          "kind": "import-statement",
+          "original": "./CountryLayout.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/countryside/index.ts": {
+      "bytes": 1051,
+      "imports": [
+        {
+          "path": "src/assets/countryside/CountryBuildings.ts",
+          "kind": "import-statement",
+          "original": "./CountryBuildings.js"
+        },
+        {
+          "path": "src/assets/countryside/CountryLayout.ts",
+          "kind": "import-statement",
+          "original": "./CountryLayout.js"
+        },
+        {
+          "path": "src/assets/countryside/CountryAmbient.ts",
+          "kind": "import-statement",
+          "original": "./CountryAmbient.js"
+        }
+      ],
+      "format": "esm"
+    },
     "src/assets/index.ts": {
-      "bytes": 1257,
+      "bytes": 1297,
       "imports": [
         {
           "path": "src/assets/AssetRegistry.ts",
@@ -1062,6 +1141,11 @@
           "original": "./town/index.js"
         },
         {
+          "path": "src/assets/countryside/index.ts",
+          "kind": "import-statement",
+          "original": "./countryside/index.js"
+        },
+        {
           "path": "src/assets/TownExteriorAssetFactory.ts",
           "kind": "import-statement",
           "original": "./TownExteriorAssetFactory.js"
@@ -1070,7 +1154,7 @@
       "format": "esm"
     },
     "src/physics/CollisionWorld.ts": {
-      "bytes": 11802,
+      "bytes": 12536,
       "imports": [],
       "format": "esm"
     },
@@ -1706,7 +1790,7 @@
       "format": "esm"
     },
     "game/world.ts": {
-      "bytes": 14698,
+      "bytes": 16267,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -1722,6 +1806,11 @@
           "path": "src/index.ts",
           "kind": "import-statement",
           "original": "../src/index.js"
+        },
+        {
+          "path": "src/physics/CollisionWorld.ts",
+          "kind": "import-statement",
+          "original": "../src/physics/CollisionWorld.js"
         }
       ],
       "format": "esm"
@@ -1791,7 +1880,7 @@
       "format": "esm"
     },
     "game/testHooks.ts": {
-      "bytes": 23667,
+      "bytes": 24318,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -1807,7 +1896,7 @@
       "format": "esm"
     },
     "game/playable-map.ts": {
-      "bytes": 46027,
+      "bytes": 47571,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -1863,7 +1952,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 4196279
+      "bytes": 4323031
     },
     "site/game/playable-map.js": {
       "imports": [],
@@ -1871,7 +1960,7 @@
       "entryPoint": "game/playable-map.ts",
       "inputs": {
         "node_modules/three/build/three.module.js": {
-          "bytesInOutput": 924716
+          "bytesInOutput": 929198
         },
         "src/core/types.ts": {
           "bytesInOutput": 142
@@ -2051,13 +2140,25 @@
           "bytesInOutput": 1500
         },
         "src/assets/town/TownLayout.ts": {
-          "bytesInOutput": 22526
+          "bytesInOutput": 22589
+        },
+        "src/assets/countryside/CountryBuildings.ts": {
+          "bytesInOutput": 12098
+        },
+        "src/assets/countryside/index.ts": {
+          "bytesInOutput": 0
         },
         "src/assets/TownExteriorAssetFactory.ts": {
-          "bytesInOutput": 46780
+          "bytesInOutput": 46782
+        },
+        "src/assets/countryside/CountryLayout.ts": {
+          "bytesInOutput": 25734
+        },
+        "src/assets/countryside/CountryAmbient.ts": {
+          "bytesInOutput": 15334
         },
         "src/physics/CollisionWorld.ts": {
-          "bytesInOutput": 7705
+          "bytesInOutput": 7884
         },
         "src/world/DayNightCycle.ts": {
           "bytesInOutput": 7177
@@ -2153,7 +2254,7 @@
           "bytesInOutput": 19472
         },
         "game/world.ts": {
-          "bytesInOutput": 6407
+          "bytesInOutput": 6533
         },
         "game/doors.ts": {
           "bytesInOutput": 10544
@@ -2168,13 +2269,13 @@
           "bytesInOutput": 16313
         },
         "game/testHooks.ts": {
-          "bytesInOutput": 19554
+          "bytesInOutput": 19961
         },
         "game/playable-map.ts": {
-          "bytesInOutput": 24055
+          "bytesInOutput": 25062
         }
       },
-      "bytes": 1845779
+      "bytes": 1905347
     }
   }
 }
