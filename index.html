@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Western Game</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#171717;color:#eee;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    body{position:relative}
+    #stage{position:fixed;inset:0;background:#6e6758}
+    #stage canvas{display:block;width:100%;height:100%}
+    #hud{position:fixed;inset:0;pointer-events:none}
+    .panel{position:absolute;top:16px;left:16px;min-width:290px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(12,12,14,.72);backdrop-filter:blur(7px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+    .title{margin-bottom:8px;color:#d7bd7c;font-size:11px;font-weight:800;letter-spacing:.14em}
+    .row{display:flex;justify-content:space-between;gap:20px;padding:3px 0;font-size:11px}.key{color:#a7a195}.value{color:#f1eadf;font-variant-numeric:tabular-nums}
+    #crosshair{position:absolute;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%)}
+    #crosshair:before,#crosshair:after{content:"";position:absolute;left:50%;top:50%;background:rgba(255,255,255,.9);transform:translate(-50%,-50%);box-shadow:0 0 4px rgba(0,0,0,.6)}
+    #crosshair:before{width:2px;height:16px}#crosshair:after{width:16px;height:2px}
+    #control-hint{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:calc(100% - 32px);padding:9px 14px;border:1px solid rgba(255,255,255,.15);border-radius:7px;background:rgba(12,12,14,.72);color:#ddd5c8;font-size:11px;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.22)}
+    .badge{display:inline-block;margin-top:7px;padding:3px 6px;border-radius:4px;background:rgba(116,153,100,.2);color:#9fca8b;font-size:9px;letter-spacing:.08em}
+    #save-status{margin-top:7px;color:#b8b0a4;font-size:10px;min-height:12px}
+    #vitals-panel{position:absolute;left:16px;bottom:24px;min-width:230px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(12,12,14,.72);backdrop-filter:blur(7px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+    .bar-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:10px}
+    .bar-row .key{width:22px;color:#a7a195;letter-spacing:.06em}
+    .bar-row .num{width:30px;text-align:right;color:#f1eadf;font-variant-numeric:tabular-nums}
+    .bar{flex:1;height:9px;border-radius:5px;background:rgba(255,255,255,.09);overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+    .bar>div{height:100%;width:100%;border-radius:4px;transition:width .18s ease}
+    #health-fill{background:linear-gradient(90deg,#8f3a32,#c4574a)}
+    #stamina-fill{background:linear-gradient(90deg,#5d7d43,#8fae66)}
+    #stamina-fill.locked{background:linear-gradient(90deg,#7d6a35,#a08a48)}
+    #horse-panel{position:absolute;right:16px;bottom:24px;min-width:230px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(12,12,14,.72);backdrop-filter:blur(7px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+    #object-log-panel{position:absolute;right:16px;bottom:246px;min-width:250px;max-width:320px;padding:12px 14px;border:1px solid rgba(215,189,124,.35);border-radius:8px;background:rgba(12,12,14,.78);backdrop-filter:blur(7px);box-shadow:0 8px 28px rgba(0,0,0,.25);pointer-events:auto}
+    #object-log-panel .title{color:#d7bd7c}
+    #object-log-empty{font-size:10px;color:#8f887c;padding:2px 0}
+    #object-log{display:flex;flex-direction:column;gap:2px}
+    #object-log[hidden]{display:none}
+    #object-log>div{display:flex;justify-content:space-between;gap:14px;font-size:10px}
+    #object-log .k{color:#a7a195;flex:0 0 auto}
+    #object-log .v{color:#f1eadf;font-variant-numeric:tabular-nums;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #object-log .v.name{font-weight:800;color:#ffe9b0}
+    #object-log .sect{margin-top:5px;color:#d7bd7c;font-size:9px;font-weight:800;letter-spacing:.12em}
+    #object-log .sect:first-child{margin-top:0}
+    #objlog-copy{margin-top:8px;width:100%;padding:5px 0;border:1px solid rgba(215,189,124,.5);border-radius:5px;background:rgba(215,189,124,.12);color:#e8d9a8;font-family:inherit;font-size:10px;font-weight:800;letter-spacing:.1em;cursor:pointer}
+    #objlog-copy:hover{background:rgba(215,189,124,.24)}
+    #objlog-copy.copied{background:rgba(116,153,100,.28);color:#9fca8b;border-color:rgba(116,153,100,.5)}
+    #horse-health-fill{background:linear-gradient(90deg,#8f6a32,#c49a4a)}
+    #horse-stamina-fill{background:linear-gradient(90deg,#43707d,#6aa3ae)}
+    #horse-stamina-fill.locked{background:linear-gradient(90deg,#7d6a35,#a08a48)}
+    #interact-prompt{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);padding:7px 13px;border:1px solid rgba(215,189,124,.45);border-radius:7px;background:rgba(12,12,14,.8);color:#e8d9a8;font-size:12px;letter-spacing:.04em;display:none}
+    #interact-prompt:not(:empty){display:block}
+    #status-message{position:absolute;left:50%;top:18%;transform:translateX(-50%);padding:8px 16px;border:1px solid rgba(255,255,255,.18);border-radius:7px;background:rgba(12,12,14,.78);color:#f1eadf;font-size:12px;min-height:14px;display:none}
+    #status-message:not(:empty){display:block}
+    #selection-panel{position:absolute;top:16px;right:16px;min-width:280px;max-width:340px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(12,12,14,.72);backdrop-filter:blur(7px);box-shadow:0 8px 28px rgba(0,0,0,.25);pointer-events:auto}
+    #selection-panel.no-selection .title{color:#a7a195}
+    .sel-name{margin:2px 0 1px;font-size:13px;font-weight:800;color:#f1eadf;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #selection-panel.no-selection .sel-name{color:#a7a195}
+    .sel-uuid{direction:ltr;text-align:right;font-size:9px;color:#8f887c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:7px}
+    .axis-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 0;font-size:11px}
+    .axis-group{display:flex;gap:4px}
+    .axis-group label{display:flex;align-items:center;gap:2px;color:#a7a195;font-size:9px}
+    .axis-group input{width:52px;padding:2px 3px;border:1px solid rgba(255,255,255,.18);border-radius:4px;background:rgba(255,255,255,.06);color:#f1eadf;font-family:inherit;font-size:10px;font-variant-numeric:tabular-nums;text-align:right}
+    .axis-group input:disabled{opacity:.4}
+    .axis-group input:focus{outline:none;border-color:#d7bd7c}
+    .sel-actions{display:flex;gap:6px;margin-top:9px}
+    .sel-actions button{flex:1;padding:5px 0;border:1px solid rgba(215,189,124,.5);border-radius:5px;background:rgba(215,189,124,.12);color:#e8d9a8;font-family:inherit;font-size:10px;font-weight:800;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+    .sel-actions button:hover:enabled{background:rgba(215,189,124,.24)}
+    .sel-actions button:disabled{opacity:.35;cursor:default}
+    .sel-actions button.done{background:rgba(116,153,100,.28);color:#9fca8b;border-color:rgba(116,153,100,.5)}
+  </style>
+</head>
+<body>
+  <main id="stage" aria-label="AI-Western Game playable map"></main>
+  <div id="hud">
+    <div class="panel">
+      <div class="title">AI-WESTERN GAME // PART 3</div>
+      <div class="row"><span class="key">Managed objects</span><span class="value" id="stat-count">—</span></div>
+      <div class="row"><span class="key">Rendered objects</span><span class="value" id="stat-render">—</span></div>
+      <div class="row"><span class="key">Player X / Y / Z</span><span class="value" id="player-position">—</span></div>
+      <div class="row"><span class="key">Camera</span><span class="value" id="camera-mode">THIRD PERSON</span></div>
+      <div class="row"><span class="key">Time</span><span class="value" id="time-of-day">—</span></div>
+      <div class="row"><span class="key">Mode</span><span class="value" id="editor-mode">PLAY MODE</span></div>
+      <div class="row"><span class="key">Selected</span><span class="value" id="editor-selection">None</span></div>
+      <div class="row"><span class="key">Map</span><span class="value" id="map-size">—</span></div>
+      <div class="row"><span class="key">FPS · frame · DPR</span><span class="value" id="perf-row"><span id="fps-value">—</span> · <span id="frame-value">—</span> ms · ×<span id="dpr-value">—</span></span></div>
+      <div class="badge">CHARACTER + CAMERA + VITALS + WORLD + DAY/NIGHT + EDITOR + HORSE</div>
+      <div id="save-status"></div>
+    </div>
+    <div id="selection-panel" class="no-selection">
+      <div class="title">SELECTED OBJECT</div>
+      <div class="sel-name" id="sel-name" dir="auto">None</div>
+      <div class="sel-uuid" id="sel-uuid" title="debug uuid">No selection</div>
+      <div class="axis-row"><span class="key">Position</span>
+        <span class="axis-group">
+          <label>X<input type="number" step="0.1" id="sel-pos-x" disabled aria-label="Position X"></label>
+          <label>Y<input type="number" step="0.1" id="sel-pos-y" disabled aria-label="Position Y"></label>
+          <label>Z<input type="number" step="0.1" id="sel-pos-z" disabled aria-label="Position Z"></label>
+        </span>
+      </div>
+      <div class="axis-row"><span class="key">Rotation</span>
+        <span class="axis-group">
+          <label>X<input type="number" step="1" id="sel-rot-x" disabled aria-label="Rotation X"></label>
+          <label>Y<input type="number" step="1" id="sel-rot-y" disabled aria-label="Rotation Y"></label>
+          <label>Z<input type="number" step="1" id="sel-rot-z" disabled aria-label="Rotation Z"></label>
+        </span>
+      </div>
+      <div class="axis-row"><span class="key">Scale</span>
+        <span class="axis-group">
+          <label>X<input type="number" step="0.1" id="sel-scl-x" disabled aria-label="Scale X"></label>
+          <label>Y<input type="number" step="0.1" id="sel-scl-y" disabled aria-label="Scale Y"></label>
+          <label>Z<input type="number" step="0.1" id="sel-scl-z" disabled aria-label="Scale Z"></label>
+        </span>
+      </div>
+      <div class="sel-actions">
+        <button id="sel-reset" type="button" disabled title="بازگرداندن همین شیء به جای اصلی‌اش">بازنشانی شیء</button>
+        <button id="sel-reset-all" type="button" title="بازگرداندن همهٔ اشیاء به چیدمان اصلی نقشه">بازگردانی همه</button>
+      </div>
+    </div>
+    <div id="vitals-panel">
+      <div class="title">THE RANGER</div>
+      <div class="bar-row"><span class="key">HP</span><div class="bar"><div id="health-fill"></div></div><span class="num" id="health-num">100</span></div>
+      <div class="bar-row"><span class="key">SP</span><div class="bar"><div id="stamina-fill"></div></div><span class="num" id="stamina-num">100</span></div>
+      <div class="row"><span class="key">State</span><span class="value" id="char-state">IDLE</span></div>
+    </div>
+    <div id="horse-panel">
+      <div class="title">HORSE</div>
+      <div class="bar-row"><span class="key">HP</span><div class="bar"><div id="horse-health-fill"></div></div><span class="num" id="horse-health-num">100</span></div>
+      <div class="bar-row"><span class="key">SP</span><div class="bar"><div id="horse-stamina-fill"></div></div><span class="num" id="horse-stamina-num">100</span></div>
+      <div class="row"><span class="key">State</span><span class="value" id="horse-state">WAITING</span></div>
+      <div class="row"><span class="key">Gait</span><span class="value" id="horse-gait">IDLE</span></div>
+      <div class="row"><span class="key">Distance</span><span class="value" id="horse-dist">—</span></div>
+      <div class="badge">PART 3 · E MOUNT · B COME · N STAY</div>
+    </div>
+    <div id="object-log-panel">
+      <div class="title">آخرین تغییر OBJECT</div>
+      <div id="object-log-empty">هنوز تغییری ثبت نشده است</div>
+      <div id="object-log" dir="ltr" hidden>
+        <div><span class="k">Name</span><span class="v name" id="objlog-name">—</span></div>
+        <div><span class="k">UUID</span><span class="v" id="objlog-uuid">—</span></div>
+        <div class="sect">INITIAL STATE</div>
+        <div><span class="k">Position</span><span class="v" id="objlog-ipos">—</span></div>
+        <div><span class="k">Rotation</span><span class="v" id="objlog-irot">—</span></div>
+        <div><span class="k">Scale</span><span class="v" id="objlog-iscl">—</span></div>
+        <div class="sect">FINAL STATE</div>
+        <div><span class="k">Position</span><span class="v" id="objlog-fpos">—</span></div>
+        <div><span class="k">Rotation</span><span class="v" id="objlog-frot">—</span></div>
+        <div><span class="k">Scale</span><span class="v" id="objlog-fscl">—</span></div>
+        <button id="objlog-copy" type="button">COPY</button>
+      </div>
+    </div>
+    <div id="interact-prompt"></div>
+    <div id="status-message"></div>
+    <div id="crosshair"></div>
+    <div id="control-hint">Click map · WASD move · Mouse look · Space jump · V camera · TAB edit</div>
+  </div>
+  <script type="module" src="./game/playable-map.js"></script>
+</body>
+</html>

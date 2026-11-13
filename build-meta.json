@@ -1,0 +1,2180 @@
+{
+  "inputs": {
+    "node_modules/three/build/three.module.js": {
+      "bytes": 1280747,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/types.ts": {
+      "bytes": 2847,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/TransformOps.ts": {
+      "bytes": 2746,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/clone.ts": {
+      "bytes": 1215,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/validators.ts": {
+      "bytes": 2177,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/utils/uuid.ts": {
+      "bytes": 2077,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/utils/Logger.ts": {
+      "bytes": 3442,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/EventBus.ts": {
+      "bytes": 3287,
+      "imports": [
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/config/GameConfig.ts": {
+      "bytes": 5090,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/SceneStateManager.ts": {
+      "bytes": 12500,
+      "imports": [
+        {
+          "path": "src/core/types.ts",
+          "kind": "import-statement",
+          "original": "./types.js"
+        },
+        {
+          "path": "src/utils/uuid.ts",
+          "kind": "import-statement",
+          "original": "../utils/uuid.js"
+        },
+        {
+          "path": "src/core/clone.ts",
+          "kind": "import-statement",
+          "original": "./clone.js"
+        },
+        {
+          "path": "src/core/validators.ts",
+          "kind": "import-statement",
+          "original": "./validators.js"
+        },
+        {
+          "path": "src/core/TransformOps.ts",
+          "kind": "import-statement",
+          "original": "./TransformOps.js"
+        },
+        {
+          "path": "src/core/EventBus.ts",
+          "kind": "import-statement",
+          "original": "./EventBus.js"
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        },
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../config/GameConfig.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/migrations/SceneMigrations.ts": {
+      "bytes": 5021,
+      "imports": [
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        },
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../config/GameConfig.js"
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/persistence/PersistenceManager.ts": {
+      "bytes": 8955,
+      "imports": [
+        {
+          "path": "src/utils/uuid.ts",
+          "kind": "import-statement",
+          "original": "../utils/uuid.js"
+        },
+        {
+          "path": "src/migrations/SceneMigrations.ts",
+          "kind": "import-statement",
+          "original": "../migrations/SceneMigrations.js"
+        },
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../config/GameConfig.js"
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/GameModeController.ts": {
+      "bytes": 6544,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/engine/IRendererAdapter.ts": {
+      "bytes": 1741,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js": {
+      "bytes": 31554,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/MergeStatic.ts": {
+      "bytes": 7983,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js",
+          "kind": "import-statement",
+          "original": "three/examples/jsm/utils/BufferGeometryUtils.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/engine/ThreeRendererAdapter.ts": {
+      "bytes": 10167,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/MergeStatic.ts",
+          "kind": "import-statement",
+          "original": "../assets/MergeStatic.js"
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/engine/HeadlessRendererAdapter.ts": {
+      "bytes": 1807,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/engine/RenderGovernor.ts": {
+      "bytes": 7763,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/AssetRegistry.ts": {
+      "bytes": 3494,
+      "imports": [
+        {
+          "path": "three",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/GroundAssetFactory.ts": {
+      "bytes": 4028,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/PrimitiveAssetFactory.ts": {
+      "bytes": 1271,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/GroundAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./GroundAssetFactory.js"
+        },
+        {
+          "path": "src/assets/AssetRegistry.ts",
+          "kind": "import-statement",
+          "original": "./AssetRegistry.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/saloon/SaloonLayout.ts": {
+      "bytes": 19431,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/saloon/SaloonMaterials.ts": {
+      "bytes": 8295,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/saloon/SaloonGlassware.ts": {
+      "bytes": 13737,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/saloon/SaloonProps.ts": {
+      "bytes": 40031,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/saloon/SaloonMaterials.ts",
+          "kind": "import-statement",
+          "original": "./SaloonMaterials.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonGlassware.ts",
+          "kind": "import-statement",
+          "original": "./SaloonGlassware.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/saloon/SaloonBuildingFactory.ts": {
+      "bytes": 20378,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/saloon/SaloonLayout.ts",
+          "kind": "import-statement",
+          "original": "./SaloonLayout.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonMaterials.ts",
+          "kind": "import-statement",
+          "original": "./SaloonMaterials.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonProps.ts",
+          "kind": "import-statement",
+          "original": "./SaloonProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/saloon/index.ts": {
+      "bytes": 1702,
+      "imports": [
+        {
+          "path": "src/assets/saloon/SaloonLayout.ts",
+          "kind": "import-statement",
+          "original": "./SaloonLayout.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonMaterials.ts",
+          "kind": "import-statement",
+          "original": "./SaloonMaterials.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonGlassware.ts",
+          "kind": "import-statement",
+          "original": "./SaloonGlassware.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonProps.ts",
+          "kind": "import-statement",
+          "original": "./SaloonProps.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonBuildingFactory.ts",
+          "kind": "import-statement",
+          "original": "./SaloonBuildingFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/bank/BankMaterials.ts": {
+      "bytes": 11389,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/bank/BankLayout.ts": {
+      "bytes": 38480,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/bank/BankExterior.ts": {
+      "bytes": 27663,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/bank/BankLayout.ts",
+          "kind": "import-statement",
+          "original": "./BankLayout.js"
+        },
+        {
+          "path": "src/assets/bank/BankMaterials.ts",
+          "kind": "import-statement",
+          "original": "./BankMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/bank/BankInteriorAssetFactory.ts": {
+      "bytes": 47526,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/bank/BankMaterials.ts",
+          "kind": "import-statement",
+          "original": "./BankMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/bank/index.ts": {
+      "bytes": 2400,
+      "imports": [
+        {
+          "path": "src/assets/bank/BankMaterials.ts",
+          "kind": "import-statement",
+          "original": "./BankMaterials.js"
+        },
+        {
+          "path": "src/assets/bank/BankLayout.ts",
+          "kind": "import-statement",
+          "original": "./BankLayout.js"
+        },
+        {
+          "path": "src/assets/bank/BankExterior.ts",
+          "kind": "import-statement",
+          "original": "./BankExterior.js"
+        },
+        {
+          "path": "src/assets/bank/BankInteriorAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./BankInteriorAssetFactory.js"
+        },
+        {
+          "path": "src/assets/bank/BankExterior.ts",
+          "kind": "import-statement",
+          "original": "./BankExterior.js"
+        },
+        {
+          "path": "src/assets/bank/BankInteriorAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./BankInteriorAssetFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/sheriff/SheriffLayout.ts": {
+      "bytes": 29625,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/sheriff/SheriffMaterials.ts": {
+      "bytes": 12412,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/sheriff/SheriffOfficeAssetFactory.ts": {
+      "bytes": 58040,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffLayout.ts",
+          "kind": "import-statement",
+          "original": "./SheriffLayout.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/sheriff/SheriffBuildingFactory.ts": {
+      "bytes": 29244,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffLayout.ts",
+          "kind": "import-statement",
+          "original": "./SheriffLayout.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffMaterials.ts",
+          "kind": "import-statement",
+          "original": "./SheriffMaterials.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffOfficeAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./SheriffOfficeAssetFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/sheriff/index.ts": {
+      "bytes": 2780,
+      "imports": [
+        {
+          "path": "src/assets/sheriff/SheriffLayout.ts",
+          "kind": "import-statement",
+          "original": "./SheriffLayout.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffMaterials.ts",
+          "kind": "import-statement",
+          "original": "./SheriffMaterials.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffOfficeAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./SheriffOfficeAssetFactory.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffBuildingFactory.ts",
+          "kind": "import-statement",
+          "original": "./SheriffBuildingFactory.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffOfficeAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./SheriffOfficeAssetFactory.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffBuildingFactory.ts",
+          "kind": "import-statement",
+          "original": "./SheriffBuildingFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableLayout.ts": {
+      "bytes": 50796,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/stable/StableMaterials.ts": {
+      "bytes": 15679,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableProps.ts": {
+      "bytes": 25628,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableDoors.ts": {
+      "bytes": 15133,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        },
+        {
+          "path": "src/assets/stable/StableProps.ts",
+          "kind": "import-statement",
+          "original": "./StableProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableStalls.ts": {
+      "bytes": 9324,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        },
+        {
+          "path": "src/assets/stable/StableProps.ts",
+          "kind": "import-statement",
+          "original": "./StableProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableEquipment.ts": {
+      "bytes": 9193,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        },
+        {
+          "path": "src/assets/stable/StableProps.ts",
+          "kind": "import-statement",
+          "original": "./StableProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableArchitecture.ts": {
+      "bytes": 41278,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        },
+        {
+          "path": "src/assets/stable/StableProps.ts",
+          "kind": "import-statement",
+          "original": "./StableProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/StableAssetFactory.ts": {
+      "bytes": 6783,
+      "imports": [
+        {
+          "path": "three",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/assets/stable/StableStalls.ts",
+          "kind": "import-statement",
+          "original": "./StableStalls.js"
+        },
+        {
+          "path": "src/assets/stable/StableEquipment.ts",
+          "kind": "import-statement",
+          "original": "./StableEquipment.js"
+        },
+        {
+          "path": "src/assets/stable/StableArchitecture.ts",
+          "kind": "import-statement",
+          "original": "./StableArchitecture.js"
+        },
+        {
+          "path": "src/assets/stable/StableDoors.ts",
+          "kind": "import-statement",
+          "original": "./StableDoors.js"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/stable/index.ts": {
+      "bytes": 2901,
+      "imports": [
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "./StableLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableMaterials.ts",
+          "kind": "import-statement",
+          "original": "./StableMaterials.js"
+        },
+        {
+          "path": "src/assets/stable/StableProps.ts",
+          "kind": "import-statement",
+          "original": "./StableProps.js"
+        },
+        {
+          "path": "src/assets/stable/StableDoors.ts",
+          "kind": "import-statement",
+          "original": "./StableDoors.js"
+        },
+        {
+          "path": "src/assets/stable/StableStalls.ts",
+          "kind": "import-statement",
+          "original": "./StableStalls.js"
+        },
+        {
+          "path": "src/assets/stable/StableEquipment.ts",
+          "kind": "import-statement",
+          "original": "./StableEquipment.js"
+        },
+        {
+          "path": "src/assets/stable/StableArchitecture.ts",
+          "kind": "import-statement",
+          "original": "./StableArchitecture.js"
+        },
+        {
+          "path": "src/assets/stable/StableAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./StableAssetFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/gunshop/GunShopLayout.ts": {
+      "bytes": 21102,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/gunshop/GunShopMaterials.ts": {
+      "bytes": 13284,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/gunshop/GunShopProps.ts": {
+      "bytes": 54283,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopMaterials.ts",
+          "kind": "import-statement",
+          "original": "./GunShopMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/gunshop/GunShopArchitecture.ts": {
+      "bytes": 17051,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopLayout.ts",
+          "kind": "import-statement",
+          "original": "./GunShopLayout.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopMaterials.ts",
+          "kind": "import-statement",
+          "original": "./GunShopMaterials.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopProps.ts",
+          "kind": "import-statement",
+          "original": "./GunShopProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/gunshop/GunShopAssetFactory.ts": {
+      "bytes": 10650,
+      "imports": [
+        {
+          "path": "src/assets/gunshop/GunShopLayout.ts",
+          "kind": "import-statement",
+          "original": "./GunShopLayout.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopArchitecture.ts",
+          "kind": "import-statement",
+          "original": "./GunShopArchitecture.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopProps.ts",
+          "kind": "import-statement",
+          "original": "./GunShopProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/gunshop/index.ts": {
+      "bytes": 2636,
+      "imports": [
+        {
+          "path": "src/assets/gunshop/GunShopLayout.ts",
+          "kind": "import-statement",
+          "original": "./GunShopLayout.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopMaterials.ts",
+          "kind": "import-statement",
+          "original": "./GunShopMaterials.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopProps.ts",
+          "kind": "import-statement",
+          "original": "./GunShopProps.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopArchitecture.ts",
+          "kind": "import-statement",
+          "original": "./GunShopArchitecture.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./GunShopAssetFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/RotationMath.ts": {
+      "bytes": 5885,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/SiteTransform.ts": {
+      "bytes": 4423,
+      "imports": [
+        {
+          "path": "src/core/RotationMath.ts",
+          "kind": "import-statement",
+          "original": "../core/RotationMath.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/town/TownMaterials.ts": {
+      "bytes": 13986,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/town/TownProps.ts": {
+      "bytes": 43736,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/assets/town/TownMaterials.ts",
+          "kind": "import-statement",
+          "original": "./TownMaterials.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/town/TownAssetFactory.ts": {
+      "bytes": 3329,
+      "imports": [
+        {
+          "path": "src/assets/town/TownProps.ts",
+          "kind": "import-statement",
+          "original": "./TownProps.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/town/TownBuildings.ts": {
+      "bytes": 2618,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/assets/town/TownLayout.ts": {
+      "bytes": 26766,
+      "imports": [
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../../config/GameConfig.js"
+        },
+        {
+          "path": "src/assets/saloon/SaloonLayout.ts",
+          "kind": "import-statement",
+          "original": "../saloon/SaloonLayout.js"
+        },
+        {
+          "path": "src/assets/bank/BankLayout.ts",
+          "kind": "import-statement",
+          "original": "../bank/BankLayout.js"
+        },
+        {
+          "path": "src/assets/sheriff/SheriffLayout.ts",
+          "kind": "import-statement",
+          "original": "../sheriff/SheriffLayout.js"
+        },
+        {
+          "path": "src/assets/stable/StableLayout.ts",
+          "kind": "import-statement",
+          "original": "../stable/StableLayout.js"
+        },
+        {
+          "path": "src/assets/gunshop/GunShopLayout.ts",
+          "kind": "import-statement",
+          "original": "../gunshop/GunShopLayout.js"
+        },
+        {
+          "path": "src/assets/town/TownBuildings.ts",
+          "kind": "import-statement",
+          "original": "./TownBuildings.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/town/index.ts": {
+      "bytes": 559,
+      "imports": [
+        {
+          "path": "src/assets/town/TownAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./TownAssetFactory.js"
+        },
+        {
+          "path": "src/assets/town/TownLayout.ts",
+          "kind": "import-statement",
+          "original": "./TownLayout.js"
+        },
+        {
+          "path": "src/assets/town/TownMaterials.ts",
+          "kind": "import-statement",
+          "original": "./TownMaterials.js"
+        },
+        {
+          "path": "src/assets/town/TownBuildings.ts",
+          "kind": "import-statement",
+          "original": "./TownBuildings.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/TownExteriorAssetFactory.ts": {
+      "bytes": 73497,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/assets/index.ts": {
+      "bytes": 1257,
+      "imports": [
+        {
+          "path": "src/assets/AssetRegistry.ts",
+          "kind": "import-statement",
+          "original": "./AssetRegistry.js"
+        },
+        {
+          "path": "src/assets/PrimitiveAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./PrimitiveAssetFactory.js"
+        },
+        {
+          "path": "src/assets/saloon/index.ts",
+          "kind": "import-statement",
+          "original": "./saloon/index.js"
+        },
+        {
+          "path": "src/assets/bank/index.ts",
+          "kind": "import-statement",
+          "original": "./bank/index.js"
+        },
+        {
+          "path": "src/assets/sheriff/index.ts",
+          "kind": "import-statement",
+          "original": "./sheriff/index.js"
+        },
+        {
+          "path": "src/assets/stable/index.ts",
+          "kind": "import-statement",
+          "original": "./stable/index.js"
+        },
+        {
+          "path": "src/assets/gunshop/index.ts",
+          "kind": "import-statement",
+          "original": "./gunshop/index.js"
+        },
+        {
+          "path": "src/assets/SiteTransform.ts",
+          "kind": "import-statement",
+          "original": "./SiteTransform.js"
+        },
+        {
+          "path": "src/assets/town/index.ts",
+          "kind": "import-statement",
+          "original": "./town/index.js"
+        },
+        {
+          "path": "src/assets/TownExteriorAssetFactory.ts",
+          "kind": "import-statement",
+          "original": "./TownExteriorAssetFactory.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/physics/CollisionWorld.ts": {
+      "bytes": 11802,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/world/DayNightCycle.ts": {
+      "bytes": 11118,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/character/CharacterProportions.ts": {
+      "bytes": 2390,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/PlayerController.ts": {
+      "bytes": 39611,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "../physics/CollisionWorld.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "./character/CharacterProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/CharacterStateMachine.ts": {
+      "bytes": 4557,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/Vitals.ts": {
+      "bytes": 8115,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/InputBindings.ts": {
+      "bytes": 5103,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/InteractionSystem.ts": {
+      "bytes": 4489,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/ThirdPersonCamera.ts": {
+      "bytes": 7276,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/MouseLookController.ts": {
+      "bytes": 3764,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/CreativeFlightController.ts": {
+      "bytes": 7612,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/Spawn.ts": {
+      "bytes": 2341,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/player/character/CharacterModel.ts": {
+      "bytes": 14365,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "./CharacterProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/character/CharacterAnimator.ts": {
+      "bytes": 16484,
+      "imports": [
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "./CharacterProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/player/character/index.ts": {
+      "bytes": 440,
+      "imports": [
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "./CharacterProportions.js"
+        },
+        {
+          "path": "src/player/character/CharacterModel.ts",
+          "kind": "import-statement",
+          "original": "./CharacterModel.js"
+        },
+        {
+          "path": "src/player/character/CharacterAnimator.ts",
+          "kind": "import-statement",
+          "original": "./CharacterAnimator.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/persistence/LocalSceneStorage.ts": {
+      "bytes": 3004,
+      "imports": [
+        {
+          "path": "./PersistenceManager.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "../utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/ObjectEditorController.ts": {
+      "bytes": 5291,
+      "imports": [
+        {
+          "path": "../core/SceneStateManager.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/core/RotationMath.ts",
+          "kind": "import-statement",
+          "original": "../core/RotationMath.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/AuthoredLayout.ts": {
+      "bytes": 4481,
+      "imports": [
+        {
+          "path": "../core/SceneStateManager.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/DebugAxes.ts": {
+      "bytes": 3796,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/GizmoMath.ts": {
+      "bytes": 3777,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/editor/TransformGizmo.ts": {
+      "bytes": 16768,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/core/RotationMath.ts",
+          "kind": "import-statement",
+          "original": "../core/RotationMath.js"
+        },
+        {
+          "path": "src/editor/DebugAxes.ts",
+          "kind": "import-statement",
+          "original": "./DebugAxes.js"
+        },
+        {
+          "path": "src/editor/GizmoMath.ts",
+          "kind": "import-statement",
+          "original": "./GizmoMath.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/ContactIndicator.ts": {
+      "bytes": 10611,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/editor/DebugAxes.ts",
+          "kind": "import-statement",
+          "original": "./DebugAxes.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/MoveClamp.ts": {
+      "bytes": 6579,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/editor/DebugAxes.ts",
+          "kind": "import-statement",
+          "original": "./DebugAxes.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/editor/SelectionInfo.ts": {
+      "bytes": 3901,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/horse/HorseProportions.ts": {
+      "bytes": 9944,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/horse/HorseModel.ts": {
+      "bytes": 24021,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./HorseProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/horse/HorseAnimator.ts": {
+      "bytes": 27553,
+      "imports": [
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./HorseProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/horse/HorseVitals.ts": {
+      "bytes": 3656,
+      "imports": [
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./HorseProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/horse/HorseBrain.ts": {
+      "bytes": 20061,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/horse/HorseController.ts": {
+      "bytes": 34999,
+      "imports": [
+        {
+          "path": "../physics/CollisionWorld.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/player/ThirdPersonCamera.ts",
+          "kind": "import-statement",
+          "original": "../player/ThirdPersonCamera.js"
+        },
+        {
+          "path": "src/player/Spawn.ts",
+          "kind": "import-statement",
+          "original": "../player/Spawn.js"
+        },
+        {
+          "path": "src/player/Vitals.ts",
+          "kind": "import-statement",
+          "original": "../player/Vitals.js"
+        },
+        {
+          "path": "src/horse/HorseBrain.ts",
+          "kind": "import-statement",
+          "original": "./HorseBrain.js"
+        },
+        {
+          "path": "src/horse/HorseVitals.ts",
+          "kind": "import-statement",
+          "original": "./HorseVitals.js"
+        },
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../config/GameConfig.js"
+        },
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./HorseProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/horse/HorsePersistence.ts": {
+      "bytes": 3933,
+      "imports": [
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "../config/GameConfig.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/horse/MountChoreography.ts": {
+      "bytes": 41592,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./HorseProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/index.ts": {
+      "bytes": 9017,
+      "imports": [
+        {
+          "path": "src/core/types.ts",
+          "kind": "import-statement",
+          "original": "./core/types.js"
+        },
+        {
+          "path": "src/core/TransformOps.ts",
+          "kind": "import-statement",
+          "original": "./core/TransformOps.js"
+        },
+        {
+          "path": "src/core/clone.ts",
+          "kind": "import-statement",
+          "original": "./core/clone.js"
+        },
+        {
+          "path": "src/core/validators.ts",
+          "kind": "import-statement",
+          "original": "./core/validators.js"
+        },
+        {
+          "path": "src/core/SceneStateManager.ts",
+          "kind": "import-statement",
+          "original": "./core/SceneStateManager.js"
+        },
+        {
+          "path": "src/persistence/PersistenceManager.ts",
+          "kind": "import-statement",
+          "original": "./persistence/PersistenceManager.js"
+        },
+        {
+          "path": "src/core/EventBus.ts",
+          "kind": "import-statement",
+          "original": "./core/EventBus.js"
+        },
+        {
+          "path": "src/core/GameModeController.ts",
+          "kind": "import-statement",
+          "original": "./core/GameModeController.js"
+        },
+        {
+          "path": "src/engine/IRendererAdapter.ts",
+          "kind": "import-statement",
+          "original": "./engine/IRendererAdapter.js"
+        },
+        {
+          "path": "src/engine/ThreeRendererAdapter.ts",
+          "kind": "import-statement",
+          "original": "./engine/ThreeRendererAdapter.js"
+        },
+        {
+          "path": "src/engine/HeadlessRendererAdapter.ts",
+          "kind": "import-statement",
+          "original": "./engine/HeadlessRendererAdapter.js"
+        },
+        {
+          "path": "src/engine/RenderGovernor.ts",
+          "kind": "import-statement",
+          "original": "./engine/RenderGovernor.js"
+        },
+        {
+          "path": "src/assets/index.ts",
+          "kind": "import-statement",
+          "original": "./assets/index.js"
+        },
+        {
+          "path": "src/physics/CollisionWorld.ts",
+          "kind": "import-statement",
+          "original": "./physics/CollisionWorld.js"
+        },
+        {
+          "path": "src/world/DayNightCycle.ts",
+          "kind": "import-statement",
+          "original": "./world/DayNightCycle.js"
+        },
+        {
+          "path": "src/player/PlayerController.ts",
+          "kind": "import-statement",
+          "original": "./player/PlayerController.js"
+        },
+        {
+          "path": "src/player/CharacterStateMachine.ts",
+          "kind": "import-statement",
+          "original": "./player/CharacterStateMachine.js"
+        },
+        {
+          "path": "src/player/Vitals.ts",
+          "kind": "import-statement",
+          "original": "./player/Vitals.js"
+        },
+        {
+          "path": "src/player/InputBindings.ts",
+          "kind": "import-statement",
+          "original": "./player/InputBindings.js"
+        },
+        {
+          "path": "src/player/InteractionSystem.ts",
+          "kind": "import-statement",
+          "original": "./player/InteractionSystem.js"
+        },
+        {
+          "path": "src/player/ThirdPersonCamera.ts",
+          "kind": "import-statement",
+          "original": "./player/ThirdPersonCamera.js"
+        },
+        {
+          "path": "src/player/MouseLookController.ts",
+          "kind": "import-statement",
+          "original": "./player/MouseLookController.js"
+        },
+        {
+          "path": "src/player/CreativeFlightController.ts",
+          "kind": "import-statement",
+          "original": "./player/CreativeFlightController.js"
+        },
+        {
+          "path": "src/player/Spawn.ts",
+          "kind": "import-statement",
+          "original": "./player/Spawn.js"
+        },
+        {
+          "path": "src/player/character/CharacterModel.ts",
+          "kind": "import-statement",
+          "original": "./player/character/CharacterModel.js"
+        },
+        {
+          "path": "src/player/character/index.ts",
+          "kind": "import-statement",
+          "original": "./player/character/index.js"
+        },
+        {
+          "path": "src/player/character/CharacterAnimator.ts",
+          "kind": "import-statement",
+          "original": "./player/character/CharacterAnimator.js"
+        },
+        {
+          "path": "src/persistence/LocalSceneStorage.ts",
+          "kind": "import-statement",
+          "original": "./persistence/LocalSceneStorage.js"
+        },
+        {
+          "path": "src/editor/ObjectEditorController.ts",
+          "kind": "import-statement",
+          "original": "./editor/ObjectEditorController.js"
+        },
+        {
+          "path": "src/editor/AuthoredLayout.ts",
+          "kind": "import-statement",
+          "original": "./editor/AuthoredLayout.js"
+        },
+        {
+          "path": "src/editor/DebugAxes.ts",
+          "kind": "import-statement",
+          "original": "./editor/DebugAxes.js"
+        },
+        {
+          "path": "src/editor/TransformGizmo.ts",
+          "kind": "import-statement",
+          "original": "./editor/TransformGizmo.js"
+        },
+        {
+          "path": "src/editor/ContactIndicator.ts",
+          "kind": "import-statement",
+          "original": "./editor/ContactIndicator.js"
+        },
+        {
+          "path": "src/editor/MoveClamp.ts",
+          "kind": "import-statement",
+          "original": "./editor/MoveClamp.js"
+        },
+        {
+          "path": "src/editor/GizmoMath.ts",
+          "kind": "import-statement",
+          "original": "./editor/GizmoMath.js"
+        },
+        {
+          "path": "src/editor/SelectionInfo.ts",
+          "kind": "import-statement",
+          "original": "./editor/SelectionInfo.js"
+        },
+        {
+          "path": "src/core/RotationMath.ts",
+          "kind": "import-statement",
+          "original": "./core/RotationMath.js"
+        },
+        {
+          "path": "src/horse/HorseProportions.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseProportions.js"
+        },
+        {
+          "path": "src/horse/HorseModel.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseModel.js"
+        },
+        {
+          "path": "src/horse/HorseAnimator.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseAnimator.js"
+        },
+        {
+          "path": "src/horse/HorseVitals.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseVitals.js"
+        },
+        {
+          "path": "src/horse/HorseBrain.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseBrain.js"
+        },
+        {
+          "path": "src/horse/HorseController.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorseController.js"
+        },
+        {
+          "path": "src/horse/HorsePersistence.ts",
+          "kind": "import-statement",
+          "original": "./horse/HorsePersistence.js"
+        },
+        {
+          "path": "src/horse/MountChoreography.ts",
+          "kind": "import-statement",
+          "original": "./horse/MountChoreography.js"
+        },
+        {
+          "path": "src/config/GameConfig.ts",
+          "kind": "import-statement",
+          "original": "./config/GameConfig.js"
+        },
+        {
+          "path": "src/migrations/SceneMigrations.ts",
+          "kind": "import-statement",
+          "original": "./migrations/SceneMigrations.js"
+        },
+        {
+          "path": "src/utils/uuid.ts",
+          "kind": "import-statement",
+          "original": "./utils/uuid.js"
+        },
+        {
+          "path": "src/utils/Logger.ts",
+          "kind": "import-statement",
+          "original": "./utils/Logger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/world.ts": {
+      "bytes": 14698,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/doors.ts": {
+      "bytes": 15815,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/editorUi.ts": {
+      "bytes": 21474,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/horseRig.ts": {
+      "bytes": 23169,
+      "imports": [
+        {
+          "path": "three",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        },
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "../src/player/character/CharacterProportions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/sheep.ts": {
+      "bytes": 29428,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/testHooks.ts": {
+      "bytes": 23667,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "game/playable-map.ts": {
+      "bytes": 46027,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "src/index.ts",
+          "kind": "import-statement",
+          "original": "../src/index.js"
+        },
+        {
+          "path": "src/player/character/CharacterProportions.ts",
+          "kind": "import-statement",
+          "original": "../src/player/character/CharacterProportions.js"
+        },
+        {
+          "path": "game/world.ts",
+          "kind": "import-statement",
+          "original": "./world.js"
+        },
+        {
+          "path": "game/doors.ts",
+          "kind": "import-statement",
+          "original": "./doors.js"
+        },
+        {
+          "path": "game/editorUi.ts",
+          "kind": "import-statement",
+          "original": "./editorUi.js"
+        },
+        {
+          "path": "game/horseRig.ts",
+          "kind": "import-statement",
+          "original": "./horseRig.js"
+        },
+        {
+          "path": "game/sheep.ts",
+          "kind": "import-statement",
+          "original": "./sheep.js"
+        },
+        {
+          "path": "game/testHooks.ts",
+          "kind": "import-statement",
+          "original": "./testHooks.js"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "site/game/playable-map.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 4196279
+    },
+    "site/game/playable-map.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "game/playable-map.ts",
+      "inputs": {
+        "node_modules/three/build/three.module.js": {
+          "bytesInOutput": 924716
+        },
+        "src/core/types.ts": {
+          "bytesInOutput": 142
+        },
+        "src/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/core/TransformOps.ts": {
+          "bytesInOutput": 371
+        },
+        "src/core/clone.ts": {
+          "bytesInOutput": 460
+        },
+        "src/core/validators.ts": {
+          "bytesInOutput": 1191
+        },
+        "src/utils/uuid.ts": {
+          "bytesInOutput": 918
+        },
+        "src/utils/Logger.ts": {
+          "bytesInOutput": 1687
+        },
+        "src/core/EventBus.ts": {
+          "bytesInOutput": 1216
+        },
+        "src/config/GameConfig.ts": {
+          "bytesInOutput": 1125
+        },
+        "src/core/SceneStateManager.ts": {
+          "bytesInOutput": 8879
+        },
+        "src/migrations/SceneMigrations.ts": {
+          "bytesInOutput": 2758
+        },
+        "src/persistence/PersistenceManager.ts": {
+          "bytesInOutput": 6909
+        },
+        "src/core/GameModeController.ts": {
+          "bytesInOutput": 2336
+        },
+        "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js": {
+          "bytesInOutput": 6647
+        },
+        "src/assets/MergeStatic.ts": {
+          "bytesInOutput": 3138
+        },
+        "src/engine/ThreeRendererAdapter.ts": {
+          "bytesInOutput": 6397
+        },
+        "src/engine/RenderGovernor.ts": {
+          "bytesInOutput": 3547
+        },
+        "src/assets/AssetRegistry.ts": {
+          "bytesInOutput": 1959
+        },
+        "src/assets/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/assets/GroundAssetFactory.ts": {
+          "bytesInOutput": 2725
+        },
+        "src/assets/PrimitiveAssetFactory.ts": {
+          "bytesInOutput": 455
+        },
+        "src/assets/saloon/SaloonLayout.ts": {
+          "bytesInOutput": 14191
+        },
+        "src/assets/saloon/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/assets/saloon/SaloonMaterials.ts": {
+          "bytesInOutput": 4131
+        },
+        "src/assets/saloon/SaloonGlassware.ts": {
+          "bytesInOutput": 7174
+        },
+        "src/assets/saloon/SaloonProps.ts": {
+          "bytesInOutput": 22180
+        },
+        "src/assets/saloon/SaloonBuildingFactory.ts": {
+          "bytesInOutput": 10244
+        },
+        "src/assets/bank/BankMaterials.ts": {
+          "bytesInOutput": 6748
+        },
+        "src/assets/bank/index.ts": {
+          "bytesInOutput": 126
+        },
+        "src/assets/bank/BankLayout.ts": {
+          "bytesInOutput": 27679
+        },
+        "src/assets/bank/BankExterior.ts": {
+          "bytesInOutput": 14879
+        },
+        "src/assets/bank/BankInteriorAssetFactory.ts": {
+          "bytesInOutput": 33017
+        },
+        "src/assets/sheriff/SheriffLayout.ts": {
+          "bytesInOutput": 21644
+        },
+        "src/assets/sheriff/index.ts": {
+          "bytesInOutput": 140
+        },
+        "src/assets/sheriff/SheriffMaterials.ts": {
+          "bytesInOutput": 8002
+        },
+        "src/assets/sheriff/SheriffOfficeAssetFactory.ts": {
+          "bytesInOutput": 35142
+        },
+        "src/assets/sheriff/SheriffBuildingFactory.ts": {
+          "bytesInOutput": 17173
+        },
+        "src/assets/stable/StableLayout.ts": {
+          "bytesInOutput": 45809
+        },
+        "src/assets/stable/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/assets/stable/StableMaterials.ts": {
+          "bytesInOutput": 10580
+        },
+        "src/assets/stable/StableProps.ts": {
+          "bytesInOutput": 13463
+        },
+        "src/assets/stable/StableDoors.ts": {
+          "bytesInOutput": 6963
+        },
+        "src/assets/stable/StableStalls.ts": {
+          "bytesInOutput": 5368
+        },
+        "src/assets/stable/StableEquipment.ts": {
+          "bytesInOutput": 5120
+        },
+        "src/assets/stable/StableArchitecture.ts": {
+          "bytesInOutput": 26717
+        },
+        "src/assets/stable/StableAssetFactory.ts": {
+          "bytesInOutput": 3391
+        },
+        "src/assets/gunshop/GunShopLayout.ts": {
+          "bytesInOutput": 18456
+        },
+        "src/assets/gunshop/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/assets/gunshop/GunShopMaterials.ts": {
+          "bytesInOutput": 8279
+        },
+        "src/assets/gunshop/GunShopProps.ts": {
+          "bytesInOutput": 38729
+        },
+        "src/assets/gunshop/GunShopArchitecture.ts": {
+          "bytesInOutput": 8527
+        },
+        "src/assets/gunshop/GunShopAssetFactory.ts": {
+          "bytesInOutput": 6110
+        },
+        "src/core/RotationMath.ts": {
+          "bytesInOutput": 2510
+        },
+        "src/assets/SiteTransform.ts": {
+          "bytesInOutput": 1113
+        },
+        "src/assets/town/TownMaterials.ts": {
+          "bytesInOutput": 9279
+        },
+        "src/assets/town/TownProps.ts": {
+          "bytesInOutput": 29264
+        },
+        "src/assets/town/TownAssetFactory.ts": {
+          "bytesInOutput": 2113
+        },
+        "src/assets/town/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/assets/town/TownBuildings.ts": {
+          "bytesInOutput": 1500
+        },
+        "src/assets/town/TownLayout.ts": {
+          "bytesInOutput": 22526
+        },
+        "src/assets/TownExteriorAssetFactory.ts": {
+          "bytesInOutput": 46780
+        },
+        "src/physics/CollisionWorld.ts": {
+          "bytesInOutput": 7705
+        },
+        "src/world/DayNightCycle.ts": {
+          "bytesInOutput": 7177
+        },
+        "src/player/character/CharacterProportions.ts": {
+          "bytesInOutput": 1426
+        },
+        "src/player/PlayerController.ts": {
+          "bytesInOutput": 25776
+        },
+        "src/player/CharacterStateMachine.ts": {
+          "bytesInOutput": 2588
+        },
+        "src/player/Vitals.ts": {
+          "bytesInOutput": 5865
+        },
+        "src/player/InputBindings.ts": {
+          "bytesInOutput": 3389
+        },
+        "src/player/InteractionSystem.ts": {
+          "bytesInOutput": 2805
+        },
+        "src/player/ThirdPersonCamera.ts": {
+          "bytesInOutput": 4621
+        },
+        "src/player/MouseLookController.ts": {
+          "bytesInOutput": 2641
+        },
+        "src/player/CreativeFlightController.ts": {
+          "bytesInOutput": 4717
+        },
+        "src/player/Spawn.ts": {
+          "bytesInOutput": 1578
+        },
+        "src/player/character/CharacterModel.ts": {
+          "bytesInOutput": 9030
+        },
+        "src/player/character/index.ts": {
+          "bytesInOutput": 0
+        },
+        "src/player/character/CharacterAnimator.ts": {
+          "bytesInOutput": 14402
+        },
+        "src/persistence/LocalSceneStorage.ts": {
+          "bytesInOutput": 1605
+        },
+        "src/editor/ObjectEditorController.ts": {
+          "bytesInOutput": 4209
+        },
+        "src/editor/AuthoredLayout.ts": {
+          "bytesInOutput": 2639
+        },
+        "src/editor/DebugAxes.ts": {
+          "bytesInOutput": 1773
+        },
+        "src/editor/GizmoMath.ts": {
+          "bytesInOutput": 1845
+        },
+        "src/editor/TransformGizmo.ts": {
+          "bytesInOutput": 10797
+        },
+        "src/editor/ContactIndicator.ts": {
+          "bytesInOutput": 5247
+        },
+        "src/editor/MoveClamp.ts": {
+          "bytesInOutput": 2450
+        },
+        "src/editor/SelectionInfo.ts": {
+          "bytesInOutput": 1051
+        },
+        "src/horse/HorseProportions.ts": {
+          "bytesInOutput": 4752
+        },
+        "src/horse/HorseModel.ts": {
+          "bytesInOutput": 13141
+        },
+        "src/horse/HorseAnimator.ts": {
+          "bytesInOutput": 20859
+        },
+        "src/horse/HorseVitals.ts": {
+          "bytesInOutput": 2780
+        },
+        "src/horse/HorseBrain.ts": {
+          "bytesInOutput": 14144
+        },
+        "src/horse/HorseController.ts": {
+          "bytesInOutput": 25196
+        },
+        "src/horse/HorsePersistence.ts": {
+          "bytesInOutput": 2182
+        },
+        "src/horse/MountChoreography.ts": {
+          "bytesInOutput": 19472
+        },
+        "game/world.ts": {
+          "bytesInOutput": 6407
+        },
+        "game/doors.ts": {
+          "bytesInOutput": 10544
+        },
+        "game/editorUi.ts": {
+          "bytesInOutput": 13438
+        },
+        "game/horseRig.ts": {
+          "bytesInOutput": 11456
+        },
+        "game/sheep.ts": {
+          "bytesInOutput": 16313
+        },
+        "game/testHooks.ts": {
+          "bytesInOutput": 19554
+        },
+        "game/playable-map.ts": {
+          "bytesInOutput": 24055
+        }
+      },
+      "bytes": 1845779
+    }
+  }
+}
